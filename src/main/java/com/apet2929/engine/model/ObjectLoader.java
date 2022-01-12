@@ -45,9 +45,35 @@ public class ObjectLoader {
         };
 
         storeDataInAttribList(0, 3, vertices);
-        storeDataInAttribList(1, 2, colors);
+        storeDataInAttribList(1, 3, colors);
         unbind();
         return new Line(id);
+    }
+
+    public int loadLines(Vector3f[] lines) {
+        float[] vertices = new float[lines.length * 3];
+        float[] colors = new float[lines.length * 3];
+        int v = 0;
+        System.out.println("lines.length = " + lines.length);
+        for (int i = 0; i < lines.length; i++) {
+            System.out.println(i);
+            vertices[v] = lines[i].x;
+            vertices[v+1] = lines[i].y;
+            vertices[v+2] = lines[i].z;
+            colors[v] = lines[i].x;
+            colors[v+1] = lines[i].y;
+            colors[v+2] = lines[i].z;
+            v += 3;
+        }
+        return loadLines(vertices, colors);
+    }
+
+    public int loadLines(float[] vertices, float[] colors) {
+        int id = createVAO();
+        storeDataInAttribList(0, 3, vertices);
+        storeDataInAttribList(1, 3, colors);
+        unbind();
+        return id;
     }
 
     public void setLinePos(int id, Vector3f startPoint, Vector3f endPoint) {

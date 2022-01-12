@@ -99,24 +99,17 @@ public class RenderManager {
 
     }
 
-    public void drawLine(Line line) {
-        glBindVertexArray(line.getId());
+    public void drawLines(int id, int numLines) {
+        lineShader.bind();
+        glBindVertexArray(id);
         glEnableVertexAttribArray(0); // start/end point
         glEnableVertexAttribArray(1); // start/end color
-        glDrawArrays(GL_LINES, 0, 2);
+        glDrawArrays(GL_LINES, 0, numLines * 2);
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
         glBindVertexArray(0);
-    }
-
-    public void beginDrawLines() {
-        lineShader.bind();
-    }
-
-    public void endDrawLines() {
         lineShader.unbind();
     }
-
 
     public boolean canRender() {
         return shader.isBound();
