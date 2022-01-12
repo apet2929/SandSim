@@ -95,8 +95,10 @@ public class SandSim implements ILogic {
 
         float dx = width / numCols;
         float dy = height / numRows;
-        Vector2f startPoint = new Vector2f();
-        Vector2f endPoint = new Vector2f();
+        Vector3f startPoint = new Vector3f();
+        Vector3f endPoint = new Vector3f();
+        endPoint.z = 1;
+        startPoint.z = 0;
 //        Vertical lines, Columns
         for (int i = 0; i < numCols; i++) {
             float xP = x + dx / 2 + (i * dx);
@@ -104,6 +106,7 @@ public class SandSim implements ILogic {
             startPoint.y = y;
             endPoint.x = xP;
             endPoint.y = y + height;
+
             lines[i] = loader.loadLine(startPoint, endPoint, lineColStart, lineColEnd);
         }
 

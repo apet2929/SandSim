@@ -32,11 +32,11 @@ public class ObjectLoader {
         return new Model(id, indices.length);
     }
 
-    public Line loadLine(Vector2f startPoint, Vector2f endPoint, Vector3f colorStart, Vector3f colorEnd) {
+    public Line loadLine(Vector3f startPoint, Vector3f endPoint, Vector3f colorStart, Vector3f colorEnd) {
         int id = createVAO();
         float[] vertices = {
-          startPoint.x, startPoint.y,
-          endPoint.x, endPoint.y,
+          startPoint.x, startPoint.y, startPoint.z,
+          endPoint.x, endPoint.y, endPoint.z
         };
 
         float[] colors = {
@@ -44,7 +44,7 @@ public class ObjectLoader {
             colorEnd.x, colorEnd.y, colorEnd.z
         };
 
-        storeDataInAttribList(0, 2, vertices);
+        storeDataInAttribList(0, 3, vertices);
         storeDataInAttribList(1, 2, colors);
         unbind();
         return new Line(id);
