@@ -28,6 +28,7 @@ public class EngineManager {
         window.init();
         gameLogic.init();
         mouseInput.init();
+        fps = (int) FRAMERATE;
     }
 
     public void start() throws Exception {
@@ -91,7 +92,7 @@ public class EngineManager {
 
     private void input(){
         mouseInput.input();
-        gameLogic.input();
+        gameLogic.input(mouseInput);
     }
 
     private void render(){
@@ -100,7 +101,7 @@ public class EngineManager {
     }
 
     private void update() {
-        gameLogic.update(mouseInput);
+        gameLogic.update();
     }
 
     private void cleanup(){
@@ -115,7 +116,7 @@ public class EngineManager {
     }
 
     public static float getDeltaTime() {
-        return lastFrameTime / 1000000f;
+        return lastFrameTime / (float) NANOSECOND;
 
     }
 

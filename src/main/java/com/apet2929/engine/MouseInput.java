@@ -30,8 +30,6 @@ public class MouseInput {
             rightButtonPressed = button == GLFW.GLFW_MOUSE_BUTTON_2 && action == GLFW.GLFW_PRESS;
         }));
 
-
-
     }
 
     public void input() {
@@ -55,6 +53,10 @@ public class MouseInput {
 
     public Vector2f getDisplVec() {
         return displVec;
+    }
+
+    public Vector2d getPos() {
+        return new Vector2d(currentPos);
     }
 
     public boolean isLeftButtonPressed() {

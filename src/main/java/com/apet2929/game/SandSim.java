@@ -7,12 +7,10 @@ import com.apet2929.game.particles.Particle;
 import com.apet2929.game.particles.SandParticle;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.system.CallbackI;
 
 public class SandSim implements ILogic {
 
-    private int direction = 0;
-    private float color = 0.0f;
+//    TODO : Create World class that holds the list of particles
 
     private final RenderManager renderer;
     private final ObjectLoader loader;
@@ -21,7 +19,8 @@ public class SandSim implements ILogic {
 
     private Entity entity;
     private Grid grid;
-    private Particle[][] world;
+    private World world;
+//    private Particle[][] world;
 
     private Particle testParticle;
     private int particleX, particleY;
@@ -35,19 +34,9 @@ public class SandSim implements ILogic {
 
     @Override
     public void init() throws Exception {
+
         renderer.init();
         assetCache = new AssetCache(loader);
-
-        float[] vertices = {
-                -0.5f, 0.5f, 0f,    //  Top left vertex
-                -0.5f, -0.5f, 0f,   //  Bottom left vertex
-                0.5f, -0.5f, 0f,    //  Bottom right vertex
-                0.5f, 0.5f, 0f,     //  Top right
-//                -0.5f, 0.5f, 0f     //  Top left
-//                0.5f, -0.5f, 0f,    //  Bottom right vertex
-        };
-
-
 
         int[] indices = {
                 0,1,3,
@@ -61,37 +50,31 @@ public class SandSim implements ILogic {
                 1,0
         };
 
-//        Model model = loader.loadModel(vertices, textureCoords, indices);
-//        model.setTexture(assetCache.loadTexture("Sand"));
-////        model.setTexture(new Texture(loader.loadTexture("textures/tree.png")));
-//        entity = new Entity(model);
-//        entity.setPos(0,0,-2.0f);
-
-
         Vector3f[] lines = Grid.calculateGridLines(-1.0f, -1.0f, 2.0f, 2.0f, 20, 20);
         grid = loader.loadGrid(lines);
         grid.init(-1.0f, -1.0f, 2.0f, 2.0f, 20, 20);
 
+        world = new World(grid);
         Model particleModel = loader.loadModel(grid.getScaledVertices(), textureCoords, indices);
         particleModel.setTexture(assetCache.loadTexture("Sand"));
         testParticle = new SandParticle(particleModel);
-        particleX = 0;
-        particleY = 0;
+
+        world.setAt(0, grid.getNumRows()-1, testParticle);
     }
 
     @Override
-    public void input() {
-        if(window.isKeyPressed(GLFW.GLFW_KEY_UP)){
-            particleY++;
-        }
-        if(window.isKeyPressed(GLFW.GLFW_KEY_DOWN))
-            particleY--;
-
-        if(window.isKeyPressed(GLFW.GLFW_KEY_LEFT)) {
-            particleX--;
-        }
-        if(window.isKeyPressed(GLFW.GLFW_KEY_RIGHT))
-            particleX++;
+    public void input(MouseInput mouseInput) {
+//        if(window.isKeyPressed(GLFW.GLFW_KEY_UP)){
+//            particleY++;
+//        }
+//        if(window.isKeyPressed(GLFW.GLFW_KEY_DOWN))
+//            particleY--;
+//
+//        if(window.isKeyPressed(GLFW.GLFW_KEY_LEFT)) {
+//            particleX--;
+//        }
+//        if(window.isKeyPressed(GLFW.GLFW_KEY_RIGHT))
+//            particleX++;
 
         if(window.isKeyPressed(GLFW.GLFW_KEY_A)) {
             entity.incRotation(-0.5f, 0, 0f);
@@ -99,20 +82,15 @@ public class SandSim implements ILogic {
         if(window.isKeyPressed(GLFW.GLFW_KEY_D))
             entity.incRotation(0.5f, 0f, 0f);
 
-
-        if(window.isKeyPressed(GLFW.GLFW_KEY_ENTER))
-            System.out.println(direction);
+        if(mouseInput.isLeftButtonPressed()) {
+            System.out.println("mouseInput = " + mouseInput.getPos());
+        }
     }
 
     @Override
-    public void update(MouseInput mouseInput) {
-        color += direction * 0.001f;
-
-        if(color > 1){
-            color = 1.0f;
-        }
-        else if(color <= 0) {
-            color = 0.0f;
+    public void update() {
+        if(ParticleTimer.update()) {
+            world.update();
         }
     }
 
@@ -121,8 +99,7 @@ public class SandSim implements ILogic {
         renderer.clear();
         renderer.drawLines(grid.getId(), grid.getNumLines());
         renderer.beginRender();
-//        renderer.renderEntity(entity);
-        renderer.renderParticle(testParticle, grid.calculateGridPosition(particleX, particleY));
+        world.render(renderer);
         renderer.endRender();
 
     }
@@ -132,6 +109,8 @@ public class SandSim implements ILogic {
         renderer.cleanup();
         loader.cleanup();
     }
+
+
 
 
 }
