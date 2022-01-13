@@ -1,6 +1,7 @@
 package com.apet2929.engine.model;
 
 import org.joml.Vector2f;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,55 +10,58 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class Grid {
 
-    public static void drawLine(float x0, float y0, float x1, float y1) {
-        glVertex2f(x0, y0);
-        glVertex2f(x1, y1);
+    private final int id;
+    private final int numLines;
+
+    public Grid(int id, int numLines) {
+        this.id = id;
+        this.numLines = numLines;
     }
 
-    public static void drawGrid(float x, float y, float width, float height, int numRows, int numCols) {
-        glBegin(GL_LINES);
-        float x0, y0, x1, y1;
-        float dx = width / numRows;
-        float dy = height / numCols;
-
-        y0 = y;
-        y1 = y + height;
-        for (int xi = 0; xi < numRows; xi++) {
-            x0 = x + (xi * dx);
-            drawLine(x0, y0, x0, y1);
-        }
-
-        x0 = x;
-        x1 = x + width;
-        for (int yi = 0; yi < numRows; yi++) {
-            y0 = y + (yi * dy);
-            drawLine(x0, y0, x1, y0);
-        }
-
-        glEnd();
+    public int getId() {
+        return id;
     }
 
-//    public static float[] calculateVertices(float x, float y, float width, float height, int numRows, int numCols) {
-//        List<Float> vertices = new ArrayList<>();
-//        float dx = width / numRows;
-//        float dy = height / numCols;
-//        for (int xi = 0; xi < numRows; xi++) {
-//            for (int yi = 0; yi < numCols; yi++) {
-//                vertices.add(x + (xi * dx)); // x
-//                vertices.add(y + (y * dy)); // y
-//                vertices.add(0.0f); // z
-//            }
-//        }
-//
-//        float[] v = new float[vertices.size()];
-//
-//        for (int i = 0; i < vertices.size(); i++) {
-//            v[i] = vertices.get(i);
-//        }
-//        return v;
-//    }
-//
+    public int getNumLines() {
+        return numLines;
+    }
+
+    public static Vector3f[] calculateGridLines(float x, float y, float width, float height, int numCols, int numRows) {
+        int numPoints = (numCols + numRows) * 2;
+        Vector3f[] lines = new Vector3f[numPoints];
+
+        float dx = width / numCols;
+        float dy = height / numRows;
+        Vector3f startPoint = new Vector3f();
+        Vector3f endPoint = new Vector3f();
+        endPoint.z = 0;
+        startPoint.z = 0;
+//        Vertical lines, Columns
+        int v = 0;
+        for (int i = 0; i < numCols; i++) {
+            float xP = x + (dx / 2) + (i * dx);
+            startPoint.x = xP;
+            startPoint.y = y;
+            endPoint.x = xP;
+            endPoint.y = y + height;
+            lines[v] = new Vector3f(startPoint);
+            lines[v + 1] = new Vector3f(endPoint);
+            v += 2;
+        }
 
 
+//        Horizontal lines, Rows
+        for (int i = 0; i < numRows; i++) {
+            float yP = y + (dy / 2) + (i * dy);
+            startPoint.y = yP;
+            startPoint.x = x;
+            endPoint.y = yP;
+            endPoint.x = x + width;
+            lines[v] = new Vector3f(startPoint);
+            lines[v + 1] = new Vector3f(endPoint);
+            v += 2;
+        }
+        return lines;
 
+    }
 }

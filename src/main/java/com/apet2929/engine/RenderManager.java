@@ -2,8 +2,7 @@ package com.apet2929.engine;
 
 
 import com.apet2929.engine.model.Entity;
-import com.apet2929.engine.model.Line;
-import com.apet2929.engine.model.Model;
+import com.apet2929.engine.model.Grid;
 import com.apet2929.engine.model.Transformation;
 import com.apet2929.engine.utils.Utils;
 import com.apet2929.game.Launcher;
@@ -11,9 +10,7 @@ import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
 
-import static com.apet2929.engine.utils.Consts.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
@@ -54,7 +51,6 @@ public class RenderManager {
     }
 
     public void renderEntity(Entity entity) {
-        clear();
         shader.setUniform("textureSampler", 0);
         shader.setUniform("transformationMatrix", Transformation.createTransformationMatrix(entity));
         glBindVertexArray(entity.getModel().getId());

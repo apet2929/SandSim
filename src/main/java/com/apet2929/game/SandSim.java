@@ -22,8 +22,7 @@ public class SandSim implements ILogic {
     private final WindowManager window;
 
     private Entity entity;
-    private Vector3f[] lines;
-    private int gridId;
+    private Grid grid;
 
 //    TODO : Figure out why color isn't working
     final int numCols = 40;
@@ -74,8 +73,8 @@ public class SandSim implements ILogic {
         Vector3f lineColEnd = new Vector3f(0.5f, 0.0f, 0.0f);
 //        line = loader.loadLine(lineStart, lineEnd, lineColStart, lineColEnd);
 
-        lines = calculateGridLines();
-        gridId = loader.loadLines(lines);
+        Vector3f[] lines = Grid.calculateGridLines(-1.0f, -1.0f, 2.0f, 2.0f, 20, 20);
+        grid = loader.loadGrid(lines);
     }
 
     @Override
@@ -119,10 +118,7 @@ public class SandSim implements ILogic {
     @Override
     public void render() {
         renderer.render(entity);
-
-        renderer.drawLines(gridId, lines.length);
-
-
+        renderer.drawLines(grid.getId(), grid.getNumLines());
 //        renderer.beginRender();
 //        renderer.setWindowUniform();
 //        renderer.renderEntity(entity);
@@ -136,46 +132,5 @@ public class SandSim implements ILogic {
         loader.cleanup();
     }
 
-    private Vector3f[] calculateGridLines() {
-        int numPoints = (numCols + numRows) * 2;
-        lines = new Vector3f[numPoints];
 
-        float x = -1.0f;
-        float y = -1.4f;
-        float width = 2.0f;
-        float height = 2.5f;
-
-        float dx = width / numCols;
-        float dy = height / numRows;
-        Vector3f startPoint = new Vector3f();
-        Vector3f endPoint = new Vector3f();
-        endPoint.z = 0;
-        startPoint.z = 0;
-//        Vertical lines, Columns
-        int v = 0;
-        for (int i = 0; i < numCols; i++) {
-            float xP = x + (dx / 2) + (i * dx);
-            startPoint.x = xP;
-            startPoint.y = y;
-            endPoint.x = xP;
-            endPoint.y = y + height;
-            lines[v] = new Vector3f(startPoint);
-            lines[v + 1] = new Vector3f(endPoint);
-            v += 2;
-        }
-
-
-//        Horizontal lines, Rows
-        for (int i = 0; i < numRows; i++) {
-            float yP = y + (dy / 2) + (i * dy);
-            startPoint.y = yP;
-            startPoint.x = x;
-            endPoint.y = yP;
-            endPoint.x = x + width;
-            lines[v] = new Vector3f(startPoint);
-            lines[v + 1] = new Vector3f(endPoint);
-            v += 2;
-        }
-        return lines;
-    }
 }

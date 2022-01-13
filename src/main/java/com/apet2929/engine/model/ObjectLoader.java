@@ -32,40 +32,38 @@ public class ObjectLoader {
         return new Model(id, indices.length);
     }
 
-    public Line loadLine(Vector3f startPoint, Vector3f endPoint, Vector3f colorStart, Vector3f colorEnd) {
-        int id = createVAO();
-        float[] vertices = {
-          startPoint.x, startPoint.y, startPoint.z,
-          endPoint.x, endPoint.y, endPoint.z
-        };
-
-        float[] colors = {
-            colorStart.x, colorStart.y, colorStart.z,
-            colorEnd.x, colorEnd.y, colorEnd.z
-        };
-
-        storeDataInAttribList(0, 3, vertices);
-        storeDataInAttribList(1, 3, colors);
-        unbind();
-        return new Line(id);
-    }
-
     public int loadLines(Vector3f[] lines) {
         float[] vertices = new float[lines.length * 3];
         float[] colors = new float[lines.length * 3];
         int v = 0;
-        System.out.println("lines.length = " + lines.length);
-        for (int i = 0; i < lines.length; i++) {
-            System.out.println(i);
-            vertices[v] = lines[i].x;
-            vertices[v+1] = lines[i].y;
-            vertices[v+2] = lines[i].z;
-            colors[v] = lines[i].x;
-            colors[v+1] = lines[i].y;
-            colors[v+2] = lines[i].z;
+
+        for (Vector3f line : lines) {
+            vertices[v] = line.x;
+            vertices[v + 1] = line.y;
+            vertices[v + 2] = line.z;
+            colors[v] = 1.0f;
+            colors[v + 1] = 0.0f;
+            colors[v + 2] = 0.5f;
             v += 3;
         }
         return loadLines(vertices, colors);
+    }
+
+    public Grid loadGrid(Vector3f[] lines) {
+        float[] vertices = new float[lines.length * 3];
+        float[] colors = new float[lines.length * 3];
+        int v = 0;
+        for (Vector3f line : lines) {
+            vertices[v] = line.x;
+            vertices[v + 1] = line.y;
+            vertices[v + 2] = line.z;
+            colors[v] = line.x;
+            colors[v + 1] = line.y;
+            colors[v + 2] = line.z;
+            v += 3;
+        }
+        int id = loadLines(vertices, colors);
+        return new Grid(id, lines.length);
     }
 
     public int loadLines(float[] vertices, float[] colors) {
