@@ -15,6 +15,7 @@ public class SandSim implements ILogic {
     private final RenderManager renderer;
     private final ObjectLoader loader;
     private final WindowManager window;
+    private AssetCache assetCache;
 
     private Entity entity;
     private Grid grid;
@@ -30,6 +31,7 @@ public class SandSim implements ILogic {
     @Override
     public void init() throws Exception {
         renderer.init();
+        assetCache = new AssetCache(loader);
 
         float[] vertices = {
                 -0.5f, 0.5f, 0f,    //  Top left vertex
@@ -55,7 +57,8 @@ public class SandSim implements ILogic {
         };
 
         Model model = loader.loadModel(vertices, textureCoords, indices);
-        model.setTexture(new Texture(loader.loadTexture("textures/tree.png")));
+        model.setTexture(assetCache.loadTexture("Sand"));
+//        model.setTexture(new Texture(loader.loadTexture("textures/tree.png")));
         entity = new Entity(model);
         entity.setPos(0,0,-2);
 

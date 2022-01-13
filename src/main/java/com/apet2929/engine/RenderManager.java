@@ -36,6 +36,8 @@ public class RenderManager {
         lineShader = new ShaderManager();
         lineShader.createVertexShader(Utils.loadResource("/shaders/line_vertex.vs"));
         lineShader.createFragmentShader(Utils.loadResource("/shaders/line_fragment.fs"));
+        lineShader.link();
+        lineShader.createUniform("projectionMatrix");
     }
 
     public void beginRender() {
@@ -64,6 +66,7 @@ public class RenderManager {
 
     public void drawLines(int id, int numLines) {
         lineShader.bind();
+        lineShader.setUniform("projectionMatrix", window.updateProjectionMatrix());
         glBindVertexArray(id);
         glEnableVertexAttribArray(0); // start/end point
         glEnableVertexAttribArray(1); // start/end color

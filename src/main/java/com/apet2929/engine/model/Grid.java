@@ -34,8 +34,8 @@ public class Grid {
         float dy = height / numRows;
         Vector3f startPoint = new Vector3f();
         Vector3f endPoint = new Vector3f();
-        endPoint.z = 0;
-        startPoint.z = 0;
+        endPoint.z = -2;
+        startPoint.z = -2;
 //        Vertical lines, Columns
         int v = 0;
         for (int i = 0; i < numCols; i++) {
