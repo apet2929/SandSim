@@ -16,4 +16,8 @@ public abstract class Particle {
     public ParticleType getType() {
         return type;
     }
+
+    public Model getModel() {
+        return model;
+    }
 }

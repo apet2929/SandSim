@@ -32,31 +32,15 @@ public class ObjectLoader {
         return new Model(id, indices.length);
     }
 
-    public int loadLines(Vector3f[] lines) {
-        float[] vertices = new float[lines.length * 3];
-        float[] colors = new float[lines.length * 3];
-        int v = 0;
-
-        for (Vector3f line : lines) {
-            vertices[v] = line.x;
-            vertices[v + 1] = line.y;
-            vertices[v + 2] = line.z;
-            colors[v] = 1.0f;
-            colors[v + 1] = 0.0f;
-            colors[v + 2] = 0.5f;
-            v += 3;
-        }
-        return loadLines(vertices, colors);
-    }
-
     public Grid loadGrid(Vector3f[] lines) {
         float[] vertices = new float[lines.length * 3];
         float[] colors = new float[lines.length * 3];
         int v = 0;
         for (Vector3f line : lines) {
-            vertices[v] = line.x;
-            vertices[v + 1] = line.y;
-            vertices[v + 2] = line.z;
+            // TODO : Figure out why vertices changes color and colors changes vertices
+            vertices[v] = 1.0f;
+            vertices[v + 1] = 1.0f;
+            vertices[v + 2] = 1.0f;
             colors[v] = line.x;
             colors[v + 1] = line.y;
             colors[v + 2] = line.z;
@@ -72,28 +56,6 @@ public class ObjectLoader {
         storeDataInAttribList(1, 3, colors);
         unbind();
         return id;
-    }
-
-    public void setLinePos(int id, Vector3f startPoint, Vector3f endPoint) {
-        bindVAO(id);
-        float[] vertices = {
-                startPoint.x, startPoint.y, startPoint.z,
-                endPoint.x, endPoint.y, endPoint.z
-        };
-
-        storeDataInAttribList(0, 3, vertices);
-        unbind();
-    }
-
-    public void setLineColor(int id, Vector3f colorStart, Vector3f colorEnd) {
-        bindVAO(id);
-        float[] colors = {
-                colorStart.x, colorStart.y, colorStart.z,
-                colorEnd.x, colorEnd.y, colorEnd.z
-        };
-
-        storeDataInAttribList(0, 3, colors);
-        unbind();
     }
 
     public int loadTexture(String filename) throws Exception {

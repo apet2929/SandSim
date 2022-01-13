@@ -40,6 +40,7 @@ public class AssetCache {
         if(isTextureAlreadyLoaded(name)){
             return loadTextureFromMap(name);
         } else {
+            System.out.println("name = " + name);
             return  loadTextureFromLoader(name);
         }
     }
