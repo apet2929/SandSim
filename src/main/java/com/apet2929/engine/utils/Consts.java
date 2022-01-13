@@ -10,4 +10,12 @@ public class Consts {
     public static final float FOV = (float) Math.toRadians(60);
     public static final float FRAMERATE = 120;
 
+
+    public static final float GRID_WIDTH = 2f;
+    public static final float GRID_HEIGHT = 2f;
+    public static final int NUM_COLS_GRID = 20;
+    public static final int NUM_ROWS_GRID = 20;
+    public static final float ROW_WIDTH = GRID_HEIGHT / NUM_ROWS_GRID;
+    public static final float COL_WIDTH = GRID_WIDTH / NUM_COLS_GRID;
+
 }

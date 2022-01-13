@@ -11,6 +11,7 @@ public class EngineManager {
     public static final long NANOSECOND = 1000000000L;
     private static int fps;
     private static final float frametime = 1.0f / FRAMERATE;
+    private static float lastFrameTime;
 
     private boolean isRunning;
 
@@ -51,11 +52,11 @@ public class EngineManager {
             boolean render = false;
 
             long startTime = System.nanoTime();
-            long passedTime = startTime - lastTime;
+            lastFrameTime = startTime - lastTime;
             lastTime = startTime;
 
-            unprocessedTime += passedTime / (double) NANOSECOND;
-            frameCounter += passedTime;
+            unprocessedTime += lastFrameTime / (double) NANOSECOND;
+            frameCounter += lastFrameTime;
 
             while(unprocessedTime > frametime){
                 render = true;
@@ -111,6 +112,11 @@ public class EngineManager {
 
     public static int getFps() {
         return fps;
+    }
+
+    public static float getDeltaTime() {
+        return lastFrameTime / 1000000f;
+
     }
 
     public static void setFps(int fps) {

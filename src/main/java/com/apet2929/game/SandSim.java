@@ -3,14 +3,9 @@ package com.apet2929.game;
 
 import com.apet2929.engine.*;
 import com.apet2929.engine.model.*;
-import org.joml.Vector2f;
+import com.apet2929.game.particles.Particle;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.system.CallbackI;
-
-import java.io.InputStream;
-import java.util.Arrays;
 
 public class SandSim implements ILogic {
 
@@ -23,10 +18,7 @@ public class SandSim implements ILogic {
 
     private Entity entity;
     private Grid grid;
-
-//    TODO : Figure out why color isn't working
-    final int numCols = 40;
-    final int numRows = 40;
+    private Particle[][] world;
 
     public SandSim(){
         renderer = new RenderManager();
@@ -115,10 +107,6 @@ public class SandSim implements ILogic {
         renderer.beginRender();
         renderer.renderEntity(entity);
         renderer.endRender();
-//        renderer.beginRender();
-//        renderer.setWindowUniform();
-//        renderer.renderEntity(entity);
-//        renderer.endRender();
 
     }
 
