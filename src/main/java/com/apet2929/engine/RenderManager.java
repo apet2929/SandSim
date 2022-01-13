@@ -40,17 +40,15 @@ public class RenderManager {
 
     public void beginRender() {
         shader.bind();
+        window.updateProjectionMatrix();
     }
 
     public void endRender() {
         shader.unbind();
     }
 
-    public void setWindowUniform() {
-        shader.setUniform("projectionMatrix", window.updateProjectionMatrix());
-    }
-
     public void renderEntity(Entity entity) {
+        shader.setUniform("projectionMatrix", window.getProjectionMatrix());
         shader.setUniform("textureSampler", 0);
         shader.setUniform("transformationMatrix", Transformation.createTransformationMatrix(entity));
         glBindVertexArray(entity.getModel().getId());
@@ -62,37 +60,6 @@ public class RenderManager {
         GL20.glDisableVertexAttribArray(0);
         GL20.glDisableVertexAttribArray(1);
         glBindVertexArray(0);
-    }
-
-    public void render(Entity entity){
-        clear();
-
-        if (window.isResize()) {
-            glViewport(0, 0, window.getWidth(), window.getHeight());
-            window.setResize(false);
-        }
-
-        shader.bind();
-
-        // Update projection Matrix
-        shader.setUniform("projectionMatrix", window.updateProjectionMatrix());
-
-        // Render each gameItem
-
-        Matrix4f transMatrix = Transformation.createTransformationMatrix(entity);
-        shader.setUniform("transformationMatrix", transMatrix);
-        // Draw the mesh
-        glBindVertexArray(entity.getModel().getId());
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-        glDrawElements(GL_TRIANGLES, entity.getModel().getVertexCount(), GL_UNSIGNED_INT, 0);
-        // Restore state
-        glBindVertexArray(0);
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
-
-        shader.unbind();
-
     }
 
     public void drawLines(int id, int numLines) {

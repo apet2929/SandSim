@@ -67,12 +67,6 @@ public class SandSim implements ILogic {
         entity = new Entity(model);
         entity.setPos(0,0,-2);
 
-        Vector3f lineStart = new Vector3f(-0.5f, -0.5f, 1);
-        Vector3f lineEnd = new Vector3f(0.5f, 0.5f, 1);
-        Vector3f lineColStart = new Vector3f(0.5f, 1.0f, 0.0f);
-        Vector3f lineColEnd = new Vector3f(0.5f, 0.0f, 0.0f);
-//        line = loader.loadLine(lineStart, lineEnd, lineColStart, lineColEnd);
-
         Vector3f[] lines = Grid.calculateGridLines(-1.0f, -1.0f, 2.0f, 2.0f, 20, 20);
         grid = loader.loadGrid(lines);
     }
@@ -112,13 +106,15 @@ public class SandSim implements ILogic {
         else if(color <= 0) {
             color = 0.0f;
         }
-
     }
 
     @Override
     public void render() {
-        renderer.render(entity);
+        renderer.clear();
         renderer.drawLines(grid.getId(), grid.getNumLines());
+        renderer.beginRender();
+        renderer.renderEntity(entity);
+        renderer.endRender();
 //        renderer.beginRender();
 //        renderer.setWindowUniform();
 //        renderer.renderEntity(entity);
