@@ -1,11 +1,10 @@
 package com.apet2929.engine.model;
 
 import com.apet2929.engine.utils.Consts;
-import org.joml.Matrix4f;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
+import org.joml.*;
 import org.lwjgl.system.CallbackI;
 
+import java.lang.Math;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,7 +51,7 @@ public class Grid {
         destination.identity().translate(pos);
     }
 
-    public Vector3f calculateGridPosition(int gridX, int gridY) {
+    public Vector3f calculateGridPosition(float gridX, float gridY) {
         float dx = width / numCols;
         float dy = height / numRows;
         Vector3f pos = new Vector3f(0.0f,0.0f,0.0f);
@@ -62,17 +61,36 @@ public class Grid {
         return pos;
     }
 
-    public static Vector3f[] calculateGridLines(float x, float y, float width, float height, int numCols, int numRows) {
+    public Vector2i worldToGridCoordinates(Vector4f worldCoord) {
+        /*
+        worldCoord: A normalized Vector4f in range (-1, -1) to (1,1 ) where (-1,-1) is the bottom left
+        Returns: A Vector2i of which square you clicked on in the grid or null if the mouse is outside the grid
+        Problem : How do I get the size of each square after the projection matrix is applied?
+        Solution : I am multiplying the vertices by the projectionMatrix in the line shader,
+            So I can just divide the worldCoord by the projectionMatrix
+            LinePosReal = LinePos * projectionMatrix
+            worldCoord / projectionMatrix = ??
+         */
+
+
+//        Translate bottom left to (0,0)
+        float translatedX = worldCoord.x - x;
+        float translatedY = worldCoord.y - y;
+
+//        Scale by row/col size
+        float scaledX = translatedX / getDx();
+        float scaledY = translatedY / getDy();
+        return new Vector2i(Math.round(scaledX), Math.round(scaledY));
+    }
+
+    public static Vector2f[] calculateGridLines(float x, float y, float width, float height, int numCols, int numRows) {
         int numPoints = (numCols + numRows) * 2;
-        Vector3f[] lines = new Vector3f[numPoints];
+        Vector2f[] lines = new Vector2f[numPoints];
 
         float dx = width / numCols;
         float dy = height / numRows;
-        Vector3f startPoint = new Vector3f();
-        Vector3f endPoint = new Vector3f();
-        // TODO : Make grid z variable
-        endPoint.z = Consts.GRID_Z;
-        startPoint.z = Consts.GRID_Z;
+        Vector2f startPoint = new Vector2f();
+        Vector2f endPoint = new Vector2f();
 //        Vertical lines, Columns
         int v = 0;
         for (int i = 0; i < numCols; i++) {
@@ -81,11 +99,10 @@ public class Grid {
             startPoint.y = y;
             endPoint.x = xP;
             endPoint.y = y + height;
-            lines[v] = new Vector3f(startPoint);
-            lines[v + 1] = new Vector3f(endPoint);
+            lines[v] = new Vector2f(startPoint);
+            lines[v + 1] = new Vector2f(endPoint);
             v += 2;
         }
-
 
 //        Horizontal lines, Rows
         for (int i = 0; i < numRows; i++) {
@@ -94,8 +111,8 @@ public class Grid {
             startPoint.x = x;
             endPoint.y = yP;
             endPoint.x = x + width;
-            lines[v] = new Vector3f(startPoint);
-            lines[v + 1] = new Vector3f(endPoint);
+            lines[v] = new Vector2f(startPoint);
+            lines[v + 1] = new Vector2f(endPoint);
             v += 2;
         }
         return lines;

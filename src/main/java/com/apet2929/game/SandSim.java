@@ -3,10 +3,14 @@ package com.apet2929.game;
 
 import com.apet2929.engine.*;
 import com.apet2929.engine.model.*;
+import com.apet2929.engine.utils.Consts;
+import com.apet2929.engine.utils.Utils;
 import com.apet2929.game.particles.Particle;
 import com.apet2929.game.particles.SandParticle;
-import org.joml.Vector3f;
+import org.joml.*;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.Arrays;
 
 public class SandSim implements ILogic {
 
@@ -17,13 +21,11 @@ public class SandSim implements ILogic {
     private final WindowManager window;
     private AssetCache assetCache;
 
-    private Entity entity;
     private Grid grid;
     private World world;
-//    private Particle[][] world;
 
     private Particle testParticle;
-    private int particleX, particleY;
+    private Model sandModel;
 
     public SandSim(){
         renderer = new RenderManager();
@@ -50,25 +52,29 @@ public class SandSim implements ILogic {
                 1,0
         };
 
-        Vector3f[] lines = Grid.calculateGridLines(-1.0f, -1.0f, 2.0f, 2.0f, 20, 20);
+        Vector2f[] lines = Grid.calculateGridLines(-1.0f, -1.0f, 2.0f, 2.0f, 20, 20);
+        System.out.println("lines[0] = " + lines[0]);
+        System.out.println("lines[1] = " + lines[1]);
+
+//        System.out.println("lines = " + Arrays.toString(lines));
         grid = loader.loadGrid(lines);
         grid.init(-1.0f, -1.0f, 2.0f, 2.0f, 20, 20);
 
         world = new World(grid);
-        Model particleModel = loader.loadModel(grid.getScaledVertices(), textureCoords, indices);
-        particleModel.setTexture(assetCache.loadTexture("Sand"));
-        testParticle = new SandParticle(particleModel);
+        sandModel = loader.loadModel(grid.getScaledVertices(), textureCoords, indices);
+        sandModel.setTexture(assetCache.loadTexture("Sand"));
+        testParticle = new SandParticle(sandModel);
 
         world.setAt(0, grid.getNumRows()-1, testParticle);
     }
 
     @Override
     public void input(MouseInput mouseInput) {
-//        if(window.isKeyPressed(GLFW.GLFW_KEY_UP)){
-//            particleY++;
-//        }
-//        if(window.isKeyPressed(GLFW.GLFW_KEY_DOWN))
-//            particleY--;
+        if(window.isKeyPressed(GLFW.GLFW_KEY_UP)){
+            Consts.GRID_Z += 0.05f;
+        }
+        if(window.isKeyPressed(GLFW.GLFW_KEY_DOWN))
+            Consts.GRID_Z -= 0.05f;
 //
 //        if(window.isKeyPressed(GLFW.GLFW_KEY_LEFT)) {
 //            particleX--;
@@ -76,14 +82,16 @@ public class SandSim implements ILogic {
 //        if(window.isKeyPressed(GLFW.GLFW_KEY_RIGHT))
 //            particleX++;
 
-        if(window.isKeyPressed(GLFW.GLFW_KEY_A)) {
-            entity.incRotation(-0.5f, 0, 0f);
-        }
-        if(window.isKeyPressed(GLFW.GLFW_KEY_D))
-            entity.incRotation(0.5f, 0f, 0f);
-
         if(mouseInput.isLeftButtonPressed()) {
-            System.out.println("mouseInput = " + mouseInput.getPos());
+//            System.out.println("mouseInput = " + mouseInput.getPos());
+//            TODO : Fix mouse to grid coordinates
+//            Probably has something to do with the projectionMatrix?
+
+            Vector4f unprojMouseCoords = mouseInput.getUnprojectedMousePos(window);
+            System.out.println("unprojMouseCoords = " + unprojMouseCoords);
+//            Vector2i gridPos = world.mouseToGridCoords(new Vector2f(projectedMouseCoordinates.x, projectedMouseCoordinates.y));
+//            SandParticle sandParticle = new SandParticle(sandModel);
+//            world.setAt(gridPos, sandParticle);
         }
     }
 
@@ -109,8 +117,6 @@ public class SandSim implements ILogic {
         renderer.cleanup();
         loader.cleanup();
     }
-
-
 
 
 }

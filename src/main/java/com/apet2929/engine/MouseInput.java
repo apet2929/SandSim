@@ -1,8 +1,7 @@
 package com.apet2929.engine;
 
 import com.apet2929.game.Launcher;
-import org.joml.Vector2d;
-import org.joml.Vector2f;
+import org.joml.*;
 import org.lwjgl.glfw.GLFW;
 
 public class MouseInput {
@@ -57,6 +56,56 @@ public class MouseInput {
 
     public Vector2d getPos() {
         return new Vector2d(currentPos);
+    }
+
+    /*
+    public void selectGameItem(GameItem[] gameItems, Window window, Vector2d mousePos, Camera camera) {
+        // Transform mouse coordinates into normalized spaze [-1, 1]
+        int wdwWitdh = window.getWidth();
+        int wdwHeight = window.getHeight();
+
+        float x = (float)(2 * mousePos.x) / (float)wdwWitdh - 1.0f;
+        float y = 1.0f - (float)(2 * mousePos.y) / (float)wdwHeight;
+        float z = -1.0f;
+
+        invProjectionMatrix.set(window.getProjectionMatrix());
+        invProjectionMatrix.invert();
+
+        tmpVec.set(x, y, z, 1.0f);
+        tmpVec.mul(invProjectionMatrix);
+        tmpVec.z = -1.0f;
+        tmpVec.w = 0.0f;
+
+        Matrix4f viewMatrix = camera.getViewMatrix();
+        invViewMatrix.set(viewMatrix);
+        invViewMatrix.invert();
+        tmpVec.mul(invViewMatrix);
+
+        mouseDir.set(tmpVec.x, tmpVec.y, tmpVec.z);
+
+        selectGameItem(gameItems, camera.getPosition(), mouseDir);
+    }
+     */
+    public Vector4f getUnprojectedMousePos(WindowManager window) {
+        Vector4f tmpVec = new Vector4f();
+        Matrix4f invProjectionMatrix = new Matrix4f(window.updateProjectionMatrix());
+        invProjectionMatrix.invert();
+
+        Vector3f normalized = getNormalizedMousePos(window.getWidth(), window.getHeight());
+
+        tmpVec.set(normalized.x, normalized.y, normalized.z, 1.0f);
+        tmpVec.mul(invProjectionMatrix);
+        tmpVec.z = -1.0f;
+        tmpVec.w = 0.0f;
+
+        return tmpVec;
+    }
+
+    public Vector3f getNormalizedMousePos(int windowWidth, int windowHeight) {
+        float x = (float)(2 * currentPos.x) / (float) windowWidth - 1.0f;
+        float y = 1.0f - (float)(2 * currentPos.y) / (float) windowHeight;
+        float z = 1.0f;
+        return new Vector3f(x, y, z);
     }
 
     public boolean isLeftButtonPressed() {

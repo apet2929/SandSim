@@ -5,7 +5,7 @@ import com.apet2929.engine.model.Grid;
 import com.apet2929.game.particles.AirParticle;
 import com.apet2929.game.particles.Particle;
 import com.apet2929.game.particles.ParticleType;
-import org.joml.Vector2i;
+import org.joml.*;
 
 public class World {
     private int width, height;
@@ -56,11 +56,13 @@ public class World {
     }
 
     public void setAt(int x, int y, Particle particle) {
-        particles[y][x] = particle;
+        if(posInGridRange(x, y))
+            particles[y][x] = particle;
     }
 
     public void setAt(Vector2i pos, Particle particle) {
-        particles[pos.y][pos.x] = particle;
+        if(posInGridRange(pos))
+            particles[pos.y][pos.x] = particle;
     }
 
     public Particle getAt(int x, int y) {
@@ -70,8 +72,6 @@ public class World {
     public Particle getAt(Vector2i pos) {
         return particles[pos.y][pos.x];
     }
-
-
 
     private static Particle[][] initWorld(int width, int height) {
         Particle[][] particles = new Particle[height][width];
@@ -83,8 +83,17 @@ public class World {
         return particles;
     }
 
+    public Vector2i mouseToGridCoords(Vector4f projectedMousePos) {
 
+        return grid.worldToGridCoordinates(projectedMousePos);
+    }
 
+    private boolean posInGridRange(Vector2i pos) {
+         return (pos.x < height && pos.x >= 0 && pos.y < height && pos.y >= 0);
+    }
 
+    private boolean posInGridRange(int posX, int posY) {
+        return (posX < width && posX >= 0 && posY < height && posY >= 0);
+    }
 
 }

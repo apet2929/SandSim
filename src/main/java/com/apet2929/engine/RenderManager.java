@@ -4,6 +4,7 @@ package com.apet2929.engine;
 import com.apet2929.engine.model.Entity;
 import com.apet2929.engine.model.Grid;
 import com.apet2929.engine.model.Transformation;
+import com.apet2929.engine.utils.Consts;
 import com.apet2929.engine.utils.Utils;
 import com.apet2929.game.Launcher;
 import com.apet2929.game.particles.Particle;
@@ -40,6 +41,7 @@ public class RenderManager {
         lineShader.createFragmentShader(Utils.loadResource("/shaders/line_fragment.fs"));
         lineShader.link();
         lineShader.createUniform("projectionMatrix");
+        lineShader.createUniform("grid_z");
     }
 
     public void beginRender() {
@@ -84,12 +86,12 @@ public class RenderManager {
     public void drawLines(int id, int numLines) {
         lineShader.bind();
         lineShader.setUniform("projectionMatrix", window.updateProjectionMatrix());
+        lineShader.setUniform("grid_z", Consts.GRID_Z);
+
         glBindVertexArray(id);
-        glEnableVertexAttribArray(0); // start/end point
-        glEnableVertexAttribArray(1); // start/end color
+        glEnableVertexAttribArray(0); // start/end color
         glDrawArrays(GL_LINES, 0, numLines * 2);
         glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
         glBindVertexArray(0);
         lineShader.unbind();
     }

@@ -1,13 +1,10 @@
 #version 400 core
 
-in vec3 pos;
-in vec3 iColor;
-
-out vec3 oColor;
+in vec2 pos;
 
 uniform mat4 projectionMatrix;
+uniform float grid_z;
 
 void main() {
-    oColor = iColor;
-    gl_Position = projectionMatrix * vec4(pos, 1.0f);
+    gl_Position = projectionMatrix * vec4(pos, grid_z, 1.0f);
 }

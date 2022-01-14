@@ -1,5 +1,7 @@
 package com.apet2929.engine.utils;
 
+import org.joml.Matrix4f;
+import org.joml.Vector4f;
 import org.lwjgl.system.MemoryUtil;
 
 import java.io.File;
@@ -51,5 +53,22 @@ public class Utils {
         }
         scanner.close();
         return lines;
+    }
+
+    public static Vector4f matrixVectorMul(Matrix4f mat, Vector4f vec) {
+        Vector4f u = new Vector4f();
+        /*
+        m[0] = left column of m
+
+        u.x = m[0].x * v.x + m[1].x * v.y + m[2].x * v.z;
+u.y = m[0].y * v.x + m[1].y * v.y + m[2].y * v.z;
+u.z = m[0].z * v.x + m[1].z * v.y + m[2].z * v.z;
+         */
+
+        u.x = (mat.get(0, 0) * vec.x) + (mat.get(1, 0) * vec.y) + (mat.get(2, 0) * vec.z) + (mat.get(3, 0) * vec.w);
+        u.y = (mat.get(0, 1) * vec.x) + (mat.get(1, 1) * vec.y) + (mat.get(2, 1) * vec.z) + (mat.get(3, 1) * vec.w);
+        u.z = (mat.get(0, 2) * vec.x) + (mat.get(1, 2) * vec.y) + (mat.get(2, 2) * vec.z) + (mat.get(3, 2) * vec.w);
+        u.w = (mat.get(0, 3) * vec.x) + (mat.get(1, 3) * vec.y) + (mat.get(2, 3) * vec.z) + (mat.get(3, 3) * vec.w);
+        return u;
     }
 }

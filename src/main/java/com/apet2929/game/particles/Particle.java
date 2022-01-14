@@ -6,8 +6,8 @@ import org.joml.Vector2i;
 
 public abstract class Particle {
 
-    private Model model;
-    private ParticleType type;
+    private final Model model;
+    private final ParticleType type;
 
     public Particle(Model model, ParticleType type) {
         this.model = model;

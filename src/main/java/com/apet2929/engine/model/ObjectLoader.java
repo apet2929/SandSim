@@ -32,28 +32,25 @@ public class ObjectLoader {
         return new Model(id, indices.length);
     }
 
-    public Grid loadGrid(Vector3f[] lines) {
+    public Grid loadGrid(Vector2f[] lines) {
+        float[] colors = new float[lines.length * 2];
         float[] vertices = new float[lines.length * 3];
-        float[] colors = new float[lines.length * 3];
         int v = 0;
-        for (Vector3f line : lines) {
-            // TODO : Figure out why vertices changes color and colors changes vertices
-            vertices[v] = 1.0f;
-            vertices[v + 1] = 1.0f;
-            vertices[v + 2] = 1.0f;
-            colors[v] = line.x;
-            colors[v + 1] = line.y;
-            colors[v + 2] = line.z;
-            v += 3;
+        for (Vector2f line :
+                lines) {
+            vertices[v] = line.x;
+            vertices[v+1] = line.y;
+            v += 2;
         }
-        int id = loadLines(vertices, colors);
+
+        int id = loadLines(vertices);
         return new Grid(id, lines.length);
     }
 
-    public int loadLines(float[] vertices, float[] colors) {
+    public int loadLines(float[] vertices) {
         int id = createVAO();
-        storeDataInAttribList(0, 3, vertices);
-        storeDataInAttribList(1, 3, colors);
+        storeDataInAttribList(0, 2, vertices);
+
         unbind();
         return id;
     }
