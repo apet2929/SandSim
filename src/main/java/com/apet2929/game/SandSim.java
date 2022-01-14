@@ -52,7 +52,7 @@ public class SandSim implements ILogic {
                 1,0
         };
 
-        Vector2f[] lines = Grid.calculateGridLines(-1.0f, -1.0f, 2.0f, 2.0f, 20, 20);
+        Vector2f[] lines = Grid.calculateGridLines(-1.0f, -1.0f, Consts.GRID_WIDTH, Consts.GRID_HEIGHT, Consts.NUM_COLS_GRID, Consts.NUM_ROWS_GRID);
         System.out.println("lines[0] = " + lines[0]);
         System.out.println("lines[1] = " + lines[1]);
 
@@ -86,12 +86,19 @@ public class SandSim implements ILogic {
 //            System.out.println("mouseInput = " + mouseInput.getPos());
 //            TODO : Fix mouse to grid coordinates
 //            Probably has something to do with the projectionMatrix?
+            /*
+            The line position in pixels is calculated by openGL using the projectionMatrix
+            The lines' x, y, and z values are known.
+            So I need a way to go backwards I guess?
 
-            Vector4f unprojMouseCoords = mouseInput.getUnprojectedMousePos(window);
-            System.out.println("unprojMouseCoords = " + unprojMouseCoords);
-//            Vector2i gridPos = world.mouseToGridCoords(new Vector2f(projectedMouseCoordinates.x, projectedMouseCoordinates.y));
-//            SandParticle sandParticle = new SandParticle(sandModel);
-//            world.setAt(gridPos, sandParticle);
+             */
+
+            SandParticle particle = new SandParticle(sandModel);
+            Vector2i gridPos = grid.worldToGridCoordinates(mouseInput.getNormalizedMousePos(window.getWidth(), window.getHeight()));
+            world.setAt(gridPos, particle);
+
+            System.out.println("mouseInput = " + mouseInput.getNormalizedMousePos(window.getWidth(), window.getHeight()));
+
         }
     }
 

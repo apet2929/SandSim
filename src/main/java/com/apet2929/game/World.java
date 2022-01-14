@@ -83,9 +83,9 @@ public class World {
         return particles;
     }
 
-    public Vector2i mouseToGridCoords(Vector4f projectedMousePos) {
+    public Vector2i mouseToGridCoords(Vector3f normalizedMousePos) {
 
-        return grid.worldToGridCoordinates(projectedMousePos);
+        return grid.worldToGridCoordinates(normalizedMousePos);
     }
 
     private boolean posInGridRange(Vector2i pos) {

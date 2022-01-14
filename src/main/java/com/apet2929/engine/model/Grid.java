@@ -61,7 +61,7 @@ public class Grid {
         return pos;
     }
 
-    public Vector2i worldToGridCoordinates(Vector4f worldCoord) {
+    public Vector2i worldToGridCoordinates(Vector3f normalizedMouseCoord) {
         /*
         worldCoord: A normalized Vector4f in range (-1, -1) to (1,1 ) where (-1,-1) is the bottom left
         Returns: A Vector2i of which square you clicked on in the grid or null if the mouse is outside the grid
@@ -72,7 +72,7 @@ public class Grid {
             worldCoord / projectionMatrix = ??
          */
 
-
+        Vector2f worldCoord = new Vector2f(normalizedMouseCoord.x * -Consts.GRID_Z, normalizedMouseCoord.y * -Consts.GRID_Z / 2);
 //        Translate bottom left to (0,0)
         float translatedX = worldCoord.x - x;
         float translatedY = worldCoord.y - y;
@@ -80,11 +80,11 @@ public class Grid {
 //        Scale by row/col size
         float scaledX = translatedX / getDx();
         float scaledY = translatedY / getDy();
-        return new Vector2i(Math.round(scaledX), Math.round(scaledY));
+        return new Vector2i((int) (scaledX), (int)(scaledY));
     }
 
     public static Vector2f[] calculateGridLines(float x, float y, float width, float height, int numCols, int numRows) {
-        int numPoints = (numCols + numRows) * 2;
+        int numPoints = (numCols + numRows + 2) * 2;
         Vector2f[] lines = new Vector2f[numPoints];
 
         float dx = width / numCols;
@@ -93,7 +93,7 @@ public class Grid {
         Vector2f endPoint = new Vector2f();
 //        Vertical lines, Columns
         int v = 0;
-        for (int i = 0; i < numCols; i++) {
+        for (int i = 0; i <= numCols; i++) {
             float xP = calculatePointComponent(i, dx, x);
             startPoint.x = xP;
             startPoint.y = y;
@@ -105,7 +105,7 @@ public class Grid {
         }
 
 //        Horizontal lines, Rows
-        for (int i = 0; i < numRows; i++) {
+        for (int i = 0; i <= numRows; i++) {
             float yP = calculatePointComponent(i, dy, y);
             startPoint.y = yP;
             startPoint.x = x;
@@ -138,7 +138,7 @@ public class Grid {
     }
 
     private static float calculatePointComponent(float i, float di, float startI) {
-        return startI + (di / 2) + (i * di);
+        return startI + (i * di);
     }
 
     public float getX() {
