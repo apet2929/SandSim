@@ -32,27 +32,22 @@ public class ObjectLoader {
         return new Model(id, indices.length);
     }
 
-    public Grid loadGrid(Vector2f[] lines) {
-        float[] colors = new float[lines.length * 2];
+    public Grid loadGrid(int numCols, int numRows) {
+        int id = createVAO();
+        Grid grid = new Grid(id, numCols, numRows);
+
+        Vector2f[] lines = grid.calculateGridLines();
         float[] vertices = new float[lines.length * 3];
         int v = 0;
-        for (Vector2f line :
-                lines) {
+        for (Vector2f line : lines) {
             vertices[v] = line.x;
             vertices[v+1] = line.y;
             v += 2;
         }
 
-        int id = loadLines(vertices);
-        return new Grid(id, lines.length);
-    }
-
-    public int loadLines(float[] vertices) {
-        int id = createVAO();
         storeDataInAttribList(0, 2, vertices);
-
         unbind();
-        return id;
+        return grid;
     }
 
     public int loadTexture(String filename) throws Exception {

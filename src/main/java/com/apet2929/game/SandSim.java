@@ -5,8 +5,10 @@ import com.apet2929.engine.*;
 import com.apet2929.engine.model.*;
 import com.apet2929.engine.utils.Consts;
 import com.apet2929.engine.utils.Utils;
+import com.apet2929.game.particles.AirParticle;
 import com.apet2929.game.particles.Particle;
 import com.apet2929.game.particles.SandParticle;
+import com.apet2929.game.particles.WaterParticle;
 import org.joml.*;
 import org.lwjgl.glfw.GLFW;
 
@@ -24,8 +26,9 @@ public class SandSim implements ILogic {
     private Grid grid;
     private World world;
 
-    private Particle testParticle;
+    private int selectedParticleType;
     private Model sandModel;
+    private Model waterModel;
 
     public SandSim(){
         renderer = new RenderManager();
@@ -52,20 +55,14 @@ public class SandSim implements ILogic {
                 1,0
         };
 
-        Vector2f[] lines = Grid.calculateGridLines(-1.0f, -1.0f, Consts.GRID_WIDTH, Consts.GRID_HEIGHT, Consts.NUM_COLS_GRID, Consts.NUM_ROWS_GRID);
-        System.out.println("lines[0] = " + lines[0]);
-        System.out.println("lines[1] = " + lines[1]);
-
 //        System.out.println("lines = " + Arrays.toString(lines));
-        grid = loader.loadGrid(lines);
-        grid.init(-1.0f, -1.0f, 2.0f, 2.0f, 20, 20);
-
+        grid = loader.loadGrid(Consts.NUM_COLS_GRID, Consts.NUM_ROWS_GRID);
         world = new World(grid);
+        waterModel = loader.loadModel(grid.getScaledVertices(), textureCoords, indices);
+        waterModel.setTexture(assetCache.loadTexture("Water"));
         sandModel = loader.loadModel(grid.getScaledVertices(), textureCoords, indices);
         sandModel.setTexture(assetCache.loadTexture("Sand"));
-        testParticle = new SandParticle(sandModel);
-
-        world.setAt(0, grid.getNumRows()-1, testParticle);
+        selectedParticleType = 1;
     }
 
     @Override
@@ -75,6 +72,12 @@ public class SandSim implements ILogic {
         }
         if(window.isKeyPressed(GLFW.GLFW_KEY_DOWN))
             Consts.GRID_Z -= 0.05f;
+        if(window.isKeyPressed(GLFW.GLFW_KEY_1)) {
+            selectedParticleType = 1; // water
+        }
+        if(window.isKeyPressed(GLFW.GLFW_KEY_2)) {
+            selectedParticleType = 2; // water
+        }
 //
 //        if(window.isKeyPressed(GLFW.GLFW_KEY_LEFT)) {
 //            particleX--;
@@ -83,22 +86,23 @@ public class SandSim implements ILogic {
 //            particleX++;
 
         if(mouseInput.isLeftButtonPressed()) {
-//            System.out.println("mouseInput = " + mouseInput.getPos());
-//            TODO : Fix mouse to grid coordinates
-//            Probably has something to do with the projectionMatrix?
-            /*
-            The line position in pixels is calculated by openGL using the projectionMatrix
-            The lines' x, y, and z values are known.
-            So I need a way to go backwards I guess?
-
-             */
-
-            SandParticle particle = new SandParticle(sandModel);
+            Particle particle;
+            switch(selectedParticleType) {
+                case 1:
+                    particle = new SandParticle(sandModel);
+                    break;
+                case 2:
+                    particle = new WaterParticle(waterModel);
+                    break;
+                default:
+                    particle = new AirParticle();
+                    break;
+            }
+            Vector3f normPos = mouseInput.getNormalizedMousePos(window.getWidth(), window.getHeight());
+            System.out.println("normPos = " + normPos);
             Vector2i gridPos = grid.worldToGridCoordinates(mouseInput.getNormalizedMousePos(window.getWidth(), window.getHeight()));
+            System.out.println("gridPos = " + gridPos);
             world.setAt(gridPos, particle);
-
-            System.out.println("mouseInput = " + mouseInput.getNormalizedMousePos(window.getWidth(), window.getHeight()));
-
         }
     }
 

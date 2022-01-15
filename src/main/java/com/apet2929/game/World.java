@@ -55,6 +55,12 @@ public class World {
         setAt(pos2, temp);
     }
 
+    public void swapParticles(Vector2i pos1, int x2, int y2) {
+        Particle temp = getAt(pos1);
+        setAt(pos1, getAt(x2, y2));
+        setAt(x2, y2, temp);
+    }
+
     public void setAt(int x, int y, Particle particle) {
         if(posInGridRange(x, y))
             particles[y][x] = particle;
@@ -66,7 +72,23 @@ public class World {
     }
 
     public Particle getAt(int x, int y) {
-        return particles[y][x];
+        if(posInGridRange(x, y))
+            return particles[y][x];
+        return null;
+    }
+
+    public boolean particleIsType(int x, int y, ParticleType type) {
+        if(posInGridRange(x, y)){
+            return getAt(x, y).getType() == type;
+        }
+        return false;
+    }
+
+    public boolean particleIsType(Vector2i pos, ParticleType type) {
+        if(posInGridRange(pos)) {
+            return getAt(pos).getType() == type;
+        }
+        return false;
     }
 
     public Particle getAt(Vector2i pos) {

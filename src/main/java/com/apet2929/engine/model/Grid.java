@@ -13,13 +13,17 @@ import static org.lwjgl.opengl.GL11.*;
 public class Grid {
 
     private final int id;
-    private final int numLines;
     private float x, y, width, height;
     private int numCols, numRows;
 
-    public Grid(int id, int numLines) {
+    public Grid(int id, int numCols, int numRows) {
         this.id = id;
-        this.numLines = numLines;
+        this.x = -1f;
+        this.y = -1f;
+        this.width = Consts.GRID_WIDTH;
+        this.height = Consts.GRID_HEIGHT;
+        this.numCols = numCols;
+        this.numRows = numRows;
     }
 
 
@@ -28,7 +32,7 @@ public class Grid {
     }
 
     public int getNumLines() {
-        return numLines;
+        return (numCols + numRows + 2);
     }
 
     public void init(float x, float y, float width, float height, int numCols, int numRows) {
@@ -40,16 +44,6 @@ public class Grid {
         this.numRows = numRows;
     }
 
-    public void setParticleTransformationMatrix(Matrix4f destination, int gridX, int gridY) {
-//        Sets destination to the transformationMatrix used to render the particle
-        float dx = width / numCols;
-        float dy = height / numRows;
-        Vector3f pos = new Vector3f();
-        pos.x = calculatePointComponent(gridX, dx, x);
-        pos.y = calculatePointComponent(gridY, dy, y);
-        pos.z = Consts.GRID_Z;
-        destination.identity().translate(pos);
-    }
 
     public Vector3f calculateGridPosition(float gridX, float gridY) {
         float dx = width / numCols;
@@ -62,29 +56,23 @@ public class Grid {
     }
 
     public Vector2i worldToGridCoordinates(Vector3f normalizedMouseCoord) {
-        /*
-        worldCoord: A normalized Vector4f in range (-1, -1) to (1,1 ) where (-1,-1) is the bottom left
-        Returns: A Vector2i of which square you clicked on in the grid or null if the mouse is outside the grid
-        Problem : How do I get the size of each square after the projection matrix is applied?
-        Solution : I am multiplying the vertices by the projectionMatrix in the line shader,
-            So I can just divide the worldCoord by the projectionMatrix
-            LinePosReal = LinePos * projectionMatrix
-            worldCoord / projectionMatrix = ??
-         */
-
-        Vector2f worldCoord = new Vector2f(normalizedMouseCoord.x * -Consts.GRID_Z, normalizedMouseCoord.y * -Consts.GRID_Z / 2);
+        Vector2f worldCoord = new Vector2f(normalizedMouseCoord.x * -Consts.GRID_Z, normalizedMouseCoord.y * -Consts.GRID_Z/1.75f);
 //        Translate bottom left to (0,0)
         float translatedX = worldCoord.x - x;
         float translatedY = worldCoord.y - y;
+        System.out.println("translatedX = " + translatedX);
+        System.out.println("translatedY = " + translatedY);
 
 //        Scale by row/col size
         float scaledX = translatedX / getDx();
-        float scaledY = translatedY / getDy();
-        return new Vector2i((int) (scaledX), (int)(scaledY));
+        float scaledY = translatedY / getDx();
+        System.out.println("scaledX = " + scaledX);
+        System.out.println("scaledY = " + scaledY);
+        return new Vector2i((int) Math.round(scaledX), (int)Math.round(scaledY));
     }
 
-    public static Vector2f[] calculateGridLines(float x, float y, float width, float height, int numCols, int numRows) {
-        int numPoints = (numCols + numRows + 2) * 2;
+    public Vector2f[] calculateGridLines() {
+        int numPoints = getNumLines() * 2;
         Vector2f[] lines = new Vector2f[numPoints];
 
         float dx = width / numCols;

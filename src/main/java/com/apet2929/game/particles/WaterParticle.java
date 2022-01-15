@@ -4,9 +4,11 @@ import com.apet2929.engine.model.Model;
 import com.apet2929.game.World;
 import org.joml.Vector2i;
 
-public class SandParticle extends Particle {
-    public SandParticle(Model model) {
-        super(model, ParticleType.SAND);
+public class WaterParticle extends Particle{
+
+
+    public WaterParticle(Model model) {
+        super(model, ParticleType.WATER);
     }
 
     @Override
@@ -17,6 +19,10 @@ public class SandParticle extends Particle {
             world.swapParticles(pos, pos.x-1, pos.y-1);
         }  else if(world.particleIsType(pos.x+1, pos.y-1, ParticleType.AIR)) {
             world.swapParticles(pos, pos.x+1, pos.y-1);
+        }  else if(world.particleIsType(pos.x+1, pos.y, ParticleType.AIR)) {
+            world.swapParticles(pos, pos.x+1, pos.y);
+        }  else if(world.particleIsType(pos.x-1, pos.y, ParticleType.AIR)) {
+            world.swapParticles(pos, pos.x-1, pos.y);
         }
     }
 }
