@@ -1,7 +1,8 @@
 package com.apet2929.game.particles;
 
 public enum ParticleType {
-    AIR,
+    NONE,
     SAND,
     WATER,
+    SMOKE,
 }

@@ -3,10 +3,10 @@ package com.apet2929.game.particles;
 import com.apet2929.game.World;
 import org.joml.Vector2i;
 
-public class AirParticle extends Particle {
+public class EmptyParticle extends Particle {
 
-    public AirParticle() {
-        super(null, ParticleType.AIR);
+    public EmptyParticle() {
+        super(null, ParticleType.NONE);
     }
 
     @Override

@@ -4,15 +4,9 @@ package com.apet2929.game;
 import com.apet2929.engine.*;
 import com.apet2929.engine.model.*;
 import com.apet2929.engine.utils.Consts;
-import com.apet2929.engine.utils.Utils;
-import com.apet2929.game.particles.AirParticle;
-import com.apet2929.game.particles.Particle;
-import com.apet2929.game.particles.SandParticle;
-import com.apet2929.game.particles.WaterParticle;
+import com.apet2929.game.particles.*;
 import org.joml.*;
 import org.lwjgl.glfw.GLFW;
-
-import java.util.Arrays;
 
 public class SandSim implements ILogic {
 
@@ -27,6 +21,8 @@ public class SandSim implements ILogic {
     private World world;
 
     private int selectedParticleType;
+
+    private Model smokeModel;
     private Model sandModel;
     private Model waterModel;
 
@@ -63,6 +59,8 @@ public class SandSim implements ILogic {
         sandModel = loader.loadModel(grid.getScaledVertices(), textureCoords, indices);
         sandModel.setTexture(assetCache.loadTexture("Sand"));
         selectedParticleType = 1;
+        smokeModel = loader.loadModel(grid.getScaledVertices(), textureCoords, indices);
+        smokeModel.setTexture(assetCache.loadTexture("Smoke"));
     }
 
     @Override
@@ -73,10 +71,13 @@ public class SandSim implements ILogic {
         if(window.isKeyPressed(GLFW.GLFW_KEY_DOWN))
             Consts.GRID_Z -= 0.05f;
         if(window.isKeyPressed(GLFW.GLFW_KEY_1)) {
-            selectedParticleType = 1; // water
+            selectedParticleType = 1; // sand
         }
         if(window.isKeyPressed(GLFW.GLFW_KEY_2)) {
             selectedParticleType = 2; // water
+        }
+        if(window.isKeyPressed(GLFW.GLFW_KEY_3)) {
+            selectedParticleType = 3; // smoke
         }
 //
 //        if(window.isKeyPressed(GLFW.GLFW_KEY_LEFT)) {
@@ -86,18 +87,13 @@ public class SandSim implements ILogic {
 //            particleX++;
 
         if(mouseInput.isLeftButtonPressed()) {
-            Particle particle;
-            switch(selectedParticleType) {
-                case 1:
-                    particle = new SandParticle(sandModel);
-                    break;
-                case 2:
-                    particle = new WaterParticle(waterModel);
-                    break;
-                default:
-                    particle = new AirParticle();
-                    break;
-            }
+            Particle particle = switch (selectedParticleType) {
+                case 1 -> new SolidParticle(sandModel, ParticleType.SAND);
+                case 2 -> new LiquidParticle(waterModel, ParticleType.WATER);
+                case 3 -> new GasParticle(smokeModel, ParticleType.SMOKE);
+                default -> new EmptyParticle();
+            };
+            System.out.println("selectedParticleType = " + selectedParticleType);
             Vector3f normPos = mouseInput.getNormalizedMousePos(window.getWidth(), window.getHeight());
             System.out.println("normPos = " + normPos);
             Vector2i gridPos = grid.worldToGridCoordinates(mouseInput.getNormalizedMousePos(window.getWidth(), window.getHeight()));

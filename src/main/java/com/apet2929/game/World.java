@@ -2,7 +2,7 @@ package com.apet2929.game;
 
 import com.apet2929.engine.RenderManager;
 import com.apet2929.engine.model.Grid;
-import com.apet2929.game.particles.AirParticle;
+import com.apet2929.game.particles.EmptyParticle;
 import com.apet2929.game.particles.Particle;
 import com.apet2929.game.particles.ParticleType;
 import org.joml.*;
@@ -37,11 +37,19 @@ public class World {
             particlePos.y = i;
             for (int j = 0; j < particles[i].length; j++) {
                 particlePos.x = j;
-                if (particles[i][j].getType() != ParticleType.AIR) {
+                if (particles[i][j].getType() != ParticleType.NONE) {
                     renderer.renderParticle(particles[i][j], grid.calculateGridPosition(particlePos.x, particlePos.y));
                 }
             }
         }
+    }
+
+    public void moveWithoutSwap(Vector2i pos, int changeX, int changeY) {
+        setAt(pos.x + changeX, pos.y + changeY, getAt(pos));
+    }
+
+    public void moveWithSwap(Vector2i pos, int changeX, int changeY) {
+        swapParticles(pos, pos.x + changeX, pos.y + changeY);
     }
 
     public void moveDown(Vector2i pos) {
@@ -99,7 +107,7 @@ public class World {
         Particle[][] particles = new Particle[height][width];
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                particles[i][j] = new AirParticle();
+                particles[i][j] = new EmptyParticle();
             }
         }
         return particles;
