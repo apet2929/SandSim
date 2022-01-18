@@ -1,5 +1,7 @@
 package com.apet2929.game.particles;
 
+import com.apet2929.game.particles.gas.Smoke;
+import com.apet2929.game.particles.liquid.Water;
 import com.apet2929.game.particles.solid.Sand;
 import com.sun.jdi.ClassType;
 
@@ -7,19 +9,31 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public enum ParticleType {
-    EMPTYPARTICLE(EmptyParticle.class, MatterType.EMPTY) {
-        @Override
-        public Particle createParticleByMatrix(int x, int y) {
-            return new EmptyParticle(x, y);
-        }
-    },
     SAND(Sand.class, MatterType.MOVABLESOLID) {
         @Override
         public Particle createParticleByMatrix(int x, int y) {
             return new Sand(x, y);
         }
-    };
+    },
+    WATER(Water.class, MatterType.LIQUID) {
+        @Override
+        public Particle createParticleByMatrix(int x, int y) {
+            return new Water(x, y);
+        }
+    },
+    SMOKE(Smoke.class, MatterType.GAS) {
+        @Override
+        public Particle createParticleByMatrix(int x, int y) {
+            return new Smoke(x, y);
+        }
+    },
 
+    EMPTYPARTICLE(EmptyParticle.class, MatterType.EMPTY) {
+        @Override
+        public Particle createParticleByMatrix(int x, int y) {
+            return new EmptyParticle(x, y);
+        }
+    };
 
     public final Class<? extends Particle> particleClassType;
     public final MatterType matterType;

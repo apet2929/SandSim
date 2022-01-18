@@ -18,6 +18,13 @@ public abstract class Particle {
         this.type = getEnumType();
         this.texture = ParticleLoader.getParticleTexture(type);
     }
+    public abstract void update(World world);
+    public abstract boolean canSwap(ParticleType.MatterType type);
+
+    public boolean canSwap(Particle other) {
+        if(other == null) return false;
+        return canSwap(other.getType().matterType);
+    }
 
     public ParticleType getType() {
         return type;
@@ -27,7 +34,6 @@ public abstract class Particle {
         return texture;
     }
 
-    public abstract void update(World world);
 
     public int getGridX() {
         return gridX;
@@ -51,4 +57,11 @@ public abstract class Particle {
         return ParticleType.valueOf(this.getClass().getSimpleName().toUpperCase());
     }
 
+    @Override
+    public String toString() {
+        return "Particle{" +
+                "type=" + type +
+                ", position=(" + gridX + ", " + gridY + ")" +
+                '}';
+    }
 }

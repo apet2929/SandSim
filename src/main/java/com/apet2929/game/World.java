@@ -93,6 +93,14 @@ public class World {
         setAt(x2, y2, temp);
     }
 
+    public void swapParticles(Particle particle, int x, int y) {
+        swapParticles(particle.getGridX(), particle.getGridY(), x, y);
+    }
+
+    public void swapParticlesInc(Particle particle, int xInc, int yInc) {
+        swapParticles(particle.getGridX(), particle.getGridY(), particle.getGridX() + xInc, particle.getGridY() + yInc);
+    }
+
     public void setAt(int x, int y, Particle particle) {
         if(posInGridRange(x, y)) {
             particles[y][x] = particle;

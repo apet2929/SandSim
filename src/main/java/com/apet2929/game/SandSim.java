@@ -3,9 +3,12 @@ package com.apet2929.game;
 import com.apet2929.engine.*;
 import com.apet2929.engine.model.*;
 import com.apet2929.engine.utils.Consts;
+import com.apet2929.game.particles.EmptyParticle;
 import com.apet2929.game.particles.Particle;
 import com.apet2929.game.particles.ParticleLoader;
 import com.apet2929.game.particles.ParticleType;
+import com.apet2929.game.particles.liquid.Water;
+import com.apet2929.game.particles.solid.Sand;
 import org.joml.Vector2i;
 import org.lwjgl.glfw.GLFW;
 
@@ -44,6 +47,7 @@ public class SandSim implements ILogic {
     private Model particleModel;
 
     int selectedParticleType = 1;
+    boolean debug = false;
 
     public SandSim() {
         renderer = new RenderManager();
@@ -79,16 +83,22 @@ public class SandSim implements ILogic {
         if(window.isKeyPressed(GLFW.GLFW_KEY_3)) {
             selectedParticleType = 3; // smoke
         }
+        if(window.isKeyPressed(GLFW.GLFW_KEY_ENTER)) {
+            debug = true;
+        }
+
 
         if(mouseInput.isLeftButtonPressed()) {
-//            Particle particle = switch (selectedParticleType) {
-//                case 1 -> new SandParticle(particleLoader.getType(ParticleType.SAND));
-//                case 2 -> new WaterParticle(particleLoader.getType(ParticleType.WATER));
-//                case 3 -> new SmokeParticle(particleLoader.getType(ParticleType.SMOKE));
-//                default -> new EmptyParticle();
-//            };
-        Vector2i gridPos = grid.worldToGridCoordinates(mouseInput.getNormalizedMousePos(window.getWidth(), window.getHeight()));
-        world.spawnParticle(ParticleType.SAND, gridPos.x, gridPos.y);
+            Vector2i gridPos = grid.worldToGridCoordinates(mouseInput.getNormalizedMousePos(window.getWidth(), window.getHeight()));
+//            System.out.println("selectedParticleType = " + selectedParticleType);
+            Particle particle = switch (selectedParticleType) {
+                case 1 -> ParticleType.SAND.createParticleByMatrix(gridPos.x, gridPos.y);
+                case 2 -> ParticleType.WATER.createParticleByMatrix(gridPos.x, gridPos.y);
+                case 3 -> ParticleType.SMOKE.createParticleByMatrix(gridPos.x, gridPos.y);
+                default -> ParticleType.EMPTYPARTICLE.createParticleByMatrix(gridPos.x, gridPos.y);
+            };
+
+        world.setAt(gridPos, particle);
         }
     }
 
