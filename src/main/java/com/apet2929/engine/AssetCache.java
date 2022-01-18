@@ -12,9 +12,9 @@ class AssetManager {
     AssetManager() {
         assetPaths = new HashMap<>();
         assetPaths.put("NOT_FOUND", "textures/notfound.png");
-        assetPaths.put("Sand", "textures/sand.png");
-        assetPaths.put("Tree", "textures/tree.png");
-        assetPaths.put("Water", "textures/water.png");
+        assetPaths.put("SAND", "textures/sand.png");
+        assetPaths.put("TREE", "textures/tree.png");
+        assetPaths.put("WATER", "textures/water.png");
     }
 
     String get_asset_path(String name) {

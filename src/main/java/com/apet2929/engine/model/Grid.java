@@ -60,15 +60,11 @@ public class Grid {
 //        Translate bottom left to (0,0)
         float translatedX = worldCoord.x - x;
         float translatedY = worldCoord.y - y;
-        System.out.println("translatedX = " + translatedX);
-        System.out.println("translatedY = " + translatedY);
 
 //        Scale by row/col size
         float scaledX = translatedX / getDx();
         float scaledY = translatedY / getDx();
-        System.out.println("scaledX = " + scaledX);
-        System.out.println("scaledY = " + scaledY);
-        return new Vector2i((int) Math.round(scaledX), (int)Math.round(scaledY));
+        return new Vector2i(Math.round(scaledX), Math.round(scaledY));
     }
 
     public Vector2f[] calculateGridLines() {

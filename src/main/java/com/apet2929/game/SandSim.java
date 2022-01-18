@@ -1,16 +1,38 @@
 package com.apet2929.game;
 
-
 import com.apet2929.engine.*;
 import com.apet2929.engine.model.*;
 import com.apet2929.engine.utils.Consts;
-import com.apet2929.game.particles.*;
-import org.joml.*;
+import com.apet2929.game.particles.Particle;
+import com.apet2929.game.particles.ParticleLoader;
+import com.apet2929.game.particles.ParticleType;
+import org.joml.Vector2i;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.List;
 
 public class SandSim implements ILogic {
 
-//    TODO : Create World class that holds the list of particles
+    /*
+    OUTLINE :
+        Particle:
+            - Has a type determined by the class
+            - All particles inherit from Solid, Liquid, or Gas
+            - Particles cannot change their own positions
+            - Are passed the World in the update call
+            - Contains a texture
+        World holds a 2d array of Particles
+            - Mediates interactions between particles, any time a particle changes position, it has to go through the World class
+            - Stores all the Particles into a temporary 1D array for updating
+        RenderManager:
+            Takes in a Model and a Vector3f of the position of the particle
+        For each particle to be rendered:
+            - There is a shared model between all particles
+            - The model's texture is set to the current particle's texture
+            - That model is passed to the RenderManager with the particle's position
+
+     Where to store the shared Particle Model?
+     */
 
     private final RenderManager renderer;
     private final ObjectLoader loader;
@@ -19,48 +41,26 @@ public class SandSim implements ILogic {
 
     private Grid grid;
     private World world;
+    private Model particleModel;
 
-    private int selectedParticleType;
+    int selectedParticleType = 1;
 
-    private Model smokeModel;
-    private Model sandModel;
-    private Model waterModel;
-
-    public SandSim(){
+    public SandSim() {
         renderer = new RenderManager();
         window = Launcher.getWindow();
         loader = new ObjectLoader();
-
     }
 
     @Override
     public void init() throws Exception {
-
-        renderer.init();
         assetCache = new AssetCache(loader);
 
-        int[] indices = {
-                0,1,3,
-                3,1,2
-        };
-
-        float[] textureCoords = {
-                0,0,
-                0,1,
-                1,1,
-                1,0
-        };
-
-//        System.out.println("lines = " + Arrays.toString(lines));
         grid = loader.loadGrid(Consts.NUM_COLS_GRID, Consts.NUM_ROWS_GRID);
         world = new World(grid);
-        waterModel = loader.loadModel(grid.getScaledVertices(), textureCoords, indices);
-        waterModel.setTexture(assetCache.loadTexture("Water"));
-        sandModel = loader.loadModel(grid.getScaledVertices(), textureCoords, indices);
-        sandModel.setTexture(assetCache.loadTexture("Sand"));
-        selectedParticleType = 1;
-        smokeModel = loader.loadModel(grid.getScaledVertices(), textureCoords, indices);
-        smokeModel.setTexture(assetCache.loadTexture("Smoke"));
+        renderer.init();
+
+        initParticleModel();
+        initParticleTypes();
     }
 
     @Override
@@ -79,26 +79,16 @@ public class SandSim implements ILogic {
         if(window.isKeyPressed(GLFW.GLFW_KEY_3)) {
             selectedParticleType = 3; // smoke
         }
-//
-//        if(window.isKeyPressed(GLFW.GLFW_KEY_LEFT)) {
-//            particleX--;
-//        }
-//        if(window.isKeyPressed(GLFW.GLFW_KEY_RIGHT))
-//            particleX++;
 
         if(mouseInput.isLeftButtonPressed()) {
-            Particle particle = switch (selectedParticleType) {
-                case 1 -> new SolidParticle(sandModel, ParticleType.SAND);
-                case 2 -> new LiquidParticle(waterModel, ParticleType.WATER);
-                case 3 -> new GasParticle(smokeModel, ParticleType.SMOKE);
-                default -> new EmptyParticle();
-            };
-            System.out.println("selectedParticleType = " + selectedParticleType);
-            Vector3f normPos = mouseInput.getNormalizedMousePos(window.getWidth(), window.getHeight());
-            System.out.println("normPos = " + normPos);
-            Vector2i gridPos = grid.worldToGridCoordinates(mouseInput.getNormalizedMousePos(window.getWidth(), window.getHeight()));
-            System.out.println("gridPos = " + gridPos);
-            world.setAt(gridPos, particle);
+//            Particle particle = switch (selectedParticleType) {
+//                case 1 -> new SandParticle(particleLoader.getType(ParticleType.SAND));
+//                case 2 -> new WaterParticle(particleLoader.getType(ParticleType.WATER));
+//                case 3 -> new SmokeParticle(particleLoader.getType(ParticleType.SMOKE));
+//                default -> new EmptyParticle();
+//            };
+        Vector2i gridPos = grid.worldToGridCoordinates(mouseInput.getNormalizedMousePos(window.getWidth(), window.getHeight()));
+        world.spawnParticle(ParticleType.SAND, gridPos.x, gridPos.y);
         }
     }
 
@@ -112,9 +102,10 @@ public class SandSim implements ILogic {
     @Override
     public void render() {
         renderer.clear();
-        renderer.drawLines(grid.getId(), grid.getNumLines());
+        if(shouldDrawLines())
+            renderer.drawLines(grid.getId(), grid.getNumLines());
         renderer.beginRender();
-        world.render(renderer);
+        world.render(renderer, particleModel);
         renderer.endRender();
 
     }
@@ -125,5 +116,45 @@ public class SandSim implements ILogic {
         loader.cleanup();
     }
 
+    private void initParticleModel() {
+        int[] indices = {
+                0,1,3,
+                3,1,2
+        };
 
+        float[] textureCoords = {
+                0,0,
+                0,1,
+                1,1,
+                1,0
+        };
+        particleModel = loader.loadModel(grid.getScaledVertices(), textureCoords, indices);
+    }
+    private void initParticleTypes() {
+        List<ParticleType> solids = ParticleType.getSolids();
+        for (ParticleType solid : solids) {
+            ParticleLoader.initParticleType(solid, assetCache);
+        }
+
+        List<ParticleType> liquids = ParticleType.getLiquids();
+        for (ParticleType liquid: liquids) {
+            ParticleLoader.initParticleType(liquid, assetCache);
+        }
+
+        List<ParticleType> gasses = ParticleType.getGasses();
+        for (ParticleType gas: gasses) {
+            ParticleLoader.initParticleType(gas, assetCache);
+        }
+    }
+
+    private boolean shouldDrawLines() {
+        float minColSize = window.getWidth() / 50.0f;
+        float minRowSize = window.getWidth() / 50.0f;
+        float colSizePixels, rowSizePixels;
+        float x = window.getWidth() / (float) Consts.NUM_COLS_GRID;
+        float y = window.getWidth() / (float) Consts.NUM_ROWS_GRID;
+        colSizePixels = x / -Consts.GRID_Z;
+        rowSizePixels = y / -Consts.GRID_Z;
+        return colSizePixels > minColSize && rowSizePixels > minRowSize;
+    }
 }

@@ -3,6 +3,7 @@ package com.apet2929.engine;
 
 import com.apet2929.engine.model.Entity;
 import com.apet2929.engine.model.Grid;
+import com.apet2929.engine.model.Model;
 import com.apet2929.engine.model.Transformation;
 import com.apet2929.engine.utils.Consts;
 import com.apet2929.engine.utils.Utils;
@@ -19,6 +20,7 @@ import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
 public class RenderManager {
+
     private final WindowManager window;
     private ShaderManager shader;
     private ShaderManager lineShader;
@@ -42,6 +44,9 @@ public class RenderManager {
         lineShader.link();
         lineShader.createUniform("projectionMatrix");
         lineShader.createUniform("grid_z");
+
+
+
     }
 
     public void beginRender() {
@@ -68,16 +73,16 @@ public class RenderManager {
         glBindVertexArray(0);
     }
 
-    public void renderParticle(Particle particle, Vector3f particlePos) {
+    public void renderParticle(Model particleModel, Vector3f particlePos) {
         shader.setUniform("projectionMatrix", window.getProjectionMatrix());
         shader.setUniform("textureSampler", 0);
         shader.setUniform("transformationMatrix", Transformation.createTransformationMatrix(particlePos));
-        glBindVertexArray(particle.getModel().getId());
+        glBindVertexArray(particleModel.getId());
         GL20.glEnableVertexAttribArray(0);
         GL20.glEnableVertexAttribArray(1);
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, particle.getModel().getTexture().getId());
-        glDrawElements(GL_TRIANGLES, particle.getModel().getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, particleModel.getTexture().getId());
+        glDrawElements(GL_TRIANGLES, particleModel.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
         GL20.glDisableVertexAttribArray(0);
         GL20.glDisableVertexAttribArray(1);
         glBindVertexArray(0);
