@@ -3,6 +3,7 @@ package com.apet2929.game;
 import com.apet2929.engine.RenderManager;
 import com.apet2929.engine.model.Grid;
 import com.apet2929.engine.model.Model;
+import com.apet2929.engine.utils.Consts;
 import com.apet2929.game.particles.EmptyParticle;
 import com.apet2929.game.particles.Particle;
 import com.apet2929.game.particles.ParticleType;
@@ -15,6 +16,9 @@ public class World {
     private final int width, height;
     private Particle[][] particles;
     private final Grid grid;
+
+    private boolean directionBias = false;
+    int directionThreshold = Consts.NUM_ROWS_GRID / 16;
 
     /*
     TODO:
@@ -40,8 +44,16 @@ public class World {
     }
 
     public void update() {
+        int i = 0;
         for (Particle particle : getParticlesToBeUpdated()) {
+
+            if(i > directionThreshold) {
+                i = 0;
+                directionBias = !directionBias;
+            }
             particle.update(this);
+            i++;
+
         }
     }
 
@@ -73,6 +85,10 @@ public class World {
     public void moveDown(Vector2i pos) {
         if(pos.y != 0)
             swapParticles(pos, new Vector2i(pos.x, pos.y-1));
+    }
+
+    public int getDirectionBias() {
+        return directionBias ? 1 : -1;
     }
 
     public void swapParticles(Vector2i pos1, Vector2i pos2) {

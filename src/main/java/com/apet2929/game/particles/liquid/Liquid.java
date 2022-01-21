@@ -11,25 +11,21 @@ public abstract class Liquid extends Particle {
 
     @Override
     public void update(World world) {
+        int dir = world.getDirectionBias();
         if(canSwap(world.getAt(getGridX(), getGridY()-1))) {
             world.swapParticles(this, getGridX(), getGridY()-1);
-//            world.swapParticlesInc(this, 0, -1);
         }
-        else if(canSwap(world.getAt(getGridX()-1, getGridY()-1))) {
-            world.swapParticles(this, getGridX()-1, getGridY()-1);
-//            world.swapParticlesInc(this, -1, -1);
+        else if(canSwap(world.getAt(getGridX()-dir, getGridY()-1))) {
+            world.swapParticles(this, getGridX()-dir, getGridY()-1);
         }
-        else if(canSwap(world.getAt(getGridX()+1, getGridY()-1))) {
-            world.swapParticles(this, getGridX()+1, getGridY()-1);
-//            world.swapParticlesInc(this, 1, -1);
+        else if(canSwap(world.getAt(getGridX()+dir, getGridY()-1))) {
+            world.swapParticles(this, getGridX()+dir, getGridY()-1);
         }
-        else if(canSwap(world.getAt(getGridX()-1, getGridY()))) {
-            world.swapParticles(this, getGridX()-1, getGridY());
-//            world.swapParticlesInc(this, 1, 0);
+        else if(canSwap(world.getAt(getGridX()-dir, getGridY()))) {
+            world.swapParticles(this, getGridX()-dir, getGridY());
         }
-        else if(canSwap(world.getAt(getGridX()+1, getGridY()))) {
-            world.swapParticles(this, getGridX()+1, getGridY());
-//            world.swapParticlesInc(this, -1, 0);
+        else if(canSwap(world.getAt(getGridX()+dir, getGridY()))) {
+            world.swapParticles(this, getGridX()+dir, getGridY());
         }
     }
 

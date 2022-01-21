@@ -10,6 +10,7 @@ import com.apet2929.game.particles.ParticleType;
 import com.apet2929.game.particles.liquid.Water;
 import com.apet2929.game.particles.solid.Sand;
 import org.joml.Vector2i;
+import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
@@ -47,6 +48,7 @@ public class SandSim implements ILogic {
     private Model particleModel;
 
     int selectedParticleType = 1;
+    int brushSize = 10;
     boolean debug = false;
 
     public SandSim() {
@@ -89,16 +91,7 @@ public class SandSim implements ILogic {
 
 
         if(mouseInput.isLeftButtonPressed()) {
-            Vector2i gridPos = grid.worldToGridCoordinates(mouseInput.getNormalizedMousePos(window.getWidth(), window.getHeight()));
-//            System.out.println("selectedParticleType = " + selectedParticleType);
-            Particle particle = switch (selectedParticleType) {
-                case 1 -> ParticleType.SAND.createParticleByMatrix(gridPos.x, gridPos.y);
-                case 2 -> ParticleType.WATER.createParticleByMatrix(gridPos.x, gridPos.y);
-                case 3 -> ParticleType.SMOKE.createParticleByMatrix(gridPos.x, gridPos.y);
-                default -> ParticleType.EMPTYPARTICLE.createParticleByMatrix(gridPos.x, gridPos.y);
-            };
-
-        world.setAt(gridPos, particle);
+            addParticles(mouseInput.getNormalizedMousePos(window.getWidth(), window.getHeight()));
         }
     }
 
@@ -157,7 +150,7 @@ public class SandSim implements ILogic {
         }
     }
 
-    private boolean shouldDrawLines() {
+    boolean shouldDrawLines() {
         float minColSize = window.getWidth() / 50.0f;
         float minRowSize = window.getWidth() / 50.0f;
         float colSizePixels, rowSizePixels;
@@ -166,5 +159,31 @@ public class SandSim implements ILogic {
         colSizePixels = x / -Consts.GRID_Z;
         rowSizePixels = y / -Consts.GRID_Z;
         return colSizePixels > minColSize && rowSizePixels > minRowSize;
+    }
+
+    void addParticles(Vector3f cursorPos) {
+        Vector2i gridPos = grid.worldToGridCoordinates(cursorPos);
+        int x0 = gridPos.x();
+        int y0 = gridPos.y();
+        Particle particle;
+        int x, y;
+        for (int i = -brushSize/2; i < brushSize/2; i++) {
+            for (int j = -brushSize/2; j < brushSize/2; j++) {
+                x = x0 + i;
+                y = y0 + j;
+                particle = fromSelectedType(x, y);
+                world.setAt(x, y, particle);
+            }
+        }
+
+    }
+
+    Particle fromSelectedType(int x, int y) {
+        return switch (selectedParticleType) {
+            case 1 -> ParticleType.SAND.createParticleByMatrix(x, y);
+            case 2 -> ParticleType.WATER.createParticleByMatrix(x, y);
+            case 3 -> ParticleType.SMOKE.createParticleByMatrix(x, y);
+            default -> ParticleType.EMPTYPARTICLE.createParticleByMatrix(x, y);
+        };
     }
 }
