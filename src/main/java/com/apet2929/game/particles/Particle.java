@@ -1,13 +1,10 @@
 package com.apet2929.game.particles;
 
-import com.apet2929.engine.model.Model;
 import com.apet2929.engine.model.Texture;
 import com.apet2929.engine.utils.Consts;
 import com.apet2929.game.World;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
-import org.joml.Vector3f;
-import org.lwjgl.system.CallbackI;
 
 
 public abstract class Particle {
@@ -74,7 +71,7 @@ public abstract class Particle {
         int xModifier = this.velocity.x > 0 ? 1 : -1;
         int yModifier = this.velocity.y > 0 ? 1 : -1;
 
-        float delta = 1.0f / Consts.PARTICLE_FPS;
+        float delta = 1.0f / Consts.PARTICLE_TPS;
 
         float xSlope = Math.abs(this.velocity.x * delta);
         float ySlope = Math.abs(this.velocity.y * delta);
@@ -101,6 +98,9 @@ public abstract class Particle {
         this.gridY = y;
     }
 
+    public Particle getParticleBelow(World world) {
+        return world.getAt(getGridX(), getGridY()-1);
+    }
 
     private ParticleType getEnumType() {
         return ParticleType.valueOf(this.getClass().getSimpleName().toUpperCase());

@@ -6,7 +6,7 @@ import com.apet2929.engine.utils.Consts;
 public class ParticleTimer {
 
     public static float currentTime = 0.0f;
-    public static final float GOAL_FRAMETIME = 1.0f / Consts.PARTICLE_FPS;
+    public static final float GOAL_FRAMETIME = 1.0f / Consts.PARTICLE_TPS;
 
     public static boolean update() {
         currentTime += 1.0f / EngineManager.getFps();

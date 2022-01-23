@@ -48,7 +48,7 @@ public class SandSim implements ILogic {
     private Model particleModel;
 
     int selectedParticleType = 1;
-    int brushSize = 10;
+    int brushSize = 5;
     boolean debug = false;
 
     public SandSim() {
@@ -165,6 +165,7 @@ public class SandSim implements ILogic {
         Vector2i gridPos = grid.worldToGridCoordinates(cursorPos);
         int x0 = gridPos.x();
         int y0 = gridPos.y();
+        if(brushSize == 1) world.setAt(x0, y0, fromSelectedType(x0, y0));
         Particle particle;
         int x, y;
         for (int i = -brushSize/2; i < brushSize/2; i++) {
