@@ -13,7 +13,8 @@ import static org.lwjgl.opengl.GL11.*;
 public class Grid {
 
     private final int id;
-    private float x, y, width, height;
+    private float x, y;
+    private float width, height;
     private int numCols, numRows;
 
     public Grid(int id, int numCols, int numRows) {
@@ -36,6 +37,16 @@ public class Grid {
 
         this.numCols = numCols;
         this.numRows = numRows;
+    }
+
+    public void incPos(float x, float y){
+        setPos(this.x + x, this.y + y);
+    }
+
+    public void setPos(float x, float y) {
+        this.x = x;
+        this.y = y;
+
     }
 
     public int getId() {

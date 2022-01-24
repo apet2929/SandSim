@@ -50,6 +50,7 @@ public class SandSim implements ILogic {
     int selectedParticleType = 1;
     int brushSize = 5;
     boolean debug = false;
+    float cameraMoveSpeed = 100f;
 
     public SandSim() {
         renderer = new RenderManager();
@@ -71,11 +72,28 @@ public class SandSim implements ILogic {
 
     @Override
     public void input(MouseInput mouseInput) {
-        if(window.isKeyPressed(GLFW.GLFW_KEY_UP)){
-            Consts.GRID_Z += 0.05f;
-        }
+        float delta = EngineManager.getDeltaTime() * 1000;
+//        System.out.println("delta = " + delta);
+        if(window.isKeyPressed(GLFW.GLFW_KEY_SLASH))
+            Consts.GRID_Z += cameraMoveSpeed * delta;
+        if(window.isKeyPressed(GLFW.GLFW_KEY_PERIOD))
+            Consts.GRID_Z -= cameraMoveSpeed * delta;
+
+        if(window.isKeyPressed(GLFW.GLFW_KEY_LEFT))
+            grid.incPos(cameraMoveSpeed * delta, 0);
+        if(window.isKeyPressed(GLFW.GLFW_KEY_RIGHT))
+            grid.incPos(-cameraMoveSpeed * delta, 0);
+        if(window.isKeyPressed(GLFW.GLFW_KEY_UP))
+            grid.incPos(0, -cameraMoveSpeed * delta);
         if(window.isKeyPressed(GLFW.GLFW_KEY_DOWN))
-            Consts.GRID_Z -= 0.05f;
+            grid.incPos(0, cameraMoveSpeed * delta);
+
+        if(window.isKeyPressed(GLFW.GLFW_KEY_ENTER)) {
+            debug = true;
+        }
+        if(window.isKeyPressed(GLFW.GLFW_KEY_SPACE)) {
+            addParticles(brushSize * 10, mouseInput.getNormalizedMousePos(window.getWidth(), window.getHeight()));
+        }
 
         boolean[] numKeys = window.getNumbersPressed();
         for (int i = 0; i < numKeys.length; i++) {
@@ -84,13 +102,11 @@ public class SandSim implements ILogic {
                 System.out.println("i = " + i);
             }
         }
-        if(window.isKeyPressed(GLFW.GLFW_KEY_ENTER)) {
-            debug = true;
-        }
+
 
 
         if(mouseInput.isLeftButtonPressed()) {
-            addParticles(mouseInput.getNormalizedMousePos(window.getWidth(), window.getHeight()));
+            addParticles(brushSize, mouseInput.getNormalizedMousePos(window.getWidth(), window.getHeight()));
         }
     }
 
@@ -160,7 +176,7 @@ public class SandSim implements ILogic {
         return colSizePixels > minColSize && rowSizePixels > minRowSize;
     }
 
-    void addParticles(Vector3f cursorPos) {
+    void addParticles(int brushSize, Vector3f cursorPos) {
         Vector2i gridPos = grid.worldToGridCoordinates(cursorPos);
         int x0 = gridPos.x();
         int y0 = gridPos.y();

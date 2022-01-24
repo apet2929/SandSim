@@ -4,13 +4,15 @@ import com.apet2929.engine.utils.Consts;
 import com.apet2929.game.World;
 import com.apet2929.game.particles.Particle;
 import com.apet2929.game.particles.ParticleType;
+import com.apet2929.game.particles.liquid.Liquid;
 
 public abstract class MoveableSolid extends Particle {
 
-    public boolean falling = false;
+    public boolean falling;
 
     public MoveableSolid(int x, int y) {
         super(x, y);
+        falling = true;
     }
 
     @Override
@@ -20,18 +22,6 @@ public abstract class MoveableSolid extends Particle {
 
     @Override
     public void update(World world) {
-
-        /*
-        I want my sand particle to fall down when:
-        - There is space below
-        - The particle below is also falling
-
-        I want my particle to fall diagonally when:
-        - There is a particle below
-        - The particle directly below is not falling
-        - There is space diagonally down
-
-         */
 
         boolean moved = fallDown(world);
         if(!moved) fallDiagonally(world);
@@ -44,12 +34,18 @@ public abstract class MoveableSolid extends Particle {
         if(p.getType().matterType == ParticleType.MatterType.EMPTY || p.getType().matterType == ParticleType.MatterType.GAS) return true;
         else if(p instanceof MoveableSolid) {
             return ((MoveableSolid) p).falling;
-        } else {
-            return p.isLiquid();
+        } else if(p instanceof Liquid){
+            return ((Liquid) p).falling;
         }
+        return false;
     }
 
     private boolean fallDown(World world) {
+        /*
+        I want my sand particle to fall down when:
+        - There is space below
+        - The particle below is also falling
+         */
         this.falling = this.isFalling(world);
         if(this.falling) {
             addGravity();
@@ -60,6 +56,12 @@ public abstract class MoveableSolid extends Particle {
     }
 
     private void fallDiagonally(World world) {
+        /*
+        I want my particle to fall diagonally when:
+        - There is a particle below
+        - The particle directly below is not falling
+        - There is space diagonally down
+         */
         int directionBias = world.getDirectionBias();
         boolean firstTry = tryFallDiagonally(world, directionBias);
         if(!firstTry) tryFallDiagonally(world, -directionBias);

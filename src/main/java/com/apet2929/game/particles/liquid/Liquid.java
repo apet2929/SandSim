@@ -4,37 +4,27 @@ import com.apet2929.engine.utils.Consts;
 import com.apet2929.game.World;
 import com.apet2929.game.particles.Particle;
 import com.apet2929.game.particles.ParticleType;
+import com.apet2929.game.particles.solid.MoveableSolid;
 
 public abstract class Liquid extends Particle {
     protected float dispersion;
-    protected boolean falling;
+    public boolean falling;
     public Liquid(int x, int y) {
         super(x, y);
+        this.falling = true;
     }
 
     @Override
     public void update(World world) {
+
         int dir = world.getDirectionBias();
-        this.velocity.add(0, Consts.GRAVITY * Consts.PARTICLE_DELTA);
-
-        this.falling = isFalling(world);
-
-        if(this.falling)
-            fallWithGravity(world);
-        else {
-            boolean moved = false;
-            if (canSwap(world.getAt(getGridX() - dir, getGridY() - 1))) {
-                world.swapParticles(this, getGridX() - dir, getGridY() - 1);
-                moved = true;
-            } else if (canSwap(world.getAt(getGridX() + dir, getGridY() - 1))) {
-                world.swapParticles(this, getGridX() + dir, getGridY() - 1);
-                moved = true;
-            }
-
-            if (!moved) {
-                if (!disperseHorizontally(world, dir))
-                    disperseHorizontally(world, dir * -1);
-            }
+        this.falling = updateIsFalling(world);
+        boolean moved = fallDown(world);
+        if(!moved){
+            moved = fallDiagonally(world, dir);
+        }
+        if(!moved) {
+            disperseHorizontally(world, dir);
         }
 
     }
@@ -43,6 +33,29 @@ public abstract class Liquid extends Particle {
     @Override
     public boolean canSwap(ParticleType.MatterType t) {
         return (t == ParticleType.MatterType.EMPTY || t == ParticleType.MatterType.GAS);
+    }
+
+    private boolean fallDown(World world) {
+        this.falling = updateIsFalling(world);
+
+        if(this.falling) {
+            this.velocity.add(0, Consts.GRAVITY * Consts.PARTICLE_DELTA);
+            fallWithGravity(world);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean fallDiagonally(World world, int directionBias) {
+        if (canSwap(world.getAt(getGridX() - directionBias, getGridY() - 1))) {
+            world.swapParticles(this, getGridX() - directionBias, getGridY() - 1);
+            return true;
+        } else if (canSwap(world.getAt(getGridX() + directionBias, getGridY() - 1))) {
+            world.swapParticles(this, getGridX() + directionBias, getGridY() - 1);
+            return true;
+        }
+        return false;
     }
 
     private boolean disperseHorizontally(World world, int directionBias) {
@@ -84,10 +97,21 @@ public abstract class Liquid extends Particle {
         return moved;
     }
 
-    private boolean isFalling(World world) {
+    public boolean isFalling() {
+        return falling;
+    }
+
+    private boolean updateIsFalling(World world) {
         if(getGridY() == 0) return false;
-        ParticleType temp = world.getAt(getGridX(), getGridY() - 1).getType();
-        return temp.matterType == ParticleType.MatterType.EMPTY || temp.matterType == ParticleType.MatterType.GAS;
+
+        Particle p = world.getAt(getGridX(), getGridY() - 1);
+        if(p.getType().matterType == ParticleType.MatterType.EMPTY || p.getType().matterType == ParticleType.MatterType.GAS) return true;
+        else if(p instanceof MoveableSolid) {
+            return ((MoveableSolid) p).falling;
+        } else if(p instanceof Liquid){
+            return ((Liquid) p).falling;
+        }
+        return false;
     }
 
     boolean fallingGravityStep(World world) {
