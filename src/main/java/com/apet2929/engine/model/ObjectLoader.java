@@ -15,6 +15,7 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ObjectLoader {
@@ -37,13 +38,15 @@ public class ObjectLoader {
         Grid grid = new Grid(id, numCols, numRows);
 
         Vector2f[] lines = grid.calculateGridLines();
-        float[] vertices = new float[lines.length * 3];
+        float[] vertices = new float[lines.length * 2];
+
         int v = 0;
         for (Vector2f line : lines) {
             vertices[v] = line.x;
             vertices[v+1] = line.y;
             v += 2;
         }
+        System.out.println("vertices = " + Arrays.toString(vertices));
 
         storeDataInAttribList(0, 2, vertices);
         unbind();

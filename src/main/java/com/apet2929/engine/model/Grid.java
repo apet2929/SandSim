@@ -18,14 +18,25 @@ public class Grid {
 
     public Grid(int id, int numCols, int numRows) {
         this.id = id;
-        this.x = -1f;
-        this.y = -1f;
-        this.width = Consts.GRID_WIDTH;
-        this.height = Consts.GRID_HEIGHT;
+
+        if(numCols > numRows) {
+            float aspectRatio = (float) numCols / numRows;
+            this.width = 2.0f * aspectRatio;
+            this.height = 2.0f;
+        } else if(numRows > numCols) {
+            float aspectRatio = (float) numRows / numCols;
+            this.height = 2.0f * aspectRatio;
+            this.width = 2.0f;
+        } else {
+            this.width = 2.0f;
+            this.height = 2.0f;
+        }
+        this.x = -width/2;
+        this.y = -height/2;
+
         this.numCols = numCols;
         this.numRows = numRows;
     }
-
 
     public int getId() {
         return id;
@@ -46,11 +57,11 @@ public class Grid {
 
 
     public Vector3f calculateGridPosition(float gridX, float gridY) {
-        float dx = width / numCols;
-        float dy = height / numRows;
+        float dx = getDx();
+        float dy = getDy();
         Vector3f pos = new Vector3f(0.0f,0.0f,0.0f);
         pos.x = calculatePointComponent(gridX, dx, x) + dx / 2;
-        pos.y = calculatePointComponent(gridY, dy, y) + dx / 2;
+        pos.y = calculatePointComponent(gridY, dy, y) + dy / 2;
         pos.z = Consts.GRID_Z;
         return pos;
     }
@@ -118,7 +129,7 @@ public class Grid {
         return width / numCols;
     }
     private float getDy() {
-        return height / numCols;
+        return height / numRows;
     }
 
     private static float calculatePointComponent(float i, float di, float startI) {

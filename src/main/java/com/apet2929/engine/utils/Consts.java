@@ -11,10 +11,9 @@ public class Consts {
     public static final float FRAMERATE = 120;
 
 
-    public static final float GRID_WIDTH = 2f;
-    public static final float GRID_HEIGHT = 2f;
-    public static final int NUM_COLS_GRID = 100;
+    public static final int NUM_COLS_GRID = 150;
     public static final int NUM_ROWS_GRID = 100;
+
     public static final int PARTICLE_TPS = Math.min(NUM_COLS_GRID, 120);
     public static final float PARTICLE_DELTA = 1.0f / PARTICLE_TPS;
     public static final float GRAVITY = -1 * (NUM_ROWS_GRID / 4.0f);
