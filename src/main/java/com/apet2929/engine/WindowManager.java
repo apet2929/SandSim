@@ -111,6 +111,16 @@ public class WindowManager {
         return GLFW.glfwGetKey(window, keycode) == GLFW.GLFW_PRESS;
     }
 
+    public boolean[] getNumbersPressed() {
+        boolean[] numKeys = new boolean[10];
+        int key;
+        for (int i = 0; i < 10; i++) {
+            key = 48 + i;
+            numKeys[i] = isKeyPressed(key);
+        }
+        return numKeys;
+    }
+
     public boolean windowShouldClose() {
         return GLFW.glfwWindowShouldClose(window);
     }

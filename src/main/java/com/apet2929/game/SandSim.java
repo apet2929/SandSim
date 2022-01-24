@@ -76,14 +76,13 @@ public class SandSim implements ILogic {
         }
         if(window.isKeyPressed(GLFW.GLFW_KEY_DOWN))
             Consts.GRID_Z -= 0.05f;
-        if(window.isKeyPressed(GLFW.GLFW_KEY_1)) {
-            selectedParticleType = 1; // sand
-        }
-        if(window.isKeyPressed(GLFW.GLFW_KEY_2)) {
-            selectedParticleType = 2; // water
-        }
-        if(window.isKeyPressed(GLFW.GLFW_KEY_3)) {
-            selectedParticleType = 3; // smoke
+
+        boolean[] numKeys = window.getNumbersPressed();
+        for (int i = 0; i < numKeys.length; i++) {
+            if(numKeys[i]){
+                selectedParticleType = i;
+                System.out.println("i = " + i);
+            }
         }
         if(window.isKeyPressed(GLFW.GLFW_KEY_ENTER)) {
             debug = true;
@@ -173,10 +172,18 @@ public class SandSim implements ILogic {
                 x = x0 + i;
                 y = y0 + j;
                 particle = fromSelectedType(x, y);
-                world.setAt(x, y, particle);
+                spawnParticle(particle, x, y);
+
             }
         }
 
+    }
+
+    void spawnParticle(Particle particle, int x, int y) {
+        Particle replaced = world.getAt(x, y);
+        if(replaced != null && replaced.getType() != particle.getType()){
+            world.setAt(x, y, particle);
+        }
     }
 
     Particle fromSelectedType(int x, int y) {
@@ -184,6 +191,7 @@ public class SandSim implements ILogic {
             case 1 -> ParticleType.SAND.createParticleByMatrix(x, y);
             case 2 -> ParticleType.WATER.createParticleByMatrix(x, y);
             case 3 -> ParticleType.SMOKE.createParticleByMatrix(x, y);
+            case 0 -> ParticleType.EMPTYPARTICLE.createParticleByMatrix(x, y);
             default -> ParticleType.EMPTYPARTICLE.createParticleByMatrix(x, y);
         };
     }
