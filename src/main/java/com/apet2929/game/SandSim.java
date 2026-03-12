@@ -47,15 +47,21 @@ public class SandSim implements ILogic {
     private World world;
     private Model particleModel;
 
-    int selectedParticleType = 1;
-    int brushSize = 5;
-    boolean debug = false;
-    float cameraMoveSpeed = 100f;
+    public int selectedParticleType = 1;
+    public int brushSize = 5;
+    public boolean debug = false;
+    public float cameraMoveSpeed = 100f;
 
     public SandSim() {
         renderer = new RenderManager();
         window = Launcher.getWindow();
         loader = new ObjectLoader();
+    }
+
+    public SandSim(RenderManager rm, WindowManager window, ObjectLoader loader){
+        this.renderer = rm;
+        this.window = window;
+        this.loader = loader;
     }
 
     @Override
