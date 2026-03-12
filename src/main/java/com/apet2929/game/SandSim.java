@@ -103,8 +103,6 @@ public class SandSim implements ILogic {
             }
         }
 
-
-
         if(mouseInput.isLeftButtonPressed()) {
             addParticles(brushSize, mouseInput.getNormalizedMousePos(window.getWidth(), window.getHeight()));
         }
@@ -203,12 +201,14 @@ public class SandSim implements ILogic {
     }
 
     Particle fromSelectedType(int x, int y) {
-        return switch (selectedParticleType) {
-            case 1 -> ParticleType.SAND.createParticleByMatrix(x, y);
-            case 2 -> ParticleType.WATER.createParticleByMatrix(x, y);
-            case 3 -> ParticleType.SMOKE.createParticleByMatrix(x, y);
-            case 0 -> ParticleType.EMPTYPARTICLE.createParticleByMatrix(x, y);
-            default -> ParticleType.EMPTYPARTICLE.createParticleByMatrix(x, y);
-        };
+        Particle result;
+        switch (selectedParticleType) {
+            case 1: { result = ParticleType.SAND.createParticleByMatrix(x, y); break; }
+            case 2: { result = ParticleType.WATER.createParticleByMatrix(x, y); break; }
+            case 3: { result = ParticleType.SMOKE.createParticleByMatrix(x, y); break; }
+            case 0: { result = ParticleType.EMPTYPARTICLE.createParticleByMatrix(x, y); break; }
+            default: { result = ParticleType.EMPTYPARTICLE.createParticleByMatrix(x, y); break; }
+        }
+        return result;
     }
 }
