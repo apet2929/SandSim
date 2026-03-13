@@ -8,9 +8,13 @@ Features:
 - Infinite grid
 - Static bodies
 - Rigid bodies
+- New brush types
+  - Don't overwrite existing particles
 - New particle types:
   - Stone
   - Fire
+- Explosions
+  - When 
 - UI
   - Selected tile indicator
   - Reset button

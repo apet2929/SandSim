@@ -1,0 +1,54 @@
+3/12/2026:
+
+3/13/2026:
+- Added texture to smoke
+- Added STONE particle type
+- Plans to refactor:
+    - References to Particle types should not go in engine package (see AssetCache.java)
+    - Minimize number of required files touched to add new particle types
+- Known bugs:
+    - Camera movement wipes the screen forever
+    - Bugs in particle movement
+        - Sand prefers to fall to the right
+        - Sand staggers- doesn't settle properly- when falling in water. Why?
+- Consider rethinking how rules are defined
+    - Rules should be symmetric- A swaps with B => B swaps with A
+    - Directional rules: A swaps with B when B above A
+- Define rules concisely
+    - Symmetry
+    -
+
+
+
+rules = []
+
+for particle in screen:
+    for rule in rules:
+        if rule.applies(particle, world):
+            rule.apply(particle, world)
+
+sandFall: [Rule] = createRule(
+    Rule(
+        SAND above GAS/LIQUID
+        ->
+        SAND below GAS/LIQUID
+    )
+    -> Rule(gl below SAND -> gl above SAND)
+)
+rules.extend(sandFall)
+
+gl = Selector(
+    GAS or LIQUID
+)
+
+1 rule applies per particle per tick
+each rule rolls for a chance to apply, any number of rules can possibly apply?
+
+g
+g g
+g s
+
+
+
+
+

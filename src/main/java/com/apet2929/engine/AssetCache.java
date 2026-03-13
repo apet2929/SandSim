@@ -15,6 +15,7 @@ class AssetManager {
         assetPaths.put("SAND", "textures/sand.png");
         assetPaths.put("TREE", "textures/tree.png");
         assetPaths.put("WATER", "textures/water.png");
+        assetPaths.put("SMOKE", "textures/smoke.png");
         assetPaths.put("STONE", "textures/stone.png");
     }
 
