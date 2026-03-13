@@ -30,4 +30,6 @@ public class TestSandSim {
         EasyMock.verify(rm, window, ol);
         assertEquals(2, sim.selectedParticleType);
     }
+
+
 }

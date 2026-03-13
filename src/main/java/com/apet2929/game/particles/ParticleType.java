@@ -3,6 +3,7 @@ package com.apet2929.game.particles;
 import com.apet2929.game.particles.gas.Smoke;
 import com.apet2929.game.particles.liquid.Water;
 import com.apet2929.game.particles.solid.Sand;
+import com.apet2929.game.particles.solid.Stone;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -14,6 +15,13 @@ public enum ParticleType {
             return new Sand(x, y);
         }
     },
+    STONE(Sand.class, MatterType.IMMOVABLESOLID) {
+        @Override
+        public Particle createParticleByMatrix(int x, int y) {
+            return new Stone(x, y);
+        }
+    },
+
     WATER(Water.class, MatterType.LIQUID) {
         @Override
         public Particle createParticleByMatrix(int x, int y) {
@@ -70,10 +78,10 @@ public enum ParticleType {
 
     public static List<ParticleType> getSolids() {
         if (SOLIDS == null) {
-            List<ParticleType> immovables = new ArrayList<>(getImmovableSolids());
-            immovables.addAll(getMovableSolids());
-            SOLIDS = immovables;
-            immovables.sort(Comparator.comparing(Enum::toString));
+            List<ParticleType> solids = new ArrayList<>(getImmovableSolids());
+            solids.addAll(getMovableSolids());
+            solids.sort(Comparator.comparing(Enum::toString));
+            SOLIDS = solids;
         }
         return Collections.unmodifiableList(SOLIDS);
     }
