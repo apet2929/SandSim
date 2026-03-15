@@ -11,7 +11,7 @@ public class Camera {
     private Vector3f position;
 
     public Camera() {
-        this.position = new Vector3f(0,0,0);
+        this.position = new Vector3f(0,0,15.0f);
         this.zoom = 1;
         this.viewMatrix = createViewMatrix();
     }
@@ -26,6 +26,11 @@ public class Camera {
 
     public void move(Vector2f offset) {
         this.position = this.position.add(offset.x, offset.y, 0);
+        this.viewMatrix = createViewMatrix();
+    }
+
+    public void move(Vector3f offset) {
+        this.position = this.position.add(offset);
         this.viewMatrix = createViewMatrix();
     }
 

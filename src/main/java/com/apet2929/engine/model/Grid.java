@@ -122,10 +122,10 @@ public class Grid {
     }
 
     private float getDx() {
-        return width / numCols;
+        return 1;
     }
     private float getDy() {
-        return height / numRows;
+        return 1;
     }
 
     private static float calculatePointComponent(float i, float di, float startI) {

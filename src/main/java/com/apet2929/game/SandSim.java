@@ -71,7 +71,6 @@ public class SandSim implements ILogic {
     public void init() throws Exception {
         this.cam = new Camera();
         this.renderer.setCamera(cam);
-        this.cam.setPosition(new Vector3f(0,0,0)); //window.getWidth()/2.0f, window.getHeight()/2.0f, 0f));
         assetCache = new AssetCache(loader);
 
         grid = loader.loadGrid(Consts.NUM_COLS_GRID, Consts.NUM_ROWS_GRID);
@@ -85,13 +84,15 @@ public class SandSim implements ILogic {
     @Override
     public void input(MouseInput mouseInput) {
         float delta = EngineManager.getDeltaTime() * 1000;
-        if(window.isKeyPressed(GLFW.GLFW_KEY_SLASH))
-            Consts.GRID_Z += cameraMoveSpeed * delta;
-        if(window.isKeyPressed(GLFW.GLFW_KEY_PERIOD))
-            Consts.GRID_Z -= cameraMoveSpeed * delta;
+//        if(window.isKeyPressed(GLFW.GLFW_KEY_SLASH))
+//            Consts.GRID_Z += cameraMoveSpeed * delta;
+//        if(window.isKeyPressed(GLFW.GLFW_KEY_PERIOD))
+//            Consts.GRID_Z -= cameraMoveSpeed * delta;
 
-        if(window.isKeyPressed(GLFW.GLFW_KEY_LEFT))
+        if(window.isKeyPressed(GLFW.GLFW_KEY_LEFT)){
+            System.out.println("cam.getViewMatrix() = \n" + cam.getViewMatrix());
             cam.move(new Vector2f(-cameraMoveSpeed * delta, 0));
+        }
         if(window.isKeyPressed(GLFW.GLFW_KEY_RIGHT))
             cam.move(new Vector2f(cameraMoveSpeed * delta, 0));
         if(window.isKeyPressed(GLFW.GLFW_KEY_UP))
@@ -101,6 +102,7 @@ public class SandSim implements ILogic {
 
         if(window.isKeyPressed(GLFW.GLFW_KEY_ENTER)) {
             debug = true;
+            cam.move(new Vector3f(0,0,0.3f*delta));
             System.out.println("cam.getPosition() = " + cam.getPosition());
         }
         if(window.isKeyPressed(GLFW.GLFW_KEY_SPACE)) {
@@ -130,8 +132,8 @@ public class SandSim implements ILogic {
     @Override
     public void render() {
         renderer.clear();
-        if(shouldDrawLines())
-            renderer.drawLines(grid.getId(), grid.getNumLines());
+//        if(shouldDrawLines())
+//            renderer.drawLines(grid.getId(), grid.getNumLines());
         renderer.beginRender();
         world.render(renderer, particleModel);
         renderer.endRender();
