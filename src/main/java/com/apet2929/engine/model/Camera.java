@@ -1,0 +1,56 @@
+package com.apet2929.engine.model;
+
+import org.joml.Matrix4f;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
+
+public class Camera {
+    private Matrix4f viewMatrix;
+    private float zoom;
+    private Vector3f position;
+
+    public Camera() {
+        this.position = new Vector3f(0,0,0);
+        this.zoom = 1;
+        this.viewMatrix = createViewMatrix();
+    }
+
+    public Vector2f inverse(Vector2f position) {
+        Vector4f pos = new Vector4f(position, 0, 0);
+        Matrix4f inverted = new Matrix4f();
+        this.viewMatrix.invert(inverted);
+        Vector4f result = pos.mul(inverted);
+        return new Vector2f(result.x, result.y);
+    }
+
+    public void move(Vector2f offset) {
+        this.position = this.position.add(offset.x, offset.y, 0);
+        this.viewMatrix = createViewMatrix();
+    }
+
+    public Vector3f getPosition() {
+        return this.position;
+    }
+
+    public void setPosition(Vector3f position) {
+        this.position = position;
+    }
+
+    public Matrix4f getViewMatrix() {
+        return viewMatrix;
+    }
+
+    private Matrix4f createViewMatrix() {
+        Vector3f pos = this.position;
+        Vector3f rot = new Vector3f(); // camera.getRotation();
+
+        Matrix4f matrix = new Matrix4f();
+        matrix.identity();
+        matrix.rotate((float) Math.toRadians(rot.x), new Vector3f(1,0,0))
+                .rotate((float) Math.toRadians(rot.y), new Vector3f(0,1,0))
+                .rotate((float) Math.toRadians(rot.z), new Vector3f(0,0,1));
+        matrix.translate(-pos.x, -pos.y, -pos.z);   //  Move the world opposite the camera
+        return matrix;
+    }
+}

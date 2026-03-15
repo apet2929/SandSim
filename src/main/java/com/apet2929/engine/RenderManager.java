@@ -1,10 +1,7 @@
 package com.apet2929.engine;
 
 
-import com.apet2929.engine.model.Entity;
-import com.apet2929.engine.model.Grid;
-import com.apet2929.engine.model.Model;
-import com.apet2929.engine.model.Transformation;
+import com.apet2929.engine.model.*;
 import com.apet2929.engine.utils.Consts;
 import com.apet2929.engine.utils.Utils;
 import com.apet2929.game.Launcher;
@@ -24,6 +21,7 @@ public class RenderManager {
     private final WindowManager window;
     private ShaderManager shader;
     private ShaderManager lineShader;
+    private Camera camera;
 
     public RenderManager(){
         window = Launcher.getWindow();
@@ -37,6 +35,7 @@ public class RenderManager {
         shader.createUniform("textureSampler");
         shader.createUniform("transformationMatrix");
         shader.createUniform("projectionMatrix");
+        shader.createUniform("viewMatrix");
 
         lineShader = new ShaderManager();
         lineShader.createVertexShader(Utils.loadResource("/shaders/line_vertex.vs"));
@@ -44,9 +43,10 @@ public class RenderManager {
         lineShader.link();
         lineShader.createUniform("projectionMatrix");
         lineShader.createUniform("grid_z");
+    }
 
-
-
+    public void setCamera(Camera camera) {
+        this.camera = camera;
     }
 
     public void beginRender() {
@@ -75,8 +75,10 @@ public class RenderManager {
 
     public void renderParticle(Model particleModel, Vector3f particlePos) {
         shader.setUniform("projectionMatrix", window.getProjectionMatrix());
+        shader.setUniform("viewMatrix", camera.getViewMatrix());
         shader.setUniform("textureSampler", 0);
         shader.setUniform("transformationMatrix", Transformation.createTransformationMatrix(particlePos));
+
         glBindVertexArray(particleModel.getId());
         GL20.glEnableVertexAttribArray(0);
         GL20.glEnableVertexAttribArray(1);

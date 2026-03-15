@@ -9,6 +9,7 @@ import com.apet2929.game.particles.ParticleLoader;
 import com.apet2929.game.particles.ParticleType;
 import com.apet2929.game.particles.liquid.Water;
 import com.apet2929.game.particles.solid.Sand;
+import org.joml.Vector2f;
 import org.joml.Vector2i;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
@@ -46,11 +47,12 @@ public class SandSim implements ILogic {
     private Grid grid;
     private World world;
     private Model particleModel;
+    private Camera cam;
 
     public int selectedParticleType = 1;
     public int brushSize = 5;
     public boolean debug = false;
-    public float cameraMoveSpeed = 1f;
+    public float cameraMoveSpeed = 0.001f;
 
     public SandSim() {
         renderer = new RenderManager();
@@ -62,10 +64,14 @@ public class SandSim implements ILogic {
         this.renderer = rm;
         this.window = window;
         this.loader = loader;
+        this.cam = new Camera();
     }
 
     @Override
     public void init() throws Exception {
+        this.cam = new Camera();
+        this.renderer.setCamera(cam);
+        this.cam.setPosition(new Vector3f(0,0,0)); //window.getWidth()/2.0f, window.getHeight()/2.0f, 0f));
         assetCache = new AssetCache(loader);
 
         grid = loader.loadGrid(Consts.NUM_COLS_GRID, Consts.NUM_ROWS_GRID);
@@ -79,23 +85,23 @@ public class SandSim implements ILogic {
     @Override
     public void input(MouseInput mouseInput) {
         float delta = EngineManager.getDeltaTime() * 1000;
-//        System.out.println("delta = " + delta);
         if(window.isKeyPressed(GLFW.GLFW_KEY_SLASH))
             Consts.GRID_Z += cameraMoveSpeed * delta;
         if(window.isKeyPressed(GLFW.GLFW_KEY_PERIOD))
             Consts.GRID_Z -= cameraMoveSpeed * delta;
 
         if(window.isKeyPressed(GLFW.GLFW_KEY_LEFT))
-            grid.incPos(cameraMoveSpeed * delta, 0);
+            cam.move(new Vector2f(-cameraMoveSpeed * delta, 0));
         if(window.isKeyPressed(GLFW.GLFW_KEY_RIGHT))
-            grid.incPos(-cameraMoveSpeed * delta, 0);
+            cam.move(new Vector2f(cameraMoveSpeed * delta, 0));
         if(window.isKeyPressed(GLFW.GLFW_KEY_UP))
-            grid.incPos(0, -cameraMoveSpeed * delta);
+            cam.move(new Vector2f(0, -cameraMoveSpeed * delta));
         if(window.isKeyPressed(GLFW.GLFW_KEY_DOWN))
-            grid.incPos(0, cameraMoveSpeed * delta);
+            cam.move(new Vector2f(0, cameraMoveSpeed * delta));
 
         if(window.isKeyPressed(GLFW.GLFW_KEY_ENTER)) {
             debug = true;
+            System.out.println("cam.getPosition() = " + cam.getPosition());
         }
         if(window.isKeyPressed(GLFW.GLFW_KEY_SPACE)) {
             addParticles(brushSize * 10, mouseInput.getNormalizedMousePos(window.getWidth(), window.getHeight()));
@@ -181,7 +187,8 @@ public class SandSim implements ILogic {
     }
 
     void addParticles(int brushSize, Vector3f cursorPos) {
-        Vector2i gridPos = grid.worldToGridCoordinates(cursorPos);
+        Vector2f pos = cam.inverse(new Vector2f(cursorPos.x, cursorPos.y));
+        Vector2i gridPos = grid.worldToGridCoordinates(pos);
         int x0 = gridPos.x();
         int y0 = gridPos.y();
         if(brushSize == 1) world.setAt(x0, y0, fromSelectedType(x0, y0));

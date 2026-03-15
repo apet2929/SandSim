@@ -13,7 +13,6 @@ import static org.lwjgl.opengl.GL11.*;
 public class Grid {
 
     private final int id;
-    private float x, y;
     private float width, height;
     private int numCols, numRows;
 
@@ -32,21 +31,9 @@ public class Grid {
             this.width = 2.0f;
             this.height = 2.0f;
         }
-        this.x = -width/2;
-        this.y = -height/2;
 
         this.numCols = numCols;
         this.numRows = numRows;
-    }
-
-    public void incPos(float x, float y){
-        setPos(this.x + x, this.y + y);
-    }
-
-    public void setPos(float x, float y) {
-        this.x = x;
-        this.y = y;
-
     }
 
     public int getId() {
@@ -57,9 +44,7 @@ public class Grid {
         return (numCols + numRows + 2);
     }
 
-    public void init(float x, float y, float width, float height, int numCols, int numRows) {
-        this.x = x;
-        this.y = y;
+    public void init( float width, float height, int numCols, int numRows) {
         this.width = width;
         this.height = height;
         this.numCols = numCols;
@@ -71,17 +56,17 @@ public class Grid {
         float dx = getDx();
         float dy = getDy();
         Vector3f pos = new Vector3f(0.0f,0.0f,0.0f);
-        pos.x = calculatePointComponent(gridX, dx, x) + dx / 2;
-        pos.y = calculatePointComponent(gridY, dy, y) + dy / 2;
+        pos.x = calculatePointComponent(gridX, dx, 0) + dx / 2;
+        pos.y = calculatePointComponent(gridY, dy, 0) + dy / 2;
         pos.z = Consts.GRID_Z;
         return pos;
     }
 
-    public Vector2i worldToGridCoordinates(Vector3f normalizedMouseCoord) {
+    public Vector2i worldToGridCoordinates(Vector2f normalizedMouseCoord) {
         Vector2f worldCoord = new Vector2f(normalizedMouseCoord.x * -Consts.GRID_Z, normalizedMouseCoord.y * -Consts.GRID_Z/1.75f);
 //        Translate bottom left to (0,0)
-        float translatedX = worldCoord.x - x;
-        float translatedY = worldCoord.y - y;
+        float translatedX = worldCoord.x - 0;
+        float translatedY = worldCoord.y - 0;
 
 //        Scale by row/col size
         float scaledX = translatedX / getDx();
@@ -100,11 +85,11 @@ public class Grid {
 //        Vertical lines, Columns
         int v = 0;
         for (int i = 0; i <= numCols; i++) {
-            float xP = calculatePointComponent(i, dx, x);
+            float xP = calculatePointComponent(i, dx, 0);
             startPoint.x = xP;
-            startPoint.y = y;
+            startPoint.y = 0;
             endPoint.x = xP;
-            endPoint.y = y + height;
+            endPoint.y = 0 + height;
             lines[v] = new Vector2f(startPoint);
             lines[v + 1] = new Vector2f(endPoint);
             v += 2;
@@ -112,11 +97,11 @@ public class Grid {
 
 //        Horizontal lines, Rows
         for (int i = 0; i <= numRows; i++) {
-            float yP = calculatePointComponent(i, dy, y);
+            float yP = calculatePointComponent(i, dy, 0);
             startPoint.y = yP;
-            startPoint.x = x;
+            startPoint.x = 0;
             endPoint.y = yP;
-            endPoint.x = x + width;
+            endPoint.x = 0 + width;
             lines[v] = new Vector2f(startPoint);
             lines[v + 1] = new Vector2f(endPoint);
             v += 2;
@@ -147,13 +132,6 @@ public class Grid {
         return startI + (i * di);
     }
 
-    public float getX() {
-        return x;
-    }
-
-    public float getY() {
-        return y;
-    }
 
     public float getWidth() {
         return width;
