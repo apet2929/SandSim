@@ -42,7 +42,7 @@ public class RenderManager {
         lineShader.createFragmentShader(Utils.loadResource("/shaders/line_fragment.fs"));
         lineShader.link();
         lineShader.createUniform("projectionMatrix");
-        lineShader.createUniform("grid_z");
+        lineShader.createUniform("viewMatrix");
     }
 
     public void setCamera(Camera camera) {
@@ -92,8 +92,8 @@ public class RenderManager {
 
     public void drawLines(int id, int numLines) {
         lineShader.bind();
-        lineShader.setUniform("projectionMatrix", window.updateProjectionMatrix());
-        lineShader.setUniform("grid_z", Consts.GRID_Z);
+        lineShader.setUniform("projectionMatrix", window.getProjectionMatrix());
+        lineShader.setUniform("viewMatrix", camera.getViewMatrix());
 
         glBindVertexArray(id);
         glEnableVertexAttribArray(0); // start/end color

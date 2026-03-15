@@ -18,20 +18,8 @@ public class Grid {
 
     public Grid(int id, int numCols, int numRows) {
         this.id = id;
-
-        if(numCols > numRows) {
-            float aspectRatio = (float) numCols / numRows;
-            this.width = 2.0f * aspectRatio;
-            this.height = 2.0f;
-        } else if(numRows > numCols) {
-            float aspectRatio = (float) numRows / numCols;
-            this.height = 2.0f * aspectRatio;
-            this.width = 2.0f;
-        } else {
-            this.width = 2.0f;
-            this.height = 2.0f;
-        }
-
+        this.width = numCols;
+        this.height = numRows;
         this.numCols = numCols;
         this.numRows = numRows;
     }
@@ -56,14 +44,14 @@ public class Grid {
         float dx = getDx();
         float dy = getDy();
         Vector3f pos = new Vector3f(0.0f,0.0f,0.0f);
-        pos.x = calculatePointComponent(gridX, dx, 0) + dx / 2;
-        pos.y = calculatePointComponent(gridY, dy, 0) + dy / 2;
-        pos.z = Consts.GRID_Z;
+        pos.x = calculatePointComponent(gridX, dx, 0);
+        pos.y = calculatePointComponent(gridY, dy, 0);
+        pos.z = 0;
         return pos;
     }
 
     public Vector2i worldToGridCoordinates(Vector2f normalizedMouseCoord) {
-        Vector2f worldCoord = new Vector2f(normalizedMouseCoord.x * -Consts.GRID_Z, normalizedMouseCoord.y * -Consts.GRID_Z/1.75f);
+        Vector2f worldCoord = new Vector2f(normalizedMouseCoord.x, normalizedMouseCoord.y);
 //        Translate bottom left to (0,0)
         float translatedX = worldCoord.x - 0;
         float translatedY = worldCoord.y - 0;
@@ -78,18 +66,18 @@ public class Grid {
         int numPoints = getNumLines() * 2;
         Vector2f[] lines = new Vector2f[numPoints];
 
-        float dx = width / numCols;
-        float dy = height / numRows;
+        float dx = 1;
+        float dy = 1;
         Vector2f startPoint = new Vector2f();
         Vector2f endPoint = new Vector2f();
 //        Vertical lines, Columns
         int v = 0;
         for (int i = 0; i <= numCols; i++) {
-            float xP = calculatePointComponent(i, dx, 0);
-            startPoint.x = xP;
+            float xP = i;
+            startPoint.x = xP - 0.5f;
             startPoint.y = 0;
-            endPoint.x = xP;
-            endPoint.y = 0 + height;
+            endPoint.x = xP - 0.5f;
+            endPoint.y = height;
             lines[v] = new Vector2f(startPoint);
             lines[v + 1] = new Vector2f(endPoint);
             v += 2;
@@ -97,11 +85,11 @@ public class Grid {
 
 //        Horizontal lines, Rows
         for (int i = 0; i <= numRows; i++) {
-            float yP = calculatePointComponent(i, dy, 0);
-            startPoint.y = yP;
+            float yP = i;
+            startPoint.y = yP - 0.5f;
             startPoint.x = 0;
-            endPoint.y = yP;
-            endPoint.x = 0 + width;
+            endPoint.y = yP - 0.5f;
+            endPoint.x = width;
             lines[v] = new Vector2f(startPoint);
             lines[v + 1] = new Vector2f(endPoint);
             v += 2;

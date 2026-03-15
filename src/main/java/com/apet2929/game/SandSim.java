@@ -133,7 +133,7 @@ public class SandSim implements ILogic {
     public void render() {
         renderer.clear();
 //        if(shouldDrawLines())
-//            renderer.drawLines(grid.getId(), grid.getNumLines());
+        renderer.drawLines(grid.getId(), grid.getNumLines());
         renderer.beginRender();
         world.render(renderer, particleModel);
         renderer.endRender();
