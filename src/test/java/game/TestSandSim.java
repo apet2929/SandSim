@@ -31,5 +31,10 @@ public class TestSandSim {
         assertEquals(2, sim.selectedParticleType);
     }
 
+    @Test
+    public void testGridPos(){
+
+
+    }
 
 }

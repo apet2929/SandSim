@@ -9,11 +9,10 @@ import com.apet2929.game.particles.ParticleLoader;
 import com.apet2929.game.particles.ParticleType;
 import com.apet2929.game.particles.liquid.Water;
 import com.apet2929.game.particles.solid.Sand;
-import org.joml.Vector2f;
-import org.joml.Vector2i;
-import org.joml.Vector3f;
+import org.joml.*;
 import org.lwjgl.glfw.GLFW;
 
+import java.lang.Math;
 import java.util.List;
 
 public class SandSim implements ILogic {
@@ -52,7 +51,7 @@ public class SandSim implements ILogic {
     public int selectedParticleType = 1;
     public int brushSize = 5;
     public boolean debug = false;
-    public float cameraMoveSpeed = 0.001f;
+    public float cameraMoveSpeed = 0.01f;
 
     public SandSim() {
         renderer = new RenderManager();
@@ -109,6 +108,7 @@ public class SandSim implements ILogic {
             addParticles(brushSize * 10, mouseInput.getNormalizedMousePos(window.getWidth(), window.getHeight()));
         }
 
+
         boolean[] numKeys = window.getNumbersPressed();
         for (int i = 0; i < numKeys.length; i++) {
             if(numKeys[i]){
@@ -118,6 +118,7 @@ public class SandSim implements ILogic {
         }
 
         if(mouseInput.isLeftButtonPressed()) {
+//            Vector2d mp = mouseInput.getPos();
             addParticles(brushSize, mouseInput.getNormalizedMousePos(window.getWidth(), window.getHeight()));
         }
     }
@@ -188,11 +189,57 @@ public class SandSim implements ILogic {
         return colSizePixels > minColSize && rowSizePixels > minRowSize;
     }
 
+    Vector2i gridPos(Vector2f mousePos) {
+        // https://antongerdelan.net//opengl/raycasting.html
+        Vector4f ray_clip = new Vector4f(mousePos, -1, 1);
+
+        Vector4f ray_eye = new Vector4f();
+        Matrix4f invertedProjection = new Matrix4f();
+        window.getProjectionMatrix().invert(invertedProjection);
+        ray_clip.mul(invertedProjection, ray_eye);
+
+        Vector4f ray_world = new Vector4f();
+        Matrix4f invertedView = new Matrix4f();
+        cam.getViewMatrix().invert(invertedView);
+        ray_eye.mul(invertedView, ray_world);
+        Vector3f rayWorld = new Vector3f(ray_eye.x, ray_eye.y, ray_eye.z);
+        rayWorld.normalize();
+
+        Vector3f result = ray_plane_intersect(cam.getPosition(), rayWorld);
+        return new Vector2i(Math.round(result.x), Math.round(result.y));
+    }
+
+    Vector3f ray_plane_intersect(Vector3f rayOrigin, Vector3f rayDirection) {
+        Vector3f planePos = new Vector3f(0,0,0);
+        Vector3f planeNormal = new Vector3f(0,0,1);
+        float numerator = planePos.sub(rayOrigin).dot(planeNormal);
+        float denom = rayDirection.dot(planeNormal);
+        if(denom == 0) {
+            return null;
+        }
+        float t = numerator / denom;
+        return rayOrigin.add(rayDirection.mul(t));
+
+//        float numer = (a-e).dot(n);
+//        float denom = d.dot(n);
+//
+//        bool parallelToPlane = denom == 0.0f;
+//        if(parallelToPlane)
+//            return false;
+//
+//        float planeHit = numer / denom;
+    }
+
+//    Vector2f screenPos(Vector2i gridPos) {
+//        Vector4f pos = new Vector4f(gridPos, 0, 1);
+//
+//    }
+
     void addParticles(int brushSize, Vector3f cursorPos) {
-        Vector2f pos = cam.inverse(new Vector2f(cursorPos.x, cursorPos.y));
-        Vector2i gridPos = grid.worldToGridCoordinates(pos);
+        Vector2i gridPos = gridPos(new Vector2f(cursorPos.x, cursorPos.y));
         int x0 = gridPos.x();
         int y0 = gridPos.y();
+        System.out.println("(" + cursorPos.x + "," + cursorPos.y + ") =>" + "(" + x0 + "," + y0 + ")");
         if(brushSize == 1) world.setAt(x0, y0, fromSelectedType(x0, y0));
         Particle particle;
         int x, y;

@@ -11,17 +11,21 @@ public class Camera {
     private Vector3f position;
 
     public Camera() {
-        this.position = new Vector3f(0,0,15.0f);
         this.zoom = 1;
+        this.position = new Vector3f(0,0,15);
         this.viewMatrix = createViewMatrix();
     }
 
     public Vector2f inverse(Vector2f position) {
-        Vector4f pos = new Vector4f(position, 0, 0);
+        Vector4f pos = new Vector4f(position, 0, 1);
         Matrix4f inverted = new Matrix4f();
         this.viewMatrix.invert(inverted);
         Vector4f result = pos.mul(inverted);
         return new Vector2f(result.x, result.y);
+    }
+
+    public void rotate(float theta) {
+        this.viewMatrix.rotate(theta, new Vector3f(0,1,0));
     }
 
     public void move(Vector2f offset) {
@@ -43,7 +47,7 @@ public class Camera {
     }
 
     public Matrix4f getViewMatrix() {
-        return viewMatrix;
+        return new Matrix4f(viewMatrix);
     }
 
     private Matrix4f createViewMatrix() {
