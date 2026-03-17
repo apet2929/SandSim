@@ -213,6 +213,7 @@ public class SandSim implements ILogic {
             case 2: { result = ParticleType.WATER.createParticleByMatrix(x, y); break; }
             case 3: { result = ParticleType.SMOKE.createParticleByMatrix(x, y); break; }
             case 4: { result = ParticleType.STONE.createParticleByMatrix(x, y); break; }
+            case 5: { result = ParticleType.FIRE.createParticleByMatrix(x, y); break; }
             case 0: { result = ParticleType.EMPTYPARTICLE.createParticleByMatrix(x, y); break; }
             default: { result = ParticleType.EMPTYPARTICLE.createParticleByMatrix(x, y); break; }
         }
