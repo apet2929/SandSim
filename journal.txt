@@ -44,11 +44,19 @@ gl = Selector(
 1 rule applies per particle per tick
 each rule rolls for a chance to apply, any number of rules can possibly apply?
 
-g
-g g
-g s
 
+3/16/2026:
+ - Added Fire particle class
+ - Implemented Fire selection input
+ - Set fire particle to notfound texture
 
+3/17/2026:
+ - Utilized AI to check for code smells
+ - Organized AI code smells
+ - Created Milestone 1 Document
 
+3/18/2026:
+ - Created new particle move tests
+ - Created particle swap test
 
 
