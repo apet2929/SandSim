@@ -24,10 +24,6 @@ public class Camera {
         return new Vector2f(result.x, result.y);
     }
 
-    public void rotate(float theta) {
-        this.viewMatrix.rotate(theta, new Vector3f(0,1,0));
-    }
-
     public void move(Vector2f offset) {
         this.position = this.position.add(offset.x, offset.y, 0);
         this.viewMatrix = createViewMatrix();
@@ -40,10 +36,6 @@ public class Camera {
 
     public Vector3f getPosition() {
         return new Vector3f(this.position);
-    }
-
-    public void setPosition(Vector3f position) {
-        this.position = position;
     }
 
     public Matrix4f getViewMatrix() {

@@ -15,7 +15,7 @@ public enum ParticleType {
             return new Sand(x, y);
         }
     },
-    STONE(Sand.class, MatterType.IMMOVABLESOLID) {
+    STONE(Stone.class, MatterType.IMMOVABLESOLID) {
         @Override
         public Particle createParticleByMatrix(int x, int y) {
             return new Stone(x, y);

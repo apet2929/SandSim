@@ -16,6 +16,7 @@ import java.lang.Math;
 import java.util.List;
 
 public class SandSim implements ILogic {
+    public static final float cameraZoomSpeed = 0.3f;
 
     /*
     OUTLINE :
@@ -43,10 +44,10 @@ public class SandSim implements ILogic {
     private final WindowManager window;
     private AssetCache assetCache;
 
-    private Grid grid;
-    private World world;
-    private Model particleModel;
-    private Camera cam;
+    Grid grid;
+    World world;
+    Model particleModel;
+    Camera cam;
 
     public int selectedParticleType = 1;
     public int brushSize = 5;
@@ -59,11 +60,11 @@ public class SandSim implements ILogic {
         loader = new ObjectLoader();
     }
 
-    public SandSim(RenderManager rm, WindowManager window, ObjectLoader loader){
+    public SandSim(RenderManager rm, WindowManager window, ObjectLoader loader, Camera cam){
         this.renderer = rm;
         this.window = window;
         this.loader = loader;
-        this.cam = new Camera();
+        this.cam = cam;
     }
 
     @Override
@@ -99,11 +100,13 @@ public class SandSim implements ILogic {
         if(window.isKeyPressed(GLFW.GLFW_KEY_DOWN))
             cam.move(new Vector2f(0, cameraMoveSpeed * delta));
 
-        if(window.isKeyPressed(GLFW.GLFW_KEY_ENTER)) {
-            debug = true;
-            cam.move(new Vector3f(0,0,0.3f*delta));
-            System.out.println("cam.getPosition() = " + cam.getPosition());
+        if(window.isKeyPressed(GLFW.GLFW_KEY_PERIOD)) {
+            cam.move(new Vector3f(0,0,cameraZoomSpeed*delta));
         }
+        else if(window.isKeyPressed(GLFW.GLFW_KEY_SLASH)) {
+            cam.move(new Vector3f(0,0, -cameraZoomSpeed *delta));
+        }
+
         if(window.isKeyPressed(GLFW.GLFW_KEY_SPACE)) {
             addParticles(brushSize * 10, mouseInput.getNormalizedMousePos(window.getWidth(), window.getHeight()));
         }
