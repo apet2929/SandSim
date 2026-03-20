@@ -3,8 +3,8 @@
 in vec2 pos;
 
 uniform mat4 projectionMatrix;
-uniform float grid_z;
+uniform mat4 viewMatrix;
 
 void main() {
-    gl_Position = projectionMatrix * vec4(pos, grid_z, 1.0f);
+    gl_Position = projectionMatrix * viewMatrix * vec4(pos, 0.0f, 1.0f);
 }

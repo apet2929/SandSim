@@ -151,11 +151,6 @@ public class World {
         return particles;
     }
 
-    public Vector2i mouseToGridCoords(Vector3f normalizedMousePos) {
-
-        return grid.worldToGridCoordinates(normalizedMousePos);
-    }
-
     public boolean posInGridRange(Vector2i pos) {
          return (pos.x < height && pos.x >= 0 && pos.y < height && pos.y >= 0);
     }

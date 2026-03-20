@@ -1,7 +1,7 @@
 # SandSim
 
 This project is under development as a part of CSSE375 Software Construction and Evolution. 
-It is a desktop application written in LWJGL feturing a Noita-style sandbox.
+It is a desktop application written in LWJGL featuring a Noita-style sandbox.
 
 Features:
 - Working camera
@@ -19,4 +19,5 @@ Features:
   - Selected tile indicator
   - Reset button
 - Save/Load
+- Pause/Play/Rewind/Record/Replay
 

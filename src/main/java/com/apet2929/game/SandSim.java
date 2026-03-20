@@ -9,13 +9,14 @@ import com.apet2929.game.particles.ParticleLoader;
 import com.apet2929.game.particles.ParticleType;
 import com.apet2929.game.particles.liquid.Water;
 import com.apet2929.game.particles.solid.Sand;
-import org.joml.Vector2i;
-import org.joml.Vector3f;
+import org.joml.*;
 import org.lwjgl.glfw.GLFW;
 
+import java.lang.Math;
 import java.util.List;
 
 public class SandSim implements ILogic {
+    public static final float cameraZoomSpeed = 0.3f;
 
     /*
     OUTLINE :
@@ -43,14 +44,15 @@ public class SandSim implements ILogic {
     private final WindowManager window;
     private AssetCache assetCache;
 
-    private Grid grid;
-    private World world;
-    private Model particleModel;
+    Grid grid;
+    World world;
+    Model particleModel;
+    Camera cam;
 
     public int selectedParticleType = 1;
     public int brushSize = 5;
     public boolean debug = false;
-    public float cameraMoveSpeed = 1f;
+    public float cameraMoveSpeed = 0.01f;
 
     public SandSim() {
         renderer = new RenderManager();
@@ -58,14 +60,17 @@ public class SandSim implements ILogic {
         loader = new ObjectLoader();
     }
 
-    public SandSim(RenderManager rm, WindowManager window, ObjectLoader loader){
+    public SandSim(RenderManager rm, WindowManager window, ObjectLoader loader, Camera cam){
         this.renderer = rm;
         this.window = window;
         this.loader = loader;
+        this.cam = cam;
     }
 
     @Override
     public void init() throws Exception {
+        this.cam = new Camera();
+        this.renderer.setCamera(cam);
         assetCache = new AssetCache(loader);
 
         grid = loader.loadGrid(Consts.NUM_COLS_GRID, Consts.NUM_ROWS_GRID);
@@ -79,27 +84,33 @@ public class SandSim implements ILogic {
     @Override
     public void input(MouseInput mouseInput) {
         float delta = EngineManager.getDeltaTime() * 1000;
-//        System.out.println("delta = " + delta);
-        if(window.isKeyPressed(GLFW.GLFW_KEY_SLASH))
-            Consts.GRID_Z += cameraMoveSpeed * delta;
-        if(window.isKeyPressed(GLFW.GLFW_KEY_PERIOD))
-            Consts.GRID_Z -= cameraMoveSpeed * delta;
+//        if(window.isKeyPressed(GLFW.GLFW_KEY_SLASH))
+//            Consts.GRID_Z += cameraMoveSpeed * delta;
+//        if(window.isKeyPressed(GLFW.GLFW_KEY_PERIOD))
+//            Consts.GRID_Z -= cameraMoveSpeed * delta;
 
-        if(window.isKeyPressed(GLFW.GLFW_KEY_LEFT))
-            grid.incPos(cameraMoveSpeed * delta, 0);
-        if(window.isKeyPressed(GLFW.GLFW_KEY_RIGHT))
-            grid.incPos(-cameraMoveSpeed * delta, 0);
-        if(window.isKeyPressed(GLFW.GLFW_KEY_UP))
-            grid.incPos(0, -cameraMoveSpeed * delta);
-        if(window.isKeyPressed(GLFW.GLFW_KEY_DOWN))
-            grid.incPos(0, cameraMoveSpeed * delta);
-
-        if(window.isKeyPressed(GLFW.GLFW_KEY_ENTER)) {
-            debug = true;
+        if(window.isKeyPressed(GLFW.GLFW_KEY_LEFT)){
+            System.out.println("cam.getViewMatrix() = \n" + cam.getViewMatrix());
+            cam.move(new Vector2f(-cameraMoveSpeed * delta, 0));
         }
+        if(window.isKeyPressed(GLFW.GLFW_KEY_RIGHT))
+            cam.move(new Vector2f(cameraMoveSpeed * delta, 0));
+        if(window.isKeyPressed(GLFW.GLFW_KEY_UP))
+            cam.move(new Vector2f(0, -cameraMoveSpeed * delta));
+        if(window.isKeyPressed(GLFW.GLFW_KEY_DOWN))
+            cam.move(new Vector2f(0, cameraMoveSpeed * delta));
+
+        if(window.isKeyPressed(GLFW.GLFW_KEY_PERIOD)) {
+            cam.move(new Vector3f(0,0,cameraZoomSpeed*delta));
+        }
+        else if(window.isKeyPressed(GLFW.GLFW_KEY_SLASH)) {
+            cam.move(new Vector3f(0,0, -cameraZoomSpeed *delta));
+        }
+
         if(window.isKeyPressed(GLFW.GLFW_KEY_SPACE)) {
             addParticles(brushSize * 10, mouseInput.getNormalizedMousePos(window.getWidth(), window.getHeight()));
         }
+
 
         boolean[] numKeys = window.getNumbersPressed();
         for (int i = 0; i < numKeys.length; i++) {
@@ -110,6 +121,7 @@ public class SandSim implements ILogic {
         }
 
         if(mouseInput.isLeftButtonPressed()) {
+//            Vector2d mp = mouseInput.getPos();
             addParticles(brushSize, mouseInput.getNormalizedMousePos(window.getWidth(), window.getHeight()));
         }
     }
@@ -124,8 +136,8 @@ public class SandSim implements ILogic {
     @Override
     public void render() {
         renderer.clear();
-        if(shouldDrawLines())
-            renderer.drawLines(grid.getId(), grid.getNumLines());
+//        if(shouldDrawLines())
+        renderer.drawLines(grid.getId(), grid.getNumLines());
         renderer.beginRender();
         world.render(renderer, particleModel);
         renderer.endRender();
@@ -180,10 +192,57 @@ public class SandSim implements ILogic {
         return colSizePixels > minColSize && rowSizePixels > minRowSize;
     }
 
+    Vector2i gridPos(Vector2f mousePos) {
+        // https://antongerdelan.net//opengl/raycasting.html
+        Vector4f ray_clip = new Vector4f(mousePos, -1, 1);
+
+        Vector4f ray_eye = new Vector4f();
+        Matrix4f invertedProjection = new Matrix4f();
+        window.getProjectionMatrix().invert(invertedProjection);
+        ray_clip.mul(invertedProjection, ray_eye);
+
+        Vector4f ray_world = new Vector4f();
+        Matrix4f invertedView = new Matrix4f();
+        cam.getViewMatrix().invert(invertedView);
+        ray_eye.mul(invertedView, ray_world);
+        Vector3f rayWorld = new Vector3f(ray_eye.x, ray_eye.y, ray_eye.z);
+        rayWorld.normalize();
+
+        Vector3f result = ray_plane_intersect(cam.getPosition(), rayWorld);
+        return new Vector2i(Math.round(result.x), Math.round(result.y));
+    }
+
+    Vector3f ray_plane_intersect(Vector3f rayOrigin, Vector3f rayDirection) {
+        Vector3f planePos = new Vector3f(0,0,0);
+        Vector3f planeNormal = new Vector3f(0,0,1);
+        float numerator = planePos.sub(rayOrigin).dot(planeNormal);
+        float denom = rayDirection.dot(planeNormal);
+        if(denom == 0) {
+            return null;
+        }
+        float t = numerator / denom;
+        return rayOrigin.add(rayDirection.mul(t));
+
+//        float numer = (a-e).dot(n);
+//        float denom = d.dot(n);
+//
+//        bool parallelToPlane = denom == 0.0f;
+//        if(parallelToPlane)
+//            return false;
+//
+//        float planeHit = numer / denom;
+    }
+
+//    Vector2f screenPos(Vector2i gridPos) {
+//        Vector4f pos = new Vector4f(gridPos, 0, 1);
+//
+//    }
+
     void addParticles(int brushSize, Vector3f cursorPos) {
-        Vector2i gridPos = grid.worldToGridCoordinates(cursorPos);
+        Vector2i gridPos = gridPos(new Vector2f(cursorPos.x, cursorPos.y));
         int x0 = gridPos.x();
         int y0 = gridPos.y();
+        System.out.println("(" + cursorPos.x + "," + cursorPos.y + ") =>" + "(" + x0 + "," + y0 + ")");
         if(brushSize == 1) world.setAt(x0, y0, fromSelectedType(x0, y0));
         Particle particle;
         int x, y;
