@@ -7,8 +7,8 @@ import com.apet2929.game.particles.ParticleType;
 import com.apet2929.game.particles.liquid.Liquid;
 
 public class NonMoveableSolid extends Particle {
-    public NonMoveableSolid(int x, int y) {
-        super(x, y);
+    public NonMoveableSolid(int x, int y, ParticleType type) {
+        super(x, y, type);
     }
 
     @Override

@@ -14,10 +14,10 @@ public abstract class Particle {
     private int gridX, gridY;
     public Vector2f velocity;
 
-    public Particle(int x, int y) {
+    public Particle(int x, int y, ParticleType type) {
         gridX = x;
         gridY = y;
-        this.type = getEnumType();
+        this.type = type;
         this.texture = ParticleLoader.getParticleTexture(type);
         this.velocity = new Vector2f(0,0);
     }
@@ -100,10 +100,6 @@ public abstract class Particle {
 
     public Particle getParticleBelow(World world) {
         return world.getAt(getGridX(), getGridY()-1);
-    }
-
-    private ParticleType getEnumType() {
-        return ParticleType.valueOf(this.getClass().getSimpleName().toUpperCase());
     }
 
     @Override

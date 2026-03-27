@@ -4,7 +4,7 @@ import com.apet2929.game.World;
 
 public class EmptyParticle extends Particle{
     public EmptyParticle(int x, int y) {
-        super(x, y);
+        super(x, y, ParticleType.EMPTYPARTICLE);
 
     }
 

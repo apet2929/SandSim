@@ -5,8 +5,8 @@ import com.apet2929.game.particles.Particle;
 import com.apet2929.game.particles.ParticleType;
 
 public abstract class Gas extends Particle {
-    public Gas(int x, int y) {
-        super(x, y);
+    public Gas(int x, int y, ParticleType type) {
+        super(x, y, type);
     }
 
     @Override

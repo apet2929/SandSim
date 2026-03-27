@@ -129,7 +129,7 @@ public class SandSim implements ILogic {
 
     @Override
     public void update() {
-        this.cam.rotate(0.1f);
+//        this.cam.rotate(0.1f);
         if(ParticleTimer.update()) {
             world.update();
         }

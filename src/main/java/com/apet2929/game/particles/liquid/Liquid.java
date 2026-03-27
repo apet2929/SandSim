@@ -9,8 +9,8 @@ import com.apet2929.game.particles.solid.MoveableSolid;
 public abstract class Liquid extends Particle {
     protected float dispersion;
     public boolean falling;
-    public Liquid(int x, int y) {
-        super(x, y);
+    public Liquid(int x, int y, ParticleType type) {
+        super(x, y, type);
         this.falling = true;
     }
 

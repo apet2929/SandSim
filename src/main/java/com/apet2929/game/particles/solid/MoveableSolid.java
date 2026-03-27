@@ -10,8 +10,8 @@ public abstract class MoveableSolid extends Particle {
 
     public boolean falling;
 
-    public MoveableSolid(int x, int y) {
-        super(x, y);
+    public MoveableSolid(int x, int y, ParticleType type) {
+        super(x, y, type);
         falling = true;
     }
 
