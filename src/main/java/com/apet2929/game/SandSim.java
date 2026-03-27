@@ -49,7 +49,7 @@ public class SandSim implements ILogic {
     Model particleModel;
     Camera cam;
 
-    public int selectedParticleType = 1;
+    public ParticleType selectedParticleType = ParticleType.SAND;
     public int brushSize = 5;
     public boolean debug = false;
     public float cameraMoveSpeed = 0.01f;
@@ -84,13 +84,14 @@ public class SandSim implements ILogic {
     @Override
     public void input(MouseInput mouseInput) {
         float delta = EngineManager.getDeltaTime() * 1000;
+
+
 //        if(window.isKeyPressed(GLFW.GLFW_KEY_SLASH))
 //            Consts.GRID_Z += cameraMoveSpeed * delta;
 //        if(window.isKeyPressed(GLFW.GLFW_KEY_PERIOD))
 //            Consts.GRID_Z -= cameraMoveSpeed * delta;
 
         if(window.isKeyPressed(GLFW.GLFW_KEY_LEFT)){
-            System.out.println("cam.getViewMatrix() = \n" + cam.getViewMatrix());
             cam.move(new Vector2f(-cameraMoveSpeed * delta, 0));
         }
         if(window.isKeyPressed(GLFW.GLFW_KEY_RIGHT))
@@ -115,8 +116,8 @@ public class SandSim implements ILogic {
         boolean[] numKeys = window.getNumbersPressed();
         for (int i = 0; i < numKeys.length; i++) {
             if(numKeys[i]){
-                selectedParticleType = i;
-                System.out.println("i = " + i);
+                selectedParticleType = particleTypeFromNumber(i);
+                System.out.println("selected = " + selectedParticleType);
             }
         }
 
@@ -128,6 +129,7 @@ public class SandSim implements ILogic {
 
     @Override
     public void update() {
+        this.cam.rotate(0.1f);
         if(ParticleTimer.update()) {
             world.update();
         }
@@ -222,21 +224,8 @@ public class SandSim implements ILogic {
         }
         float t = numerator / denom;
         return rayOrigin.add(rayDirection.mul(t));
-
-//        float numer = (a-e).dot(n);
-//        float denom = d.dot(n);
-//
-//        bool parallelToPlane = denom == 0.0f;
-//        if(parallelToPlane)
-//            return false;
-//
-//        float planeHit = numer / denom;
     }
 
-//    Vector2f screenPos(Vector2i gridPos) {
-//        Vector4f pos = new Vector4f(gridPos, 0, 1);
-//
-//    }
 
     void addParticles(int brushSize, Vector3f cursorPos) {
         Vector2i gridPos = gridPos(new Vector2f(cursorPos.x, cursorPos.y));
@@ -266,15 +255,17 @@ public class SandSim implements ILogic {
     }
 
     Particle fromSelectedType(int x, int y) {
-        Particle result;
-        switch (selectedParticleType) {
-            case 1: { result = ParticleType.SAND.createParticleByMatrix(x, y); break; }
-            case 2: { result = ParticleType.WATER.createParticleByMatrix(x, y); break; }
-            case 3: { result = ParticleType.SMOKE.createParticleByMatrix(x, y); break; }
-            case 4: { result = ParticleType.STONE.createParticleByMatrix(x, y); break; }
-            case 0: { result = ParticleType.EMPTYPARTICLE.createParticleByMatrix(x, y); break; }
-            default: { result = ParticleType.EMPTYPARTICLE.createParticleByMatrix(x, y); break; }
+        return selectedParticleType.createParticleByMatrix(x, y);
+    }
+
+    private ParticleType particleTypeFromNumber(int i) {
+        switch (i) {
+            case 1: return ParticleType.SAND;
+            case 2: return ParticleType.WATER;
+            case 3: return ParticleType.SMOKE;
+            case 4: return ParticleType.STONE;
+            case 0: return ParticleType.EMPTYPARTICLE;
+            default: return ParticleType.EMPTYPARTICLE;
         }
-        return result;
     }
 }

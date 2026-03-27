@@ -117,7 +117,6 @@ public class EngineManager {
 
     public static float getDeltaTime() {
         return lastFrameTime / (float) NANOSECOND;
-
     }
 
     public static void setFps(int fps) {
