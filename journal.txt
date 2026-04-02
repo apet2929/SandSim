@@ -56,5 +56,30 @@ g s
 
 
 
+3/16/2026:
+ - Added Fire particle class
+ - Implemented Fire selection input
+ - Set fire particle to notfound texture
 
+3/17/2026:
+ - Utilized AI to check for code smells
+ - Organized AI code smells
+ - Created Milestone 1 Document
 
+3/18/2026:
+ - Created new particle move tests
+ - Created particle swap test
+
+3/25/2026:
+ - Begun refactor with AI for individual turn it
+ - AI refactor changes a lot of files, seemingly breaking parts of the system
+ - rerunning AI refactor fixes some errors but introduces new code smells
+ - manual fixing of some changes (still all local)
+
+ 3/26/2026:
+ - Team planning system logic refactor
+ - Change logic to rules based implementation with change grid
+
+ 3/29/2026
+ - Scrapped AI refactor, uneccesary with planned changes and not functional.
+ - Reran code smell analysis to verify refactor targets.
