@@ -1,0 +1,136 @@
+Test Scenarios
+1. Solid Particle Falling Behavior
+Objective: Verify that movable solids fall through empty space and liquids, but stop at immovable solids.
+
+Steps:
+
+Select Sand (press 1)
+Spawn a column of sand particles near the top of the grid
+Observe: Sand should fall downward due to gravity
+Spawn water below the falling sand
+Observe: Sand should fall through the water and accumulate at the bottom
+Spawn stone at the bottom
+Observe: Sand should pile up on top of the stone and stop falling
+Expected Result: Sand falls through empty space and water, but stops when hitting stone.
+
+2. Liquid Dispersion and Falling
+Objective: Verify liquids fall and spread horizontally.
+
+Steps:
+
+Select Water (press 2)
+Spawn water particles in a compact group near the top
+Observe: Water should fall downward and spread horizontally as it reaches the bottom
+Create a barrier with stone particles
+Spawn water above the barrier
+Observe: Water should pool behind the barrier and spread horizontally
+Expected Result: Water falls vertically and disperses horizontally when it can't fall further.
+
+3. Gas Rising Behavior
+Objective: Verify gases rise upward and disperse.
+
+Steps:
+
+Select Smoke (press 3)
+Spawn smoke particles near the bottom of the grid
+Observe: Smoke should rise upward
+Create a barrier with stone particles in the middle
+Spawn smoke below the barrier
+Observe: Smoke should accumulate below the barrier and spread horizontally
+Expected Result: Smoke rises through empty space and disperses horizontally when blocked.
+
+4. Solid-Liquid Interaction
+Objective: Verify solids fall through liquids.
+
+Steps:
+
+Select Water (press 2) and create a pool of water
+Select Sand (press 1) and spawn sand above the water
+Observe: Sand should fall through the water and settle at the bottom
+Expected Result: Movable solids displace liquids and fall to the bottom.
+
+5. Fire-Water Interaction
+Objective: Verify fire extinguishes when touching water.
+
+Steps:
+
+Select Fire (press 5) and spawn fire particles
+Observe: Fire should produce smoke above it and have a limited lifespan
+Select Water (press 2) and spawn water near the fire
+Observe: Fire particles should disappear when they come into contact with water
+Expected Result: Fire is extinguished by water contact.
+
+6. Fire-Smoke Production
+Objective: Verify fire produces smoke over time.
+
+Steps:
+
+Select Fire (press 5)
+Spawn several fire particles in an open area
+Wait 1-2 seconds
+Observe: Smoke particles should appear above the fire particles
+Expected Result: Fire randomly produces smoke particles above it.
+
+7. Immovable Solid Blocking
+Objective: Verify stone blocks all particle movement.
+
+Steps:
+
+Select Stone (press 4) and create a wall
+Select Sand (press 1) and spawn sand above the wall
+Observe: Sand should pile up against the stone wall
+Select Water (press 2) and spawn water above the wall
+Observe: Water should pool against the stone wall
+Select Smoke (press 3) and spawn smoke below the wall
+Observe: Smoke should accumulate below the stone wall
+Expected Result: Stone blocks movement of all other particle types.
+
+8. Particle Stacking and Gravity
+Objective: Verify proper stacking behavior under gravity.
+
+Steps:
+
+Select Sand (press 1)
+Create a pyramid shape by spawning sand in layers
+Observe: The pyramid should remain stable
+Spawn more sand on top
+Observe: Additional sand should slide down the slopes and stabilize
+Expected Result: Particles stack properly and unstable configurations collapse.
+
+9. Mixed Particle Interactions
+Objective: Verify complex interactions between multiple particle types.
+
+Steps:
+
+Create a stone container (walls and floor)
+Fill the bottom with water
+Add sand on top of the water
+Add fire to the sand
+Observe the sequence:
+Sand falls through water
+Fire burns and produces smoke
+Smoke rises and disperses
+Fire eventually extinguishes or burns out
+Expected Result: All particle types interact correctly in complex scenarios.
+
+10. Boundary Conditions
+Objective: Verify behavior at grid edges.
+
+Steps:
+
+Spawn particles at the very top of the grid
+Observe: They should fall normally
+Spawn particles at the bottom
+Observe: Solids and liquids should stay put, gases should rise if possible
+Spawn particles at the left/right edges
+Observe: Horizontal dispersion should be limited by boundaries
+Expected Result: Particles respect grid boundaries appropriately.
+
+Common Issues to Watch For
+Particles passing through solids they shouldn't
+Particles not falling when they should
+Incorrect horizontal dispersion
+Fire not producing smoke or extinguishing
+Unstable particle configurations not collapsing
+Particles disappearing unexpectedly
+Performance issues with large numbers of particles
