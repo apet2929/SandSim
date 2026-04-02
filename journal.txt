@@ -87,3 +87,10 @@ each rule rolls for a chance to apply, any number of rules can possibly apply?
  3/29/2026
  - Scrapped AI refactor, uneccesary with planned changes and not functional.
  - Reran code smell analysis to verify refactor targets.
+
+ 3/31/2026
+ - Created Fire image
+ - Implemented Fire smoke particles
+ - Implemented Fire and water interaction
+ - AI was used as line recomendations, with some proving useful while others the AI
+   misunderstood the purpose of the code
