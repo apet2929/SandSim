@@ -16,7 +16,7 @@ import java.lang.Math;
 import java.util.List;
 
 public class SandSim implements ILogic {
-    public static final float cameraZoomSpeed = 0.3f;
+    public static final float cameraZoomSpeed = 0.1f;
 
     /*
     OUTLINE :
@@ -138,7 +138,7 @@ public class SandSim implements ILogic {
     @Override
     public void render() {
         renderer.clear();
-//        if(shouldDrawLines())
+        if(shouldDrawLines())
         renderer.drawLines(grid.getId(), grid.getNumLines());
         renderer.beginRender();
         world.render(renderer, particleModel);
