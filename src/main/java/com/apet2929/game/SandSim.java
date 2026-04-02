@@ -83,7 +83,7 @@ public class SandSim implements ILogic {
 
     @Override
     public void input(MouseInput mouseInput) {
-        float delta = EngineManager.getDeltaTime() * 1000;
+        float delta = 16.0f; //EngineManager.getDeltaTime() * 1000;
 
 
 //        if(window.isKeyPressed(GLFW.GLFW_KEY_SLASH))
@@ -255,31 +255,18 @@ public class SandSim implements ILogic {
     }
 
     Particle fromSelectedType(int x, int y) {
-        Particle result;
-        switch (selectedParticleType) {
-            case 1: { result = ParticleType.SAND.createParticleByMatrix(x, y); break; }
-            case 2: { result = ParticleType.WATER.createParticleByMatrix(x, y); break; }
-            case 3: { result = ParticleType.SMOKE.createParticleByMatrix(x, y); break; }
-            case 4: { result = ParticleType.STONE.createParticleByMatrix(x, y); break; }
-            case 5: { result = ParticleType.FIRE.createParticleByMatrix(x, y); break; }
-            case 0: { result = ParticleType.EMPTYPARTICLE.createParticleByMatrix(x, y); break; }
-            default: { result = ParticleType.EMPTYPARTICLE.createParticleByMatrix(x, y); break; }
         return selectedParticleType.createParticleByMatrix(x, y);
     }
 
-        Particle fromSelectedType(int x, int y) {
-            return selectedParticleType.createParticleByMatrix(x, y);
+    private ParticleType particleTypeFromNumber(int i) {
+        switch (i) {
+            case 1: return ParticleType.SAND;
+            case 2: return ParticleType.WATER;
+            case 3: return ParticleType.SMOKE;
+            case 4: return ParticleType.STONE;
+            case 5: return ParticleType.FIRE;
+            case 0: return ParticleType.EMPTYPARTICLE;
+            default: return ParticleType.EMPTYPARTICLE;
         }
-
-        private ParticleType particleTypeFromNumber(int i) {
-            switch (i) {
-                case 1: return ParticleType.SAND;
-                case 2: return ParticleType.WATER;
-                case 3: return ParticleType.SMOKE;
-                case 4: return ParticleType.STONE;
-                case 5: return ParticleType.FIRE;
-                case 0: return ParticleType.EMPTYPARTICLE;
-                default: return ParticleType.EMPTYPARTICLE;
-            }
-        }
+    }
 }
