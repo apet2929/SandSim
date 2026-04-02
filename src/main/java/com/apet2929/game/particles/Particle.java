@@ -6,6 +6,8 @@ import com.apet2929.game.World;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 
+import java.util.ArrayList;
+
 
 public abstract class Particle {
 
@@ -100,6 +102,18 @@ public abstract class Particle {
 
     public Particle getParticleBelow(World world) {
         return world.getAt(getGridX(), getGridY()-1);
+    }
+
+    public ArrayList<Particle> getNeighbors(World world) {
+        ArrayList<Particle> neighbors = new ArrayList<>();
+        for(int x = -1; x <= 1; x++){
+            for(int y = -1; y <= 1; y++) {
+                if(world.getAt(getGridX()+x, getGridY()+y) != null) {
+                    neighbors.add(world.getAt(getGridX()+x, getGridY()+y));
+                }
+            }
+        }
+        return neighbors;
     }
 
     @Override

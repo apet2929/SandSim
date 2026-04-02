@@ -1,0 +1,43 @@
+package com.apet2929.game.particles.liquid;
+
+import com.apet2929.engine.utils.Consts;
+import com.apet2929.game.World;
+import com.apet2929.game.particles.Particle;
+import com.apet2929.game.particles.ParticleType;
+
+import java.util.ArrayList;
+
+public class Fire extends Liquid{
+
+    public static final double smokeRate = 10.0/Consts.FRAMERATE;
+    public static final double lifeSpan = 1.0/(Consts.FRAMERATE);
+
+    public Fire(int x, int y) {
+        super(x, y, ParticleType.FIRE);
+        this.dispersion = 1.0f;
+    }
+
+
+    @Override
+    public void update(World world) {
+        super.update(world);
+
+        if(Math.random() <= smokeRate){
+            if(world.getAt(getGridX(), getGridY()+1).isEmpty()){
+                world.spawnParticle(ParticleType.SMOKE, getGridX(), getGridY()+1);
+            }
+        }
+
+        if(Math.random() <= lifeSpan){
+            world.spawnParticle(ParticleType.EMPTYPARTICLE, this.getGridX(), this.getGridY());
+        }
+
+        ArrayList<Particle> neighbors = getNeighbors(world);
+        for(Particle p : neighbors){
+            if(p.getType() == ParticleType.WATER){
+                world.spawnParticle(ParticleType.EMPTYPARTICLE, this.getGridX(), this.getGridY());
+            }
+        }
+    }
+}
+

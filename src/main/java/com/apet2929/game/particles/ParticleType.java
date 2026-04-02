@@ -4,6 +4,7 @@ import com.apet2929.game.particles.gas.Smoke;
 import com.apet2929.game.particles.liquid.Water;
 import com.apet2929.game.particles.solid.Sand;
 import com.apet2929.game.particles.solid.Stone;
+import com.apet2929.game.particles.liquid.Fire;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -28,6 +29,14 @@ public enum ParticleType {
             return new Water(x, y);
         }
     },
+
+    FIRE(Fire.class, MatterType.LIQUID) {
+        @Override
+        public Particle createParticleByMatrix(int x, int y) {
+            return new Fire(x, y);
+        }
+    },
+
     SMOKE(Smoke.class, MatterType.GAS) {
         @Override
         public Particle createParticleByMatrix(int x, int y) {

@@ -16,7 +16,7 @@ import java.lang.Math;
 import java.util.List;
 
 public class SandSim implements ILogic {
-    public static final float cameraZoomSpeed = 0.3f;
+    public static final float cameraZoomSpeed = 0.1f;
 
     /*
     OUTLINE :
@@ -83,7 +83,7 @@ public class SandSim implements ILogic {
 
     @Override
     public void input(MouseInput mouseInput) {
-        float delta = EngineManager.getDeltaTime() * 1000;
+        float delta = 16.0f; //EngineManager.getDeltaTime() * 1000;
 
 
 //        if(window.isKeyPressed(GLFW.GLFW_KEY_SLASH))
@@ -138,7 +138,7 @@ public class SandSim implements ILogic {
     @Override
     public void render() {
         renderer.clear();
-//        if(shouldDrawLines())
+        if(shouldDrawLines())
         renderer.drawLines(grid.getId(), grid.getNumLines());
         renderer.beginRender();
         world.render(renderer, particleModel);
@@ -264,6 +264,7 @@ public class SandSim implements ILogic {
             case 2: return ParticleType.WATER;
             case 3: return ParticleType.SMOKE;
             case 4: return ParticleType.STONE;
+            case 5: return ParticleType.FIRE;
             case 0: return ParticleType.EMPTYPARTICLE;
             default: return ParticleType.EMPTYPARTICLE;
         }

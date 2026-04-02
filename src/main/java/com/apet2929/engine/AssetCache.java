@@ -17,6 +17,7 @@ class AssetManager {
         assetPaths.put("WATER", "textures/water.png");
         assetPaths.put("SMOKE", "textures/smoke.png");
         assetPaths.put("STONE", "textures/stone.png");
+        assetPaths.put("FIRE", "textures/fire.png");
     }
 
     String get_asset_path(String name) {
