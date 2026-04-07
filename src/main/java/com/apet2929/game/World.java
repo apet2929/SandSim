@@ -39,8 +39,6 @@ public class World {
         this.width = grid.getNumCols();
         this.height = grid.getNumRows();
         particles = initWorld(width, height);
-
-
     }
 
     public void update() {

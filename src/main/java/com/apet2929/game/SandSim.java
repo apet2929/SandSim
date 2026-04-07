@@ -3,12 +3,9 @@ package com.apet2929.game;
 import com.apet2929.engine.*;
 import com.apet2929.engine.model.*;
 import com.apet2929.engine.utils.Consts;
-import com.apet2929.game.particles.EmptyParticle;
 import com.apet2929.game.particles.Particle;
 import com.apet2929.game.particles.ParticleLoader;
 import com.apet2929.game.particles.ParticleType;
-import com.apet2929.game.particles.liquid.Water;
-import com.apet2929.game.particles.solid.Sand;
 import org.joml.*;
 import org.lwjgl.glfw.GLFW;
 
@@ -101,7 +98,14 @@ public class SandSim implements ILogic {
         if(window.isKeyPressed(GLFW.GLFW_KEY_DOWN))
             cam.move(new Vector2f(0, cameraMoveSpeed * delta));
 
+        if(window.isKeyPressed(GLFW.GLFW_KEY_E))
+            cam.rotate(0.01f * delta);
+        if(window.isKeyPressed(GLFW.GLFW_KEY_Q))
+            cam.rotate(-0.01f * delta);
+
+
         if(window.isKeyPressed(GLFW.GLFW_KEY_PERIOD)) {
+            System.out.println("cam.getPosition().z = " + cam.getPosition().z);
             cam.move(new Vector3f(0,0,cameraZoomSpeed*delta));
         }
         else if(window.isKeyPressed(GLFW.GLFW_KEY_SLASH)) {
@@ -138,8 +142,8 @@ public class SandSim implements ILogic {
     @Override
     public void render() {
         renderer.clear();
-        if(shouldDrawLines())
-        renderer.drawLines(grid.getId(), grid.getNumLines());
+        if(shouldDrawLines()) renderer.drawLines(grid.getLinesId(), grid.getNumLines());
+        else renderer.drawLines(grid.getOutlineId(), grid.getOutlineNumLines());
         renderer.beginRender();
         world.render(renderer, particleModel);
         renderer.endRender();
@@ -184,14 +188,7 @@ public class SandSim implements ILogic {
     }
 
     boolean shouldDrawLines() {
-        float minColSize = window.getWidth() / 50.0f;
-        float minRowSize = window.getWidth() / 50.0f;
-        float colSizePixels, rowSizePixels;
-        float x = window.getWidth() / (float) Consts.NUM_COLS_GRID;
-        float y = window.getWidth() / (float) Consts.NUM_ROWS_GRID;
-        colSizePixels = x / -Consts.GRID_Z;
-        rowSizePixels = y / -Consts.GRID_Z;
-        return colSizePixels > minColSize && rowSizePixels > minRowSize;
+        return cam.getPosition().z < 50.0f;
     }
 
     Vector2i gridPos(Vector2f mousePos) {

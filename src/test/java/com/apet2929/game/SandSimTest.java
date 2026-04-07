@@ -72,7 +72,7 @@ class SandSimTest {
 
     @Test
     public void testWorldSpawnParticleByType() {
-        Grid grid = new Grid(0, 5, 5);
+        Grid grid = new Grid(5, 5);
         World world = new World(grid);
 
         // spawn sand at (2,2)
@@ -90,7 +90,7 @@ class SandSimTest {
         Camera cam = new Camera();
         SandSim sim = new SandSim(rm, window, ol, cam);
 
-        Grid grid = new Grid(0, 5, 5);
+        Grid grid = new Grid(5, 5);
         World world = new World(grid);
         // inject a simple world and grid into the sim
         sim.grid = grid;
@@ -109,7 +109,7 @@ class SandSimTest {
 
     @Test
     void testSpawnParticlePlacesCorrectType() {
-        Grid grid = new Grid(1, 10, 10);
+        Grid grid = new Grid(10, 10);
         world = new World(grid);
 
         world.spawnParticle(ParticleType.SAND, 4, 4);
@@ -119,7 +119,7 @@ class SandSimTest {
 
     @Test
     void testSwapParticles() {
-        Grid grid = new Grid(1, 10, 10);
+        Grid grid = new Grid(10, 10);
         world = new World(grid);
 
         Particle p1 = ParticleType.SAND.createParticleByMatrix(1, 1);
@@ -135,7 +135,7 @@ class SandSimTest {
 
     @Test
     void testMoveDown() {
-        Grid grid = new Grid(1, 10, 10);
+        Grid grid = new Grid(10, 10);
         world = new World(grid);
 
         Particle p = ParticleType.SAND.createParticleByMatrix(5, 5);
@@ -147,7 +147,7 @@ class SandSimTest {
 
     @Test
     void testMoveDownAtBottom() {
-        Grid grid = new Grid(1, 10, 10);
+        Grid grid = new Grid(10, 10);
         world = new World(grid);
 
         Particle p = ParticleType.SAND.createParticleByMatrix(5, 0);
@@ -159,7 +159,7 @@ class SandSimTest {
 
     @Test
     void testSwapParticle() {
-        Grid grid = new Grid(1, 10, 10);
+        Grid grid = new Grid(10, 10);
         world = new World(grid);
 
         Particle p1 = ParticleType.SAND.createParticleByMatrix(5, 5);

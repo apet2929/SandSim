@@ -3,7 +3,6 @@ package com.apet2929.engine.model;
 
 import com.apet2929.engine.utils.Utils;
 import org.joml.Vector2f;
-import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
@@ -15,7 +14,6 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ObjectLoader {
@@ -25,7 +23,7 @@ public class ObjectLoader {
     private List<Integer> textures = new ArrayList<>();
 
     public Model loadModel(float[] vertices, float[] textureCoords, int[] indices) {
-        int id = createVAO();
+        int id = createAndBindVAO();
         storeIndicesBuffer(indices);
         storeDataInAttribList(0, 3, vertices);
         storeDataInAttribList(1, 2, textureCoords);
@@ -34,10 +32,24 @@ public class ObjectLoader {
     }
 
     public Grid loadGrid(int numCols, int numRows) {
-        int id = createVAO();
-        Grid grid = new Grid(id, numCols, numRows);
+        Grid grid = new Grid(numCols, numRows);
 
-        Vector2f[] lines = grid.calculateGridLines();
+        // Setup grid lines
+        int linesId = createAndBindVAO();
+        storeDataInAttribList(0, 2, parseVertices(grid.calculateGridLines()));
+        unbind();
+
+        // Setup outline lines
+        int outlineLinesId = createAndBindVAO();
+        storeDataInAttribList(0, 2, parseVertices(grid.calculateGridOutlineLines()));
+        unbind();
+
+        grid.setGridLinesId(linesId);
+        grid.setOutlineLinesId(outlineLinesId);
+        return grid;
+    }
+
+    public float[] parseVertices(Vector2f[] lines) {
         float[] vertices = new float[lines.length * 2];
 
         int v = 0;
@@ -46,11 +58,7 @@ public class ObjectLoader {
             vertices[v+1] = line.y;
             v += 2;
         }
-        System.out.println("vertices = " + Arrays.toString(vertices));
-
-        storeDataInAttribList(0, 2, vertices);
-        unbind();
-        return grid;
+        return vertices;
     }
 
     public int loadTexture(String filename) throws Exception {
@@ -79,7 +87,7 @@ public class ObjectLoader {
         return id;
     }
 
-    private int createVAO() {
+    private int createAndBindVAO() {
         int id = GL30.glGenVertexArrays();
         vaos.add(id);
         bindVAO(id);

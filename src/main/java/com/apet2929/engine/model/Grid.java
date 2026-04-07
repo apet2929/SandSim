@@ -1,35 +1,43 @@
 package com.apet2929.engine.model;
 
-import com.apet2929.engine.utils.Consts;
 import org.joml.*;
-import org.lwjgl.system.CallbackI;
-
-import java.lang.Math;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.lwjgl.opengl.GL11.*;
 
 public class Grid {
 
-    private final int id;
+    private int linesId;
+    private int outlineLinesId;
     private float width, height;
     private int numCols, numRows;
 
-    public Grid(int id, int numCols, int numRows) {
-        this.id = id;
+    public Grid(int numCols, int numRows) {
         this.width = numCols;
         this.height = numRows;
         this.numCols = numCols;
         this.numRows = numRows;
     }
 
-    public int getId() {
-        return id;
+    public void setGridLinesId(int linesId) {
+        this.linesId = linesId;
+    }
+
+    public void setOutlineLinesId(int outlineLinesId) {
+        this.outlineLinesId = outlineLinesId;
+    }
+
+    public int getLinesId() {
+        return linesId;
+    }
+
+    public int getOutlineId(){
+        return outlineLinesId;
     }
 
     public int getNumLines() {
         return (numCols + numRows + 2);
+    }
+
+    public int getOutlineNumLines(){
+        return 4;
     }
 
     public void init( float width, float height, int numCols, int numRows) {
@@ -50,17 +58,6 @@ public class Grid {
         return pos;
     }
 
-    public Vector2i worldToGridCoordinates(Vector2f normalizedMouseCoord) {
-        Vector2f worldCoord = new Vector2f(normalizedMouseCoord.x, normalizedMouseCoord.y);
-//        Translate bottom left to (0,0)
-        float translatedX = worldCoord.x - 0;
-        float translatedY = worldCoord.y - 0;
-
-//        Scale by row/col size
-        float scaledX = translatedX / getDx();
-        float scaledY = translatedY / getDx();
-        return new Vector2i(Math.round(scaledX), Math.round(scaledY));
-    }
 
     public Vector2f[] calculateGridLines() {
         int numPoints = getNumLines() * 2;
@@ -95,6 +92,15 @@ public class Grid {
             v += 2;
         }
         return lines;
+    }
+
+    public Vector2f[] calculateGridOutlineLines(){
+        return new Vector2f[] {
+                new Vector2f(-1,-1), new Vector2f(1,-1), // top
+                new Vector2f(1,-1), new Vector2f(1,1), // right
+                new Vector2f(1,1), new Vector2f(-1,1), // bottom
+                new Vector2f(-1,1), new Vector2f(-1,-1)
+        };
     }
 
     public float[] getScaledVertices() {
