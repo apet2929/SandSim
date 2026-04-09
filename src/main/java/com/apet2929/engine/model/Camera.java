@@ -16,14 +16,6 @@ public class Camera {
         this.viewMatrix = createViewMatrix();
     }
 
-    public Vector2f inverse(Vector2f position) {
-        Vector4f pos = new Vector4f(position, 0, 1);
-        Matrix4f inverted = new Matrix4f();
-        this.viewMatrix.invert(inverted);
-        Vector4f result = pos.mul(inverted);
-        return new Vector2f(result.x, result.y);
-    }
-
     public void rotate(float theta) {
         this.viewMatrix.rotate(theta, new Vector3f(0,1,0));
     }

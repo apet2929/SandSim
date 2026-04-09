@@ -11,6 +11,7 @@ import org.joml.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 public class World {
     private final int width, height;
@@ -155,6 +156,19 @@ public class World {
 
     public boolean posInGridRange(int posX, int posY) {
         return (posX < width && posX >= 0 && posY < height && posY >= 0);
+    }
+
+    public void fillRandomly() {
+        Vector2i gridSize = new Vector2i(grid.getNumCols(), grid.getNumRows());
+        java.util.Random random = new Random();
+        ParticleType[] types = ParticleType.values();
+        for(int x = 0; x < gridSize.x; x++) {
+            for(int y = 0; y < gridSize.y; y++) {
+                int randomTypeId = random.nextInt(types.length);
+                ParticleType randomType = types[randomTypeId];
+                spawnParticle(randomType, x, y);
+            }
+        }
     }
 
     private ArrayList<Particle> getParticlesToBeUpdated() {

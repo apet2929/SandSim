@@ -76,17 +76,12 @@ public class SandSim implements ILogic {
 
         initParticleModel();
         initParticleTypes();
+        cam.move(new Vector2f(grid.getNumCols()/2f, grid.getNumRows()/2f));
     }
 
     @Override
     public void input(MouseInput mouseInput) {
         float delta = 16.0f; //EngineManager.getDeltaTime() * 1000;
-
-
-//        if(window.isKeyPressed(GLFW.GLFW_KEY_SLASH))
-//            Consts.GRID_Z += cameraMoveSpeed * delta;
-//        if(window.isKeyPressed(GLFW.GLFW_KEY_PERIOD))
-//            Consts.GRID_Z -= cameraMoveSpeed * delta;
 
         if(window.isKeyPressed(GLFW.GLFW_KEY_LEFT)){
             cam.move(new Vector2f(-cameraMoveSpeed * delta, 0));
@@ -97,6 +92,10 @@ public class SandSim implements ILogic {
             cam.move(new Vector2f(0, -cameraMoveSpeed * delta));
         if(window.isKeyPressed(GLFW.GLFW_KEY_DOWN))
             cam.move(new Vector2f(0, cameraMoveSpeed * delta));
+        if(window.isKeyPressed(GLFW.GLFW_KEY_R))
+            world.fillRandomly();
+
+        if(window.isKeyPressed(GLFW.GLFW_KEY_R)) world.fillRandomly();
 
         if(window.isKeyPressed(GLFW.GLFW_KEY_E))
             cam.rotate(0.01f * delta);

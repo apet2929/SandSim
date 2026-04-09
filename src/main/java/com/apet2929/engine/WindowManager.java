@@ -31,8 +31,6 @@ public class WindowManager {
 
     }
 
-
-
     public void init(){
         GLFWErrorCallback.createPrint(System.err).set();
 
@@ -109,6 +107,14 @@ public class WindowManager {
 
     public boolean isKeyPressed(int keycode) {
         return GLFW.glfwGetKey(window, keycode) == GLFW.GLFW_PRESS;
+    }
+
+    public void onKeyJustRelesed(int keycode, Runnable onReleased) {
+        GLFW.glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
+            if(key == keycode && action == GLFW.GLFW_RELEASE) {
+                onReleased.run();
+            }
+        });
     }
 
     public boolean[] getNumbersPressed() {
