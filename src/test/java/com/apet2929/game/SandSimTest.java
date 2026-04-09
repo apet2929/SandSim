@@ -11,8 +11,11 @@ import com.apet2929.game.particles.ParticleType;
 import com.apet2929.game.particles.Particle;
 import org.easymock.EasyMock;
 import org.joml.Matrix4f;
+import org.joml.Vector2i;
 import org.junit.jupiter.api.Test;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -171,6 +174,50 @@ class SandSimTest {
 
         assertEquals(p2, world.getAt(5, 5));
         assertEquals(p1, world.getAt(5, 4));
+    }
+
+    void fillWorldRandomly(World world, Vector2i gridSize) {
+        Random random = new Random();
+        ParticleType[] types = ParticleType.values();
+        for(int x = 0; x < gridSize.x; x++) {
+            for(int y = 0; y < gridSize.y; y++) {
+                int randomTypeId = random.nextInt(types.length);
+                ParticleType randomType = types[randomTypeId];
+                world.spawnParticle(randomType, x, y);
+            }
+        }
+    }
+
+    @Test
+    void testParticlePositionSynced(){
+        final int numUpdates = 20;
+        final Vector2i gridSize = new Vector2i(20,20);
+
+        Grid grid = new Grid(gridSize.x, gridSize.y);
+        world = new World(grid);
+        fillWorldRandomly(world, new Vector2i(grid.getNumCols(), grid.getNumRows()));
+        for (int x = 0; x < gridSize.x; x++) {
+            for(int y = 0; y < gridSize.y; y++) {
+                Particle particle = world.getAt(x,y);
+                String msg = "(x,y)=("+x+","+y+"), particle=" + particle.toString();
+                assertEquals(x, particle.getGridX(), msg);
+                assertEquals(y, particle.getGridY(), msg);
+            }
+        }
+
+        for (int i = 0; i < numUpdates; i++) {
+            world.update();
+        }
+
+        for (int x = 0; x < gridSize.x; x++) {
+            for(int y = 0; y < gridSize.y; y++) {
+                Particle particle = world.getAt(x,y);
+                String msg = "(x,y)=("+x+","+y+"), particle=" + particle.toString();
+                assertEquals(x, particle.getGridX(), msg);
+                assertEquals(y, particle.getGridY(), msg);
+            }
+        }
+
     }
 
 }

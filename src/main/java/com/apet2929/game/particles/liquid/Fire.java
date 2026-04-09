@@ -4,6 +4,7 @@ import com.apet2929.engine.utils.Consts;
 import com.apet2929.game.World;
 import com.apet2929.game.particles.Particle;
 import com.apet2929.game.particles.ParticleType;
+import org.joml.Vector2i;
 
 import java.util.ArrayList;
 
@@ -23,7 +24,8 @@ public class Fire extends Liquid{
         super.update(world);
 
         if(Math.random() <= smokeRate){
-            if(world.getAt(getGridX(), getGridY()+1).isEmpty()){
+            Vector2i rightNeighbor = new Vector2i(getGridX(), getGridY()+1);
+            if(world.posInGridRange(rightNeighbor) && world.getAt(getGridX(), getGridY()+1).isEmpty()) {
                 world.spawnParticle(ParticleType.SMOKE, getGridX(), getGridY()+1);
             }
         }
