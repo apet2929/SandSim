@@ -49,6 +49,12 @@ public class ObjectLoader {
         return grid;
     }
 
+    public void cleanupGrid(Grid grid) {
+        int linesId = grid.getLinesId();
+        GL30.glDeleteVertexArrays(linesId);
+
+    }
+
     public float[] parseVertices(Vector2f[] lines) {
         float[] vertices = new float[lines.length * 2];
 

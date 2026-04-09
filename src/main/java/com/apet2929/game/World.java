@@ -3,6 +3,7 @@ package com.apet2929.game;
 import com.apet2929.engine.RenderManager;
 import com.apet2929.engine.model.Grid;
 import com.apet2929.engine.model.Model;
+import com.apet2929.engine.model.ObjectLoader;
 import com.apet2929.engine.utils.Consts;
 import com.apet2929.game.particles.EmptyParticle;
 import com.apet2929.game.particles.Particle;
@@ -14,25 +15,12 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class World {
-    private final int width, height;
+    private int width, height;
     private Particle[][] particles;
-    private final Grid grid;
+    private Grid grid;
 
     private boolean directionBias = false;
     int directionThreshold = Consts.NUM_ROWS_GRID / 16;
-
-    /*
-    TODO:
-    ParticleType and MatterState replaced by instanceof
-    Particles now store their own position, but can only be modified through the world class to avoid array desync.
-    Particles updated by making an array of particles to be updated and then using a foreach loop
-            to avoid the same particle being updated more than once
-
-
-    ... I've got a lot of work ahead of me...
-    Maybe delete all of these classes and start from scratch?
-
-     */
 
     public World(Grid grid) {
         this.grid = grid;
@@ -40,6 +28,49 @@ public class World {
         this.width = grid.getNumCols();
         this.height = grid.getNumRows();
         particles = initWorld(width, height);
+    }
+
+    public enum ExpandDirection {
+        UP, DOWN, LEFT, RIGHT
+    }
+
+    public Grid expand(ObjectLoader loader, ExpandDirection direction, int amount) {
+        // adds `amount` new rows/columns in the specified direction
+        loader.cleanupGrid(grid);
+        int oldWidth = this.width;
+        int oldHeight = this.height;
+        int newWidth = this.width;
+        int newHeight = this.height;
+        if(direction == ExpandDirection.UP || direction == ExpandDirection.DOWN) newHeight += amount;
+        else newWidth += amount;
+        Grid newGrid = loader.loadGrid(newWidth, newHeight);
+        Particle[][] newParticles = initWorld(newWidth, newHeight);
+        Vector2i offset = new Vector2i(0,0);
+        switch(direction) {
+            case UP -> {
+                offset.y = 0;
+            }
+            case DOWN -> {
+                offset.y = amount;
+            }
+            case LEFT -> {
+                offset.x = amount;
+            }
+            case RIGHT -> {
+                offset.x = 0;
+            }
+        }
+        for (int x = 0; x < oldWidth; x++) {
+            for (int y = 0; y < oldHeight; y++) {
+                newParticles[y + offset.y][x + offset.x] = getAt(x,y);
+            }
+        }
+
+        this.grid = newGrid;
+        this.width = newWidth;
+        this.height = newHeight;
+        this.particles = newParticles;
+        return grid;
     }
 
     public void update() {
