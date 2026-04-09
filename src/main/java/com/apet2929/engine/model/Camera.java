@@ -7,11 +7,9 @@ import org.joml.Vector4f;
 
 public class Camera {
     private Matrix4f viewMatrix;
-    private float zoom;
     private Vector3f position;
 
     public Camera() {
-        this.zoom = 1;
         this.position = new Vector3f(0,0,15);
         this.viewMatrix = createViewMatrix();
     }

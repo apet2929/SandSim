@@ -95,11 +95,15 @@ public class Grid {
     }
 
     public Vector2f[] calculateGridOutlineLines(){
+        float l = -0.5f;
+        float r = width + 0.5f;
+        float t = -0.5f;
+        float b = height + 0.5f;
         return new Vector2f[] {
-                new Vector2f(-1,-1), new Vector2f(1,-1), // top
-                new Vector2f(1,-1), new Vector2f(1,1), // right
-                new Vector2f(1,1), new Vector2f(-1,1), // bottom
-                new Vector2f(-1,1), new Vector2f(-1,-1)
+                new Vector2f(l,t), new Vector2f(r,t), // top
+                new Vector2f(r,t), new Vector2f(r,b), // right
+                new Vector2f(r,b), new Vector2f(l,b), // bottom
+                new Vector2f(l,b), new Vector2f(l,t)
         };
     }
 
