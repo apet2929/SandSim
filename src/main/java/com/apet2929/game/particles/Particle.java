@@ -23,8 +23,10 @@ public abstract class Particle {
         this.texture = ParticleLoader.getParticleTexture(type);
         this.velocity = new Vector2f(0,0);
     }
+
     public abstract void update(World world);
-    public abstract boolean canSwap(ParticleType.MatterType type);
+
+    public abstract boolean canSwap(ParticleType type);
 
     public boolean isEmpty() {
         return this.type == ParticleType.EMPTYPARTICLE;
@@ -44,7 +46,7 @@ public abstract class Particle {
 
     public boolean canSwap(Particle other) {
         if(other == null) return false;
-        return canSwap(other.getType().matterType);
+        return canSwap(other.getType());
     }
 
     public ParticleType getType() {

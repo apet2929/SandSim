@@ -6,5 +6,4 @@ public class Sand extends MoveableSolid {
     public Sand(int x, int y) {
         super(x, y, ParticleType.SAND);
     }
-
 }

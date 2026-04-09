@@ -112,6 +112,10 @@ public class SandSim implements ILogic {
             addParticles(brushSize * 10, mouseInput.getNormalizedMousePos(window.getWidth(), window.getHeight()));
         }
 
+        if(window.isKeyPressed(GLFW.GLFW_KEY_E))
+            cam.rotate(0.002f * delta);
+        if(window.isKeyPressed(GLFW.GLFW_KEY_Q))
+            cam.rotate(-0.002f * delta);
 
         boolean[] numKeys = window.getNumbersPressed();
         for (int i = 0; i < numKeys.length; i++) {
@@ -265,6 +269,8 @@ public class SandSim implements ILogic {
             case 3: return ParticleType.SMOKE;
             case 4: return ParticleType.STONE;
             case 5: return ParticleType.FIRE;
+            case 6: return ParticleType.OIL;
+            case 7: return ParticleType.PLANT;
             case 0: return ParticleType.EMPTYPARTICLE;
             default: return ParticleType.EMPTYPARTICLE;
         }

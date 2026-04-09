@@ -31,8 +31,9 @@ public abstract class Liquid extends Particle {
 
 
     @Override
-    public boolean canSwap(ParticleType.MatterType t) {
-        return (t == ParticleType.MatterType.EMPTY || t == ParticleType.MatterType.GAS);
+    public boolean canSwap(ParticleType type) {
+        return (type.matterType == ParticleType.MatterType.EMPTY
+                || type.matterType == ParticleType.MatterType.GAS);
     }
 
     private boolean fallDown(World world) {
