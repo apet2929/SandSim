@@ -18,5 +18,6 @@ public class NonMoveableSolid extends Particle {
 
     @Override
     public void update(World world) {
+        super.update(world);
     }
 }

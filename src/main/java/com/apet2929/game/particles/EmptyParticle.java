@@ -14,5 +14,7 @@ public class EmptyParticle extends Particle{
     }
 
     @Override
-    public void update(World world) {}
+    public void update(World world) {
+        super.update(world);
+    }
 }

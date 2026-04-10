@@ -22,6 +22,7 @@ public class SandSim implements ILogic {
     private final ObjectLoader loader;
     private final WindowManager window;
     private AssetCache assetCache;
+    public boolean paused;
 
     Grid grid;
     World world;
@@ -61,6 +62,7 @@ public class SandSim implements ILogic {
 
         initParticleModel();
         initParticleTypes();
+        Particle.DEBUG_TEXTURE = assetCache.loadTexture("DEBUG");
         cam.move(new Vector2f(grid.getNumCols()/2f, grid.getNumRows()/2f));
     }
 
@@ -94,6 +96,7 @@ public class SandSim implements ILogic {
                 break;
             }
         }
+        if(keyboard.isKeyJustPressed(GLFW.GLFW_KEY_ENTER)) paused = !paused;
 
         if(keyboard.isKeyJustReleased(GLFW.GLFW_KEY_R)) world.fillRandomly();
 
@@ -124,13 +127,21 @@ public class SandSim implements ILogic {
         }
 
         if(mouseInput.isLeftButtonPressed()) {
-            addParticles(brushSize, mouseInput.getNormalizedMousePos(window.getWidth(), window.getHeight()));
+            Vector3f mousePos = mouseInput.getNormalizedMousePos(window.getWidth(), window.getHeight());
+            if(!paused) addParticles(brushSize, mousePos);
+            else inspectParticle(mousePos);
         }
+    }
+
+    private void inspectParticle(Vector3f mousePos) {
+        Vector2i gridPos = gridPos(new Vector2f(mousePos.x, mousePos.y));
+        Particle particle = world.getAt(gridPos);
+        particle.debugSoon();
     }
 
     @Override
     public void update() {
-//        this.cam.rotate(0.1f);
+        if(paused) return;
         if(ParticleTimer.update()) {
             world.update();
         }
@@ -219,6 +230,7 @@ public class SandSim implements ILogic {
         float t = numerator / denom;
         return rayOrigin.add(rayDirection.mul(t));
     }
+
 
 
     void addParticles(int brushSize, Vector3f cursorPos) {

@@ -11,6 +11,7 @@ public abstract class Gas extends Particle {
 
     @Override
     public void update(World world) {
+        super.update(world);
         if(canSwap(world.getAt(getGridX(), getGridY()+1))) {
             world.swapParticles(this, getGridX(), getGridY()+1);
 //            world.swapParticlesInc(this, 0, -1);

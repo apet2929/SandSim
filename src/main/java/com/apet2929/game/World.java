@@ -4,6 +4,7 @@ import com.apet2929.engine.RenderManager;
 import com.apet2929.engine.model.Grid;
 import com.apet2929.engine.model.Model;
 import com.apet2929.engine.model.ObjectLoader;
+import com.apet2929.engine.model.Texture;
 import com.apet2929.engine.utils.Consts;
 import com.apet2929.game.particles.EmptyParticle;
 import com.apet2929.game.particles.Particle;
@@ -18,6 +19,7 @@ public class World {
     private int width, height;
     private Particle[][] particles;
     private Grid grid;
+    Texture debugTexture;
 
     private boolean directionBias = false;
     int directionThreshold = Consts.NUM_ROWS_GRID / 16;
@@ -28,6 +30,7 @@ public class World {
         this.width = grid.getNumCols();
         this.height = grid.getNumRows();
         particles = initWorld(width, height);
+
     }
 
     public enum ExpandDirection {
@@ -62,7 +65,11 @@ public class World {
         }
         for (int x = 0; x < oldWidth; x++) {
             for (int y = 0; y < oldHeight; y++) {
-                newParticles[y + offset.y][x + offset.x] = getAt(x,y);
+                Particle particle = getAt(x,y);
+                int newX = x + offset.x;
+                int newY = y + offset.y;
+                particle.setPositionByWorld(newX, newY);
+                newParticles[y + offset.y][x + offset.x] = particle;
             }
         }
 
@@ -94,10 +101,13 @@ public class World {
             particlePos.y = i;
             for (int j = 0; j < particles[i].length; j++) {
                 particlePos.x = j;
+                Particle particle = particles[i][j];
                 boolean b = !(particles[i][j] instanceof EmptyParticle);
                 if(b) {
-                    particleModel.setTexture(particles[i][j].getTexture());
+                    if(particle.willDebugSoon()) particleModel.setTexture(Particle.DEBUG_TEXTURE);
+                    else particleModel.setTexture(particle.getTexture());
                     renderer.renderParticle(particleModel, grid.calculateGridPosition(particlePos.x, particlePos.y));
+                    if(particle.willDebugSoon()) particleModel.setTexture(particles[i][j].getTexture());
                 }
             }
         }

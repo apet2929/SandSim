@@ -85,6 +85,11 @@ each rule rolls for a chance to apply, any number of rules can possibly apply?
  - AI was used as line recomendations, with some proving useful while others the AI
    misunderstood the purpose of the code
 
+4/8/2026
+ - Refactored to extract keyboard input handling to separate class
+4/9/2026
+ - Added infinitely expandable grid
+
  4/3/2026
  - Created Oil Particle Class
  - Created Plant Particle Class
@@ -99,3 +104,6 @@ each rule rolls for a chance to apply, any number of rules can possibly apply?
  - changed Oil and Water interaction
  - AI repeatedly failed to even get close to the refactor,
     instead writing 50 lines to attempt to work around it.
+
+4/10/2026
+- Added debug inspect mode for particles. Press enter to pause, click on a particle to inspect it next update

@@ -24,6 +24,7 @@ public abstract class MoveableSolid extends Particle {
 
     @Override
     public void update(World world) {
+        super.update(world);
 
         boolean moved = fallDown(world);
         if(!moved) fallDiagonally(world);
@@ -117,16 +118,8 @@ public abstract class MoveableSolid extends Particle {
         this.velocity.y += Consts.GRAVITY * Consts.PARTICLE_DELTA;
     }
 
-
-
-
-
-
-
     void fallThroughLiquid(World world) {
         world.swapParticles(this, getGridX(), getGridY()-1);
     }
-
-
 
 }

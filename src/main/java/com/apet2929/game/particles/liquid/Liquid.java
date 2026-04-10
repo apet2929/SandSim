@@ -16,7 +16,7 @@ public abstract class Liquid extends Particle {
 
     @Override
     public void update(World world) {
-
+        super.update(world);
         int dir = world.getDirectionBias();
         this.falling = updateIsFalling(world);
         boolean moved = fallDown(world);

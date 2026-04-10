@@ -10,11 +10,12 @@ import java.util.ArrayList;
 
 
 public abstract class Particle {
-
+    public static Texture DEBUG_TEXTURE;
     private Texture texture;
     private ParticleType type;
     private int gridX, gridY;
     public Vector2f velocity;
+    public int debugCountdown = -1; // -1 = debug not queued, 0=debug next update, 1+=debug is queued
 
     public Particle(int x, int y, ParticleType type) {
         gridX = x;
@@ -24,7 +25,23 @@ public abstract class Particle {
         this.velocity = new Vector2f(0,0);
     }
 
-    public abstract void update(World world);
+    public void update(World world) {
+        if(debugCountdown >= 0){
+            if(debugCountdown == 0) {
+
+                System.out.println(this);
+            }
+            debugCountdown -= 1;
+        }
+    }
+
+    public void debugSoon(){
+        debugCountdown = 2;
+    }
+
+    public boolean willDebugSoon(){
+        return debugCountdown != -1;
+    }
 
     public abstract boolean canSwap(ParticleType type);
 
@@ -123,6 +140,7 @@ public abstract class Particle {
         return "Particle{" +
                 "type=" + type +
                 ", position=(" + gridX + ", " + gridY + ")" +
+                ", velocity=" + velocity +
                 '}';
     }
 }
