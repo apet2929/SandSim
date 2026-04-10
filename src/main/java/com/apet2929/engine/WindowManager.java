@@ -28,7 +28,6 @@ public class WindowManager {
         this.height = height;
         this.vSync = vSync;
         projectionMatrix = new Matrix4f();
-
     }
 
     public void init(){
@@ -103,28 +102,6 @@ public class WindowManager {
 
     public void setClearColour(float r, float g, float b, float a){
         GL11.glClearColor(r, g, b, a);
-    }
-
-    public boolean isKeyPressed(int keycode) {
-        return GLFW.glfwGetKey(window, keycode) == GLFW.GLFW_PRESS;
-    }
-
-    public void onKeyJustRelesed(int keycode, Runnable onReleased) {
-        GLFW.glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
-            if(key == keycode && action == GLFW.GLFW_RELEASE) {
-                onReleased.run();
-            }
-        });
-    }
-
-    public boolean[] getNumbersPressed() {
-        boolean[] numKeys = new boolean[10];
-        int key;
-        for (int i = 0; i < 10; i++) {
-            key = 48 + i;
-            numKeys[i] = isKeyPressed(key);
-        }
-        return numKeys;
     }
 
     public boolean windowShouldClose() {

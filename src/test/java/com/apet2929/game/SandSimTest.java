@@ -1,9 +1,6 @@
 package com.apet2929.game;
 
-import com.apet2929.engine.EngineManager;
-import com.apet2929.engine.MouseInput;
-import com.apet2929.engine.RenderManager;
-import com.apet2929.engine.WindowManager;
+import com.apet2929.engine.*;
 import com.apet2929.engine.model.Camera;
 import com.apet2929.engine.model.Grid;
 import com.apet2929.engine.model.ObjectLoader;
@@ -27,17 +24,22 @@ class SandSimTest {
         WindowManager window = EasyMock.mock(WindowManager.class);
         ObjectLoader ol = EasyMock.mock(ObjectLoader.class);
         MouseInput mi = EasyMock.mock(MouseInput.class);
+        KeyboardManager key = EasyMock.createNiceMock(KeyboardManager.class);
         Camera cam = new Camera();
-        SandSim sim = new SandSim(rm, window, ol, cam);
-        EasyMock.expect(window.isKeyPressed(EasyMock.anyInt())).andReturn(false).anyTimes();
+        SandSim sim = new SandSim(rm, window, ol, cam, key);
+        EasyMock.expect(window.getWindow()).andReturn(0L).anyTimes();
+        key.update(0L);
+        EasyMock.expectLastCall();
+
+        EasyMock.expect(key.isKeyPressed(EasyMock.anyInt())).andReturn(false).anyTimes();
         boolean[] keysPressed = {false, false, true };
-        EasyMock.expect(window.getNumbersPressed()).andReturn(keysPressed);
+        EasyMock.expect(key.getNumbersPressed()).andReturn(keysPressed);
         EasyMock.expect(mi.isLeftButtonPressed()).andReturn(false).anyTimes();
 
-        EasyMock.replay(rm, window, ol, mi);
+        EasyMock.replay(rm, window, ol, mi, key);
         sim.input(mi);
 
-        EasyMock.verify(rm, window, ol, mi);
+        EasyMock.verify(rm, window, ol, mi, key);
         assertEquals(ParticleType.WATER, sim.selectedParticleType);
     }
 
@@ -47,14 +49,20 @@ class SandSimTest {
         WindowManager window = EasyMock.mock(WindowManager.class);
         ObjectLoader ol = EasyMock.mock(ObjectLoader.class);
         MouseInput mi = EasyMock.mock(MouseInput.class);
+        KeyboardManager key = EasyMock.createNiceMock(KeyboardManager.class);
         Camera cam = new Camera();
-        SandSim sim = new SandSim(rm, window, ol, cam);
+        SandSim sim = new SandSim(rm, window, ol, cam, key);
 
         // Make LEFT key appear pressed, all other key checks return false
-        EasyMock.expect(window.isKeyPressed(GLFW.GLFW_KEY_LEFT)).andReturn(true);
-        EasyMock.expect(window.isKeyPressed(EasyMock.anyInt())).andReturn(false).anyTimes();
-        EasyMock.expect(window.getNumbersPressed()).andReturn(new boolean[10]);
+        EasyMock.expect(key.isKeyPressed(GLFW.GLFW_KEY_LEFT)).andReturn(true);
+        EasyMock.expect(key.isKeyPressed(EasyMock.anyInt())).andReturn(false).anyTimes();
+        EasyMock.expect(key.getNumbersPressed()).andReturn(new boolean[10]);
         EasyMock.expect(mi.isLeftButtonPressed()).andReturn(false).anyTimes();
+        EasyMock.expect(window.getWindow()).andReturn(0L).anyTimes();
+        key.update(0L);
+        EasyMock.expectLastCall();
+
+
 
         // Force a non-zero delta time by setting the private EngineManager.lastFrameTime via reflection
         java.lang.reflect.Field lastFrameField = com.apet2929.engine.EngineManager.class.getDeclaredField("lastFrameTime");
@@ -62,14 +70,15 @@ class SandSimTest {
         // set to 1 second in nanoseconds so getDeltaTime() -> 1.0f
         lastFrameField.setFloat(null, 1000000000f);
 
-        EasyMock.replay(rm, window, ol, mi);
+        float originalX = sim.cam.getPosition().x;
+        EasyMock.replay(rm, window, ol, mi, key);
         sim.input(mi);
 
-        EasyMock.verify(rm, window, ol, mi);
+        EasyMock.verify(rm, window, ol, mi, key);
 
         // Camera initial z is 15, x/y start at 0. Expect x moved left by cameraMoveSpeed * delta * -1
         float delta = EngineManager.getDeltaTime() * 1000f;
-        float expectedX = -sim.cameraMoveSpeed * delta;
+        float expectedX = originalX - (sim.cameraMoveSpeed * delta);
         assertEquals(expectedX, cam.getPosition().x, 0.0001f);
     }
 
@@ -90,8 +99,9 @@ class SandSimTest {
         WindowManager window = EasyMock.mock(WindowManager.class);
         ObjectLoader ol = EasyMock.mock(ObjectLoader.class);
         MouseInput mi = EasyMock.mock(MouseInput.class);
+        KeyboardManager key = EasyMock.mock(KeyboardManager.class);
         Camera cam = new Camera();
-        SandSim sim = new SandSim(rm, window, ol, cam);
+        SandSim sim = new SandSim(rm, window, ol, cam, key);
 
         Grid grid = new Grid(5, 5);
         World world = new World(grid);

@@ -11,6 +11,9 @@ import org.lwjgl.glfw.GLFW;
 
 import java.lang.Math;
 import java.util.List;
+import java.util.Map;
+
+import static java.util.Map.entry;
 
 public class SandSim implements ILogic {
     public static final float cameraZoomSpeed = 0.1f;
@@ -46,6 +49,7 @@ public class SandSim implements ILogic {
     World world;
     Model particleModel;
     Camera cam;
+    KeyboardManager keyboard;
 
     public ParticleType selectedParticleType = ParticleType.SAND;
     public int brushSize = 5;
@@ -56,13 +60,15 @@ public class SandSim implements ILogic {
         renderer = new RenderManager();
         window = Launcher.getWindow();
         loader = new ObjectLoader();
+        keyboard = new KeyboardManager();
     }
 
-    public SandSim(RenderManager rm, WindowManager window, ObjectLoader loader, Camera cam){
+    public SandSim(RenderManager rm, WindowManager window, ObjectLoader loader, Camera cam, KeyboardManager keyboard){
         this.renderer = rm;
         this.window = window;
         this.loader = loader;
         this.cam = cam;
+        this.keyboard = keyboard;
     }
 
     @Override
@@ -82,49 +88,57 @@ public class SandSim implements ILogic {
 
     @Override
     public void input(MouseInput mouseInput) {
+        keyboard.update(window.getWindow());
         float delta = 16.0f; //EngineManager.getDeltaTime() * 1000;
 
-        if(window.isKeyPressed(GLFW.GLFW_KEY_LEFT)){
+        if(keyboard.isKeyPressed(GLFW.GLFW_KEY_LEFT)){
             cam.move(new Vector2f(-cameraMoveSpeed * delta, 0));
         }
-        if(window.isKeyPressed(GLFW.GLFW_KEY_RIGHT))
+        if(keyboard.isKeyPressed(GLFW.GLFW_KEY_RIGHT))
             cam.move(new Vector2f(cameraMoveSpeed * delta, 0));
-        if(window.isKeyPressed(GLFW.GLFW_KEY_UP))
+        if(keyboard.isKeyPressed(GLFW.GLFW_KEY_UP))
             cam.move(new Vector2f(0, -cameraMoveSpeed * delta));
-        if(window.isKeyPressed(GLFW.GLFW_KEY_DOWN))
+        if(keyboard.isKeyPressed(GLFW.GLFW_KEY_DOWN))
             cam.move(new Vector2f(0, cameraMoveSpeed * delta));
-        if(window.isKeyPressed(GLFW.GLFW_KEY_R))
+        if(keyboard.isKeyPressed(GLFW.GLFW_KEY_R))
             world.fillRandomly();
-        if(window.isKeyPressed(GLFW.GLFW_KEY_L)) L_PressedLastFrame = true;
-        else {
-            if(L_PressedLastFrame) {
-                grid = world.expand(loader, World.ExpandDirection.RIGHT, 20);
+
+
+        // vim keybinds - h=left, l=right, j=up, k=down
+        Map<Integer, World.ExpandDirection> expandKeybinds = Map.ofEntries(
+                entry(GLFW.GLFW_KEY_H, World.ExpandDirection.LEFT),
+                entry(GLFW.GLFW_KEY_L, World.ExpandDirection.RIGHT),
+                entry(GLFW.GLFW_KEY_J, World.ExpandDirection.DOWN),
+                entry(GLFW.GLFW_KEY_K, World.ExpandDirection.UP)
+        );
+        for(int keycode : expandKeybinds.keySet()) {
+            if(keyboard.isKeyJustReleased(keycode)) {
+                grid = world.expand(loader, expandKeybinds.get(keycode), 20);
+                break;
             }
-            L_PressedLastFrame = false;
         }
 
-        if(window.isKeyPressed(GLFW.GLFW_KEY_R)) world.fillRandomly();
+        if(keyboard.isKeyJustReleased(GLFW.GLFW_KEY_R)) world.fillRandomly();
 
-        if(window.isKeyPressed(GLFW.GLFW_KEY_E))
+        if(keyboard.isKeyPressed(GLFW.GLFW_KEY_E))
             cam.rotate(0.01f * delta);
-        if(window.isKeyPressed(GLFW.GLFW_KEY_Q))
+        if(keyboard.isKeyPressed(GLFW.GLFW_KEY_Q))
             cam.rotate(-0.01f * delta);
 
 
-        if(window.isKeyPressed(GLFW.GLFW_KEY_PERIOD)) {
+        if(keyboard.isKeyPressed(GLFW.GLFW_KEY_PERIOD)) {
             System.out.println("cam.getPosition().z = " + cam.getPosition().z);
             cam.move(new Vector3f(0,0,cameraZoomSpeed*delta));
         }
-        else if(window.isKeyPressed(GLFW.GLFW_KEY_SLASH)) {
+        else if(keyboard.isKeyPressed(GLFW.GLFW_KEY_SLASH)) {
             cam.move(new Vector3f(0,0, -cameraZoomSpeed *delta));
         }
 
-        if(window.isKeyPressed(GLFW.GLFW_KEY_SPACE)) {
+        if(keyboard.isKeyPressed(GLFW.GLFW_KEY_SPACE)) {
             addParticles(brushSize * 10, mouseInput.getNormalizedMousePos(window.getWidth(), window.getHeight()));
         }
 
-
-        boolean[] numKeys = window.getNumbersPressed();
+        boolean[] numKeys = keyboard.getNumbersPressed();
         for (int i = 0; i < numKeys.length; i++) {
             if(numKeys[i]){
                 selectedParticleType = particleTypeFromNumber(i);
@@ -133,7 +147,6 @@ public class SandSim implements ILogic {
         }
 
         if(mouseInput.isLeftButtonPressed()) {
-//            Vector2d mp = mouseInput.getPos();
             addParticles(brushSize, mouseInput.getNormalizedMousePos(window.getWidth(), window.getHeight()));
         }
     }
