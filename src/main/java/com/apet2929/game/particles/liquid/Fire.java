@@ -38,7 +38,7 @@ public class Fire extends Liquid{
                 }
             }
             if(p.getType() == ParticleType.PLANT){
-                if(Math.random() <= 0.001){
+                if(Math.random() <= 0.002){
                     world.spawnParticle(ParticleType.FIRE, p.getGridX(), p.getGridY());
                 }
             }

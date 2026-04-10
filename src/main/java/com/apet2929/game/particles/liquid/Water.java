@@ -14,6 +14,5 @@ public class Water extends Liquid{
     @Override
     public boolean canSwap(ParticleType type) {
         return super.canSwap(type) || type == ParticleType.OIL;
-
     }
 }

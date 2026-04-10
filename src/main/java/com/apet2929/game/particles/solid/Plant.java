@@ -18,7 +18,7 @@ public class Plant extends MoveableSolid{
         ArrayList<Particle> particles = super.getNeighbors(world);
         for (Particle p : particles) {
             if (p.getType() == ParticleType.SAND) {
-                if(Math.random() < 0.001) {
+                if(Math.random() < 0.0002) {
                     world.spawnParticle(ParticleType.PLANT, getGridX(), p.getGridY());
                 }
             }

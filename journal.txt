@@ -60,16 +60,6 @@ each rule rolls for a chance to apply, any number of rules can possibly apply?
  - Organized AI code smells
  - Created Milestone 1 Document
 
-3/16/2026:
- - Added Fire particle class
- - Implemented Fire selection input
- - Set fire particle to notfound texture
-
-3/17/2026:
- - Utilized AI to check for code smells
- - Organized AI code smells
- - Created Milestone 1 Document
-
 3/18/2026:
  - Created new particle move tests
  - Created particle swap test
@@ -94,3 +84,18 @@ each rule rolls for a chance to apply, any number of rules can possibly apply?
  - Implemented Fire and water interaction
  - AI was used as line recomendations, with some proving useful while others the AI
    misunderstood the purpose of the code
+
+ 4/3/2026
+ - Created Oil Particle Class
+ - Created Plant Particle Class
+ - Implemented Oil and Plant as normal particles
+
+ 4/6/2026
+ - Added unique Oil interactions
+ - Added unique Plant interactions
+
+ 4/9/2026
+ - Refactored canSwap() method to take ParticleType instead of ParticleType.MatterType
+ - changed Oil and Water interaction
+ - AI repeatedly failed to even get close to the refactor,
+    instead writing 50 lines to attempt to work around it.
