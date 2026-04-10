@@ -9,7 +9,7 @@ public class EmptyParticle extends Particle{
     }
 
     @Override
-    public boolean canSwap(ParticleType.MatterType type) {
+    public boolean canSwap(ParticleType type) {
         return false;
     }
 

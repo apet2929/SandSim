@@ -16,8 +16,10 @@ public abstract class MoveableSolid extends Particle {
     }
 
     @Override
-    public boolean canSwap(ParticleType.MatterType type) {
-        return (type == ParticleType.MatterType.GAS || type == ParticleType.MatterType.LIQUID || type == ParticleType.MatterType.EMPTY);
+    public boolean canSwap(ParticleType type) {
+        return (type.matterType == ParticleType.MatterType.GAS
+                || type.matterType == ParticleType.MatterType.LIQUID
+                || type.matterType == ParticleType.MatterType.EMPTY);
     }
 
     @Override

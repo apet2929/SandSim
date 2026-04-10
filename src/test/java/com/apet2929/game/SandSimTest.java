@@ -186,7 +186,6 @@ class SandSimTest {
         assertEquals(p1, world.getAt(5, 4));
     }
 
-
     @Test
     void testParticlePositionSynced(){
         final int numUpdates = 20;
@@ -217,6 +216,22 @@ class SandSimTest {
             }
         }
 
+    }
+
+    @Test
+    void testParticleUpdate(){
+        Grid grid = new Grid(10, 10);
+        world = new World(grid);
+
+        Particle p1 = ParticleType.SAND.createParticleByMatrix(5, 5);
+        world.setAt(5, 5, p1);
+
+        for(int i =0; i<3; i++) {
+            world.update();
+        }
+
+        assertNotEquals(p1, world.getAt(5, 5));
+        assertTrue(p1.getGridY() < 5);
     }
 
 }

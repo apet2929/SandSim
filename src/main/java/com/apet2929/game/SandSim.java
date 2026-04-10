@@ -18,27 +18,6 @@ import static java.util.Map.entry;
 public class SandSim implements ILogic {
     public static final float cameraZoomSpeed = 0.1f;
 
-    /*
-    OUTLINE :
-        Particle:
-            - Has a type determined by the class
-            - All particles inherit from Solid, Liquid, or Gas
-            - Particles cannot change their own positions
-            - Are passed the World in the update call
-            - Contains a texture
-        World holds a 2d array of Particles
-            - Mediates interactions between particles, any time a particle changes position, it has to go through the World class
-            - Stores all the Particles into a temporary 1D array for updating
-        RenderManager:
-            Takes in a Model and a Vector3f of the position of the particle
-        For each particle to be rendered:
-            - There is a shared model between all particles
-            - The model's texture is set to the current particle's texture
-            - That model is passed to the RenderManager with the particle's position
-
-     Where to store the shared Particle Model?
-     */
-
     private final RenderManager renderer;
     private final ObjectLoader loader;
     private final WindowManager window;
@@ -282,6 +261,8 @@ public class SandSim implements ILogic {
             case 3: return ParticleType.SMOKE;
             case 4: return ParticleType.STONE;
             case 5: return ParticleType.FIRE;
+            case 6: return ParticleType.OIL;
+            case 7: return ParticleType.PLANT;
             case 0: return ParticleType.EMPTYPARTICLE;
             default: return ParticleType.EMPTYPARTICLE;
         }

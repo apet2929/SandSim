@@ -12,14 +12,11 @@ public class NonMoveableSolid extends Particle {
     }
 
     @Override
-    public boolean canSwap(ParticleType.MatterType type) {
+    public boolean canSwap(ParticleType type) {
         return false;
     }
 
     @Override
     public void update(World world) {
-
     }
-
-
 }

@@ -34,7 +34,7 @@ public abstract class Gas extends Particle {
     }
 
     @Override
-    public boolean canSwap(ParticleType.MatterType type) {
-        return type == ParticleType.MatterType.EMPTY;
+    public boolean canSwap(ParticleType type) {
+        return type.matterType == ParticleType.MatterType.EMPTY;
     }
 }

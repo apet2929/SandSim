@@ -1,7 +1,9 @@
 package com.apet2929.game.particles;
 
 import com.apet2929.game.particles.gas.Smoke;
+import com.apet2929.game.particles.liquid.Oil;
 import com.apet2929.game.particles.liquid.Water;
+import com.apet2929.game.particles.solid.Plant;
 import com.apet2929.game.particles.solid.Sand;
 import com.apet2929.game.particles.solid.Stone;
 import com.apet2929.game.particles.liquid.Fire;
@@ -16,6 +18,12 @@ public enum ParticleType {
             return new Sand(x, y);
         }
     },
+
+    PLANT(Plant.class, MatterType.MOVABLESOLID) {
+        @Override
+        public Particle createParticleByMatrix(int x, int y) { return new Plant(x, y); }
+    },
+
     STONE(Stone.class, MatterType.IMMOVABLESOLID) {
         @Override
         public Particle createParticleByMatrix(int x, int y) {
@@ -35,6 +43,11 @@ public enum ParticleType {
         public Particle createParticleByMatrix(int x, int y) {
             return new Fire(x, y);
         }
+    },
+
+    OIL(Oil.class, MatterType.LIQUID) {
+        @Override
+        public Particle createParticleByMatrix(int x, int y) {return new Oil(x, y); }
     },
 
     SMOKE(Smoke.class, MatterType.GAS) {
