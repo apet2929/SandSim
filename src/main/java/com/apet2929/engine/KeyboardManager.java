@@ -18,8 +18,16 @@ public class KeyboardManager {
         }
 
         public void update(int currentState) {
-            this.stateLastFrame = currentState;
+            this.stateLastFrame = this.currentState;
             this.currentState = currentState;
+        }
+
+        @Override
+        public String toString() {
+            return "KeyInfo{" +
+                    "currentState=" + currentState +
+                    ", stateLastFrame=" + stateLastFrame +
+                    '}';
         }
     }
     public static HashMap<Integer, KeyInfo> initKeyboard(){
@@ -72,6 +80,10 @@ public class KeyboardManager {
             numKeys[i] = isKeyPressed(key);
         }
         return numKeys;
+    }
+
+    public KeyInfo keyInfo(int keycode){
+        return keyboard.get(keycode);
     }
 
 

@@ -22,7 +22,6 @@ public class SandSim implements ILogic {
     private final ObjectLoader loader;
     private final WindowManager window;
     private AssetCache assetCache;
-    boolean L_PressedLastFrame = false;
 
     Grid grid;
     World world;
@@ -81,7 +80,6 @@ public class SandSim implements ILogic {
             cam.move(new Vector2f(0, cameraMoveSpeed * delta));
         if(keyboard.isKeyPressed(GLFW.GLFW_KEY_R))
             world.fillRandomly();
-
 
         // vim keybinds - h=left, l=right, j=up, k=down
         Map<Integer, World.ExpandDirection> expandKeybinds = Map.ofEntries(
