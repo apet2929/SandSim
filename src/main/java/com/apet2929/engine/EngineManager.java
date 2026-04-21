@@ -5,13 +5,15 @@ import com.apet2929.game.Launcher;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Stack;
+
 import static com.apet2929.engine.utils.Consts.FRAMERATE;
 
 public class EngineManager {
     public static final long NANOSECOND = 1000000000L;
     private static int fps;
-    private static final float frametime = 1.0f / FRAMERATE;
-    private static float lastFrameTime;
 
     private boolean isRunning;
 
@@ -42,46 +44,67 @@ public class EngineManager {
     public void run() {
         this.isRunning = true;
 
-        int frames = 0;
-        long frameCounter = 0;
-
-        long lastTime = System.nanoTime();
-        double unprocessedTime = 0;
-
-//        Rendering loop
-        while(isRunning){
-            boolean render = false;
-
-            long startTime = System.nanoTime();
-            lastFrameTime = startTime - lastTime;
-            lastTime = startTime;
-
-            unprocessedTime += lastFrameTime / (double) NANOSECOND;
-            frameCounter += lastFrameTime;
-
-            while(unprocessedTime > frametime){
-                render = true;
-                unprocessedTime -= frametime;
-
-                if(window.windowShouldClose())
-                    stop();
-
-                if(frameCounter >= NANOSECOND){
-                    setFps(frames);
-                    window.setTitle(Consts.TITLE + " FPS: " + getFps());
-                    frames = 0;
-                    frameCounter = 0;
-                }
-            }
-
-            if(render) {
-                input();
-                update();
-                render();
-                frames++;
-            }
+        while(isRunning) {
+            sync((int) FRAMERATE);
+            if(window.windowShouldClose())
+                stop();
+            input();
+            update();
+            render();
         }
         cleanup();
+    }
+
+    private static long variableYieldTime, lastTime;
+    private static final Queue<Double> dtQueue = new LinkedList<>(); // dt = time between frames. used to calculate average fps
+
+
+    /**
+     * An accurate sync method that adapts automatically
+     * to the system it runs on to provide reliable results.
+     *
+     * @param fps The desired frame rate, in frames per second
+     * @author kappa (On the  <a href="http://forum.lwjgl.org/index.php?topic=4452.msg23997#msg23997">LWJGL Forums</a>)
+     */
+    private static void sync(int fps) {
+        if (fps <= 0) return;
+
+        long sleepTime = NANOSECOND / fps; // nanoseconds to sleep this frame
+        // yieldTime + remainder micro & nano seconds if smaller than sleepTime
+        long yieldTime = Math.min(sleepTime, variableYieldTime + sleepTime % (1000*1000));
+        long overSleep = 0; // time the sync goes over by
+
+        try {
+            while (true) {
+                long t = System.nanoTime() - lastTime;
+
+                if (t < sleepTime - yieldTime) {
+                    Thread.sleep(1);
+                }else if (t < sleepTime) {
+                    // burn the last few CPU cycles to ensure accuracy
+                    Thread.yield();
+                }else {
+                    overSleep = t - sleepTime;
+                    if(dtQueue.size() >= fps) dtQueue.remove();
+                    dtQueue.add(((double) overSleep / NANOSECOND) / NANOSECOND); // 0.16
+                    break; // exit while loop
+                }
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }finally{
+            lastTime = System.nanoTime() - Math.min(overSleep, sleepTime);
+
+            // auto tune the time sync should yield
+            if (overSleep > variableYieldTime) {
+                // increase by 200 microseconds (1/5 a ms)
+                variableYieldTime = Math.min(variableYieldTime + 200*1000, sleepTime);
+            }
+            else if (overSleep < variableYieldTime - 200*1000) {
+                // decrease by 2 microseconds
+                variableYieldTime = Math.max(variableYieldTime - 2*1000, 0);
+            }
+        }
     }
 
     private void stop(){
@@ -115,8 +138,8 @@ public class EngineManager {
         return fps;
     }
 
-    public static float getDeltaTime() {
-        return lastFrameTime / (float) NANOSECOND;
+    public static double getDeltaTime() {
+        return (Double) dtQueue.peek();
     }
 
     public static void setFps(int fps) {

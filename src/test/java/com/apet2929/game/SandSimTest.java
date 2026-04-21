@@ -77,7 +77,8 @@ class SandSimTest {
         EasyMock.verify(rm, window, ol, mi, key);
 
         // Camera initial z is 15, x/y start at 0. Expect x moved left by cameraMoveSpeed * delta * -1
-        float delta = EngineManager.getDeltaTime() * 1000f;
+        float delta = (float) EngineManager.getDeltaTime() * 1000f;
+        System.out.println(delta);
         float expectedX = originalX - (sim.cameraMoveSpeed * delta);
         assertEquals(expectedX, cam.getPosition().x, 0.0001f);
     }

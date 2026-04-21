@@ -16,7 +16,7 @@ import java.util.Map;
 import static java.util.Map.entry;
 
 public class SandSim implements ILogic {
-    public static final float cameraZoomSpeed = 0.1f;
+    public static final float cameraZoomSpeed = 20f;
 
     private final RenderManager renderer;
     private final ObjectLoader loader;
@@ -33,7 +33,7 @@ public class SandSim implements ILogic {
     public ParticleType selectedParticleType = ParticleType.SAND;
     public int brushSize = 5;
     public boolean debug = false;
-    public float cameraMoveSpeed = 0.01f;
+    public float cameraMoveSpeed = 20f;
 
     public SandSim() {
         renderer = new RenderManager();
@@ -69,7 +69,7 @@ public class SandSim implements ILogic {
     @Override
     public void input(MouseInput mouseInput) {
         keyboard.update(window.getWindow());
-        float delta = 16.0f; //EngineManager.getDeltaTime() * 1000;
+        float delta = 1.0f / Consts.FRAMERATE;
 
         if(keyboard.isKeyPressed(GLFW.GLFW_KEY_LEFT)){
             cam.move(new Vector2f(-cameraMoveSpeed * delta, 0));
