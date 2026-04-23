@@ -16,7 +16,7 @@ public class EngineManager {
     private static int fps;
 
     private boolean isRunning;
-
+    private Sync sync;
     private WindowManager window;
     private GLFWErrorCallback errorCallback;
     private ILogic gameLogic;
@@ -31,6 +31,7 @@ public class EngineManager {
         gameLogic.init();
         mouseInput.init();
         fps = (int) FRAMERATE;
+        sync = new Sync();
     }
 
     public void start() throws Exception {
@@ -45,7 +46,7 @@ public class EngineManager {
         this.isRunning = true;
 
         while(isRunning) {
-            sync((int) FRAMERATE);
+            sync.sync((int) FRAMERATE);
             if(window.windowShouldClose())
                 stop();
             input();
@@ -55,56 +56,8 @@ public class EngineManager {
         cleanup();
     }
 
-    private static long variableYieldTime, lastTime;
-    private static final Queue<Double> dtQueue = new LinkedList<>(); // dt = time between frames. used to calculate average fps
-
-
-    /**
-     * An accurate sync method that adapts automatically
-     * to the system it runs on to provide reliable results.
-     *
-     * @param fps The desired frame rate, in frames per second
-     * @author kappa (On the  <a href="http://forum.lwjgl.org/index.php?topic=4452.msg23997#msg23997">LWJGL Forums</a>)
-     */
-    private static void sync(int fps) {
-        if (fps <= 0) return;
-
-        long sleepTime = NANOSECOND / fps; // nanoseconds to sleep this frame
-        // yieldTime + remainder micro & nano seconds if smaller than sleepTime
-        long yieldTime = Math.min(sleepTime, variableYieldTime + sleepTime % (1000*1000));
-        long overSleep = 0; // time the sync goes over by
-
-        try {
-            while (true) {
-                long t = System.nanoTime() - lastTime;
-
-                if (t < sleepTime - yieldTime) {
-                    Thread.sleep(1);
-                }else if (t < sleepTime) {
-                    // burn the last few CPU cycles to ensure accuracy
-                    Thread.yield();
-                }else {
-                    overSleep = t - sleepTime;
-                    if(dtQueue.size() >= fps) dtQueue.remove();
-                    dtQueue.add(((double) overSleep / NANOSECOND) / NANOSECOND); // 0.16
-                    break; // exit while loop
-                }
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }finally{
-            lastTime = System.nanoTime() - Math.min(overSleep, sleepTime);
-
-            // auto tune the time sync should yield
-            if (overSleep > variableYieldTime) {
-                // increase by 200 microseconds (1/5 a ms)
-                variableYieldTime = Math.min(variableYieldTime + 200*1000, sleepTime);
-            }
-            else if (overSleep < variableYieldTime - 200*1000) {
-                // decrease by 2 microseconds
-                variableYieldTime = Math.max(variableYieldTime - 2*1000, 0);
-            }
-        }
+    public static float getDeltaTime() {
+        return 1.0f / FRAMERATE;
     }
 
     private void stop(){
@@ -136,10 +89,6 @@ public class EngineManager {
 
     public static int getFps() {
         return fps;
-    }
-
-    public static double getDeltaTime() {
-        return (Double) dtQueue.peek();
     }
 
     public static void setFps(int fps) {

@@ -69,7 +69,7 @@ public class SandSim implements ILogic {
     @Override
     public void input(MouseInput mouseInput) {
         keyboard.update(window.getWindow());
-        float delta = 1.0f / Consts.FRAMERATE;
+        float delta = EngineManager.getDeltaTime();
 
         if(keyboard.isKeyPressed(GLFW.GLFW_KEY_LEFT)){
             cam.move(new Vector2f(-cameraMoveSpeed * delta, 0));
