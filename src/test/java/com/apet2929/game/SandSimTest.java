@@ -7,12 +7,10 @@ import com.apet2929.engine.model.ObjectLoader;
 import com.apet2929.game.particles.ParticleType;
 import com.apet2929.game.particles.Particle;
 import org.easymock.EasyMock;
-import org.joml.Matrix4f;
 import org.joml.Vector2i;
 import org.junit.jupiter.api.Test;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -62,13 +60,7 @@ class SandSimTest {
         key.update(0L);
         EasyMock.expectLastCall();
 
-
-
         // Force a non-zero delta time by setting the private EngineManager.lastFrameTime via reflection
-        java.lang.reflect.Field lastFrameField = com.apet2929.engine.EngineManager.class.getDeclaredField("lastFrameTime");
-        lastFrameField.setAccessible(true);
-        // set to 1 second in nanoseconds so getDeltaTime() -> 1.0f
-        lastFrameField.setFloat(null, 1000000000f);
 
         float originalX = sim.cam.getPosition().x;
         EasyMock.replay(rm, window, ol, mi, key);
@@ -77,8 +69,7 @@ class SandSimTest {
         EasyMock.verify(rm, window, ol, mi, key);
 
         // Camera initial z is 15, x/y start at 0. Expect x moved left by cameraMoveSpeed * delta * -1
-        float delta = (float) EngineManager.getDeltaTime() * 1000f;
-        System.out.println(delta);
+        float delta = (float) EngineManager.getDeltaTime();
         float expectedX = originalX - (sim.cameraMoveSpeed * delta);
         assertEquals(expectedX, cam.getPosition().x, 0.0001f);
     }
