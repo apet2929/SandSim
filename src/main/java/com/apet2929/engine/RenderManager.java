@@ -36,6 +36,7 @@ public class RenderManager {
         shader.createUniform("transformationMatrix");
         shader.createUniform("projectionMatrix");
         shader.createUniform("viewMatrix");
+        shader.createUniform("flipped");
 
         lineShader = new ShaderManager();
         lineShader.createVertexShader(Utils.loadResource("/shaders/line_vertex.vs"));
@@ -73,11 +74,12 @@ public class RenderManager {
         glBindVertexArray(0);
     }
 
-    public void renderParticle(Model particleModel, Vector3f particlePos) {
+    public void renderParticle(Model particleModel, Vector3f particlePos, boolean flipped) {
         shader.setUniform("projectionMatrix", window.getProjectionMatrix());
         shader.setUniform("viewMatrix", camera.getViewMatrix());
         shader.setUniform("textureSampler", 0);
         shader.setUniform("transformationMatrix", Transformation.createTransformationMatrix(particlePos));
+        shader.setUniform("flipped", flipped);
 
         glBindVertexArray(particleModel.getId());
         GL20.glEnableVertexAttribArray(0);
