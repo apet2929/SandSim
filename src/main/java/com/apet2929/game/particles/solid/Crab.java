@@ -22,6 +22,12 @@ public class Crab extends MoveableSolid {
         // fall
         // else try to diagonally move up
         // else try to move in desired direction
+        if(debugCountdown >= 0){
+            if(debugCountdown == 0) {
+                System.out.println(this);
+            }
+            debugCountdown -= 1;
+        }
 
         int directionX = headingRight ? 1 : -1;
         boolean moved = fallDown(world);

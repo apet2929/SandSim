@@ -33,6 +33,7 @@ class SandSimTest {
         boolean[] keysPressed = {false, false, true };
         EasyMock.expect(key.getNumbersPressed()).andReturn(keysPressed);
         EasyMock.expect(mi.isLeftButtonPressed()).andReturn(false).anyTimes();
+        EasyMock.expect(mi.isRightButtonJustReleased()).andReturn(false).anyTimes();
 
         EasyMock.replay(rm, window, ol, mi, key);
         sim.input(mi);
@@ -56,6 +57,7 @@ class SandSimTest {
         EasyMock.expect(key.isKeyPressed(EasyMock.anyInt())).andReturn(false).anyTimes();
         EasyMock.expect(key.getNumbersPressed()).andReturn(new boolean[10]);
         EasyMock.expect(mi.isLeftButtonPressed()).andReturn(false).anyTimes();
+        EasyMock.expect(mi.isRightButtonJustReleased()).andReturn(false).anyTimes();
         EasyMock.expect(window.getWindow()).andReturn(0L).anyTimes();
         key.update(0L);
         EasyMock.expectLastCall();
