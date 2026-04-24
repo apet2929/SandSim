@@ -7,12 +7,10 @@ import com.apet2929.engine.model.ObjectLoader;
 import com.apet2929.game.particles.ParticleType;
 import com.apet2929.game.particles.Particle;
 import org.easymock.EasyMock;
-import org.joml.Matrix4f;
 import org.joml.Vector2i;
 import org.junit.jupiter.api.Test;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 

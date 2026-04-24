@@ -1,0 +1,64 @@
+Here’s a short, user-focused guide that explains how to operate the app (keyboard + mouse) and what to expect to see on screen.
+
+Quick start
+Launch the app (the game window opens).
+You’ll see a 2D grid of cells. Particles are rendered as small textured squares on the grid.
+Use the mouse and keyboard (below) to paint particles, move the view, and zoom.
+Mouse
+Left click (or hold left button): paint particles at the cursor position using the current brush size and the currently selected particle type.
+Holding the left button continuously paints while you move the mouse.
+The cursor position is mapped to a grid cell — click a cell to add particles there (the app converts your screen position into grid coordinates automatically).
+Keyboard
+Number keys — change particle type:
+1 = Sand
+2 = Water
+3 = Smoke
+4 = Stone
+0 = Erase (Empty particle)
+(Only 0–4 are mapped; other digits are ignored by default.)
+Space bar — “spray” a larger burst at the cursor (uses a bigger brush so you get a stronger/faster fill).
+Arrow keys — pan the camera/view:
+Left / Right — move view horizontally.
+Up / Down — move view vertically.
+. (period) and / (slash) — zoom the camera forward/backward.
+Period (.) zooms one direction (zoom in), Slash (/) zooms the opposite (zoom out).
+Esc — close the window / exit the app.
+What each particle type does (expected on-screen behavior)
+Sand (1)
+Falls downward under gravity.
+Piles up and stacks when it hits other solids.
+Can fall diagonally around obstacles and through empty space.
+Water (2)
+Falls and then spreads/flows horizontally.
+Moves into empty spaces and disperses according to simple fluid rules.
+Smoke (3)
+Behaves like a gas — tends to move upward and spread out.
+Stone (4)
+Immovable solid — does not fall or move; acts as a barrier.
+Empty (0)
+Removes particles leaving an empty cell.
+Visual cues to watch for
+
+Textured squares represent particle types (each type uses a different sprite/texture).
+Grid lines are shown or hidden depending on zoom level — when zoomed in, the cell grid will be visible; when zoomed out it may hide to reduce clutter.
+When you paint, you’ll see immediate placement of textured tiles in a square brush shape centered on the cursor.
+Dynamic motion happens after particles are placed — you should see sand fall and pile, water flow, and smoke rise.
+Practical examples
+
+Painting a sand dune:
+Select key 1 (Sand).
+Hold left mouse and sweep near the top of the grid; sand will fall and pile below.
+Making a pond:
+Select key 2 (Water).
+Press space while hovering over a few grid cells to add a larger amount of water at once; watch it spread.
+Building a barrier:
+Select key 4 (Stone) and click a line to block falling particles.
+Tips & expected limitations
+
+If you hold the left mouse button, the app will continuously add particles, which can rapidly fill an area.
+Keep an eye on zoom: if you’re too far out you may not be able to place single-cell precision; zoom in to paint fine details.
+Performance: painting many particles quickly may reduce frame rate on slower machines — consider smaller brushes if the display becomes sluggish.
+If you accidentally fill an area, press 0 (Empty) and paint to clear cells.
+Exit
+
+Press Esc or close the window through the window frame to exit the application.
