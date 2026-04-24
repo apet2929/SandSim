@@ -107,3 +107,6 @@ each rule rolls for a chance to apply, any number of rules can possibly apply?
 
 4/10/2026
 - Added debug inspect mode for particles. Press enter to pause, click on a particle to inspect it next update
+
+4/23/2026
+- Added example usage (Q2 in agile testing quadrant)
