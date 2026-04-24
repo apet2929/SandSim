@@ -3,6 +3,7 @@ package com.apet2929.game.particles;
 import com.apet2929.game.particles.gas.Smoke;
 import com.apet2929.game.particles.liquid.Oil;
 import com.apet2929.game.particles.liquid.Water;
+import com.apet2929.game.particles.solid.Crab;
 import com.apet2929.game.particles.solid.Plant;
 import com.apet2929.game.particles.solid.Sand;
 import com.apet2929.game.particles.solid.Stone;
@@ -28,6 +29,13 @@ public enum ParticleType {
         @Override
         public Particle createParticleByMatrix(int x, int y) {
             return new Stone(x, y);
+        }
+    },
+
+    CRAB(Crab.class, MatterType.MOVABLESOLID) {
+        @Override
+        public Particle createParticleByMatrix(int x, int y) {
+            return new Crab(x,y);
         }
     },
 

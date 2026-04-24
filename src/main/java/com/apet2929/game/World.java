@@ -9,6 +9,7 @@ import com.apet2929.engine.utils.Consts;
 import com.apet2929.game.particles.EmptyParticle;
 import com.apet2929.game.particles.Particle;
 import com.apet2929.game.particles.ParticleType;
+import com.apet2929.game.particles.solid.Crab;
 import org.joml.*;
 
 import java.util.ArrayList;
@@ -106,7 +107,7 @@ public class World {
                 if(b) {
                     if(particle.willDebugSoon()) particleModel.setTexture(Particle.DEBUG_TEXTURE);
                     else particleModel.setTexture(particle.getTexture());
-                    renderer.renderParticle(particleModel, grid.calculateGridPosition(particlePos.x, particlePos.y));
+                    renderer.renderParticle(particleModel, grid.calculateGridPosition(particlePos.x, particlePos.y), particle.getType() == ParticleType.CRAB && ((Crab) particle).flipSprite);
                     if(particle.willDebugSoon()) particleModel.setTexture(particles[i][j].getTexture());
                 }
             }

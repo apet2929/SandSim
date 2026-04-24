@@ -131,6 +131,12 @@ public class SandSim implements ILogic {
             if(!paused) addParticles(brushSize, mousePos);
             else inspectParticle(mousePos);
         }
+        if(mouseInput.isRightButtonJustReleased()) {
+            Vector3f mousePos = mouseInput.getNormalizedMousePos(window.getWidth(), window.getHeight());
+            if(!paused) addParticles(1, mousePos);
+            else inspectParticle(mousePos);
+        }
+
     }
 
     private void inspectParticle(Vector3f mousePos) {
@@ -273,6 +279,7 @@ public class SandSim implements ILogic {
             case 5: return ParticleType.FIRE;
             case 6: return ParticleType.OIL;
             case 7: return ParticleType.PLANT;
+            case 8: return ParticleType.CRAB;
             case 0: return ParticleType.EMPTYPARTICLE;
             default: return ParticleType.EMPTYPARTICLE;
         }

@@ -8,6 +8,8 @@ public class MouseInput {
     private final Vector2d previousPos, currentPos;
     private final Vector2f displVec;
     private boolean inWindow = false, leftButtonPressed = false, rightButtonPressed = false;
+    private int rightButtonStatusLastFrame = GLFW.GLFW_RELEASE;
+    private int rightButtonStatusThisFrame = GLFW.GLFW_RELEASE;
 
     public MouseInput() {
         previousPos = new Vector2d(-1,-1);
@@ -47,7 +49,9 @@ public class MouseInput {
         }
         previousPos.x = currentPos.x;
         previousPos.y = currentPos.y;
-
+        int status = GLFW.glfwGetMouseButton(Launcher.getWindow().getWindow(), GLFW.GLFW_MOUSE_BUTTON_2);
+        rightButtonStatusLastFrame = rightButtonStatusThisFrame;
+        rightButtonStatusThisFrame = status;
     }
 
     public Vector2f getDisplVec() {
@@ -114,5 +118,10 @@ public class MouseInput {
 
     public boolean isRightButtonPressed() {
         return rightButtonPressed;
+    }
+
+    public boolean isRightButtonJustReleased() {
+        if(rightButtonStatusThisFrame == GLFW.GLFW_RELEASE && rightButtonStatusLastFrame == GLFW.GLFW_PRESS) return true;
+        return false;
     }
 }

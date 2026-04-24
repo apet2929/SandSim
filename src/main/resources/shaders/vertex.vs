@@ -5,6 +5,7 @@ in vec2 textureCoord;
 
 out vec2 fragTextureCoord;
 
+uniform bool flipped;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 transformationMatrix;
@@ -12,4 +13,7 @@ uniform mat4 transformationMatrix;
 void main() {
     gl_Position = projectionMatrix * viewMatrix * transformationMatrix * vec4(position, 1.0);
     fragTextureCoord = textureCoord;
+    if(flipped) {
+        fragTextureCoord.x *= -1;
+    }
 }

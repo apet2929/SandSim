@@ -43,7 +43,7 @@ public abstract class MoveableSolid extends Particle {
         return false;
     }
 
-    private boolean fallDown(World world) {
+    protected boolean fallDown(World world) {
         /*
         I want my sand particle to fall down when:
         - There is space below

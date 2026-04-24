@@ -20,6 +20,7 @@ class AssetManager {
         assetPaths.put("FIRE", "textures/fire.png");
         assetPaths.put("OIL", "textures/oil.png");
         assetPaths.put("PLANT", "textures/plant.png");
+        assetPaths.put("CRAB", "textures/crab.png");
         assetPaths.put("DEBUG", "textures/debug.png");
     }
 
