@@ -113,3 +113,11 @@ each rule rolls for a chance to apply, any number of rules can possibly apply?
 
 4/23/2026
 - Added example usage (Q2 in agile testing quadrant)
+
+4/24/2026
+- Added Crab particle type
+- Added ability to flip particle sprites
+- Updated fire logic to better conform to design expectations
+
+4/30/2026
+- Added tutorial that displays on startup.

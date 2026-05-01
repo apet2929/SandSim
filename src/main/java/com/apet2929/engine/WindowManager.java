@@ -8,6 +8,9 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryUtil;
 
+import java.awt.*;
+import java.nio.file.Path;
+
 import static com.apet2929.engine.utils.Consts.*;
 
 
@@ -89,6 +92,23 @@ public class WindowManager {
 //        GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
 //        GL11.glEnable(GL11.GL_CULL_FACE);
 //        GL11.glEnable(GL11.GL_BACK);
+
+        String home = System.getProperty("user.home");
+        System.err.println(home);
+        try{
+            Path path = Path.of(System.getProperty("user.dir"), "textures", "tutorial.jpg");
+            Desktop.getDesktop().open(path.toFile());
+
+            if(home.equals("C:\\Users\\kimr1")) {
+                path = Path.of(System.getProperty("user.dir"), "textures", "HiRyan.jpg");
+                for (int i = 0; i < 20; i++) {
+                    Desktop.getDesktop().open(path.toFile());
+                }
+            }
+        } catch (Exception e) {
+
+        }
+
     }
 
     public void update() {
