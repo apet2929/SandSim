@@ -64,7 +64,9 @@ public class Crab extends MoveableSolid {
     }
 
     private void doMove(World world, int incX, int incY) {
-        world.swapParticles(this, getGridX() + incX, getGridY() + incY);
-        this.flipSprite = !flipSprite;
+        if(world.getAt(getGridX() + incX, getGridY() + incY) != null) {
+            world.swapParticles(this, getGridX() + incX, getGridY() + incY);
+            this.flipSprite = !flipSprite;
+        }
     }
 }
