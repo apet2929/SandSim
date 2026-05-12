@@ -1,7 +1,5 @@
 package com.apet2929.game;
 
-
-
 import com.apet2929.engine.EngineManager;
 import com.apet2929.engine.ILogic;
 import com.apet2929.engine.WindowManager;
