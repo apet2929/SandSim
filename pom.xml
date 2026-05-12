@@ -17,7 +17,10 @@
         <lwjgl.natives>natives-windows</lwjgl.natives>
     </properties>
 
+     <packaging>jar</packaging>
+
     <build>
+        <finalName>SandSim</finalName>
         <plugins>
             <plugin>
                 <!-- Build an executable JAR -->

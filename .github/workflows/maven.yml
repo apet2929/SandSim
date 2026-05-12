@@ -33,3 +33,9 @@ jobs:
 
     - name: Run the Maven verify phase
       run: mvn --batch-mode --update-snapshots clean verify
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: SandSim.jar
+        path: target
