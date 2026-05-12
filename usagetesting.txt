@@ -1,0 +1,14 @@
+
+- Very zoomed in by default
+- Tried to use HJKL to zoom 
+- Got startled when gridlines disappeared, 
+- Immidiately tried to 
+- thought gas was fire, overwrote sand and said "ok it burns stuff"
+- fire movement is a lil glitchy
+- oil is basically invisible
+- fire burns very slowly
+- grid got really big and slow and there was no way to 
+- arrows keys are inverted
+
+- People read in random blobs, not top to bottom
+- 
