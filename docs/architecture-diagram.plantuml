@@ -1,0 +1,120 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+
+class AssetCache
+class AssetManager
+class Camera
+class Consts
+class Crab
+class EmptyParticle
+class EngineManager
+class Entity
+class Fire
+class Gas
+class Grid
+interface ILogic << interface >>
+class KeyboardManager
+class Launcher
+class Liquid
+class Model
+class MouseInput
+class MoveableSolid
+class NonMoveableSolid
+class ObjectLoader
+class Oil
+class Particle
+class ParticleLoader
+class ParticleTimer
+enum ParticleType << enumeration >>
+class Plant
+class RenderManager
+class Sand
+class SandSim
+class ShaderManager
+class Smoke
+class Stone
+class Sync
+class TextRenderer
+class Texture
+class Transformation
+class Utils
+class Water
+class WindowManager
+class World
+
+AssetCache       "1" *-[#595959,plain]-> "assetManager\n1" AssetManager     
+AssetCache        -[#595959,dashed]->  AssetManager     : "«create»"
+AssetCache       "1" *-[#595959,plain]-> "loader\n1" ObjectLoader     
+AssetCache        -[#595959,dashed]->  Texture          : "«create»"
+AssetCache       "1" *-[#595959,plain]-> "assets\n*" Texture          
+Crab              -[#000082,plain]-^  MoveableSolid    
+EmptyParticle     -[#000082,plain]-^  Particle         
+EngineManager    "1" *-[#595959,plain]-> "gameLogic\n1" ILogic           
+EngineManager     -[#595959,dashed]->  MouseInput       : "«create»"
+EngineManager    "1" *-[#595959,plain]-> "mouseInput\n1" MouseInput       
+EngineManager    "1" *-[#595959,plain]-> "sync\n1" Sync             
+EngineManager     -[#595959,dashed]->  Sync             : "«create»"
+EngineManager    "1" *-[#595959,plain]-> "window\n1" WindowManager    
+Entity           "1" *-[#595959,plain]-> "model\n1" Model            
+Fire              -[#000082,plain]-^  Liquid           
+Gas               -[#000082,plain]-^  Particle         
+Launcher          -[#595959,dashed]->  EngineManager    : "«create»"
+Launcher          -[#595959,dashed]->  SandSim          : "«create»"
+Launcher         "1" *-[#595959,plain]-> "game\n1" SandSim          
+Launcher         "1" *-[#595959,plain]-> "window\n1" WindowManager    
+Launcher          -[#595959,dashed]->  WindowManager    : "«create»"
+Liquid            -[#000082,plain]-^  Particle         
+Model            "1" *-[#595959,plain]-> "texture\n1" Texture          
+MoveableSolid     -[#000082,plain]-^  Particle         
+NonMoveableSolid  -[#000082,plain]-^  Particle         
+ObjectLoader      -[#595959,dashed]->  Grid             : "«create»"
+ObjectLoader      -[#595959,dashed]->  Model            : "«create»"
+Oil               -[#000082,plain]-^  Liquid           
+Particle         "1" *-[#595959,plain]-> "type\n1" ParticleType     
+Particle         "1" *-[#595959,plain]-> "DEBUG_TEXTURE\n1" Texture          
+ParticleLoader   "1" *-[#595959,plain]-> "particleTextureMap\n*" ParticleType     
+ParticleLoader   "1" *-[#595959,plain]-> "particleTextureMap\n*" Texture          
+ParticleType      -[#595959,dashed]->  Crab             : "«create»"
+ParticleType      -[#595959,dashed]->  EmptyParticle    : "«create»"
+ParticleType      -[#595959,dashed]->  Fire             : "«create»"
+ParticleType      -[#595959,dashed]->  Oil              : "«create»"
+ParticleType      -[#595959,dashed]->  Plant            : "«create»"
+ParticleType      -[#595959,dashed]->  Sand             : "«create»"
+ParticleType      -[#595959,dashed]->  Smoke            : "«create»"
+ParticleType      -[#595959,dashed]->  Stone            : "«create»"
+ParticleType      -[#595959,dashed]->  Water            : "«create»"
+Plant             -[#000082,plain]-^  MoveableSolid    
+RenderManager    "1" *-[#595959,plain]-> "camera\n1" Camera           
+RenderManager    "1" *-[#595959,plain]-> "shader\n1" ShaderManager    
+RenderManager     -[#595959,dashed]->  ShaderManager    : "«create»"
+RenderManager    "1" *-[#595959,plain]-> "window\n1" WindowManager    
+Sand              -[#000082,plain]-^  MoveableSolid    
+SandSim           -[#595959,dashed]->  AssetCache       : "«create»"
+SandSim          "1" *-[#595959,plain]-> "assetCache\n1" AssetCache       
+SandSim           -[#595959,dashed]->  Camera           : "«create»"
+SandSim          "1" *-[#595959,plain]-> "cam\n1" Camera           
+SandSim          "1" *-[#595959,plain]-> "grid\n1" Grid             
+SandSim           -[#008200,dashed]-^  ILogic           
+SandSim          "1" *-[#595959,plain]-> "keyboard\n1" KeyboardManager  
+SandSim           -[#595959,dashed]->  KeyboardManager  : "«create»"
+SandSim          "1" *-[#595959,plain]-> "particleModel\n1" Model            
+SandSim          "1" *-[#595959,plain]-> "loader\n1" ObjectLoader     
+SandSim           -[#595959,dashed]->  ObjectLoader     : "«create»"
+SandSim          "1" *-[#595959,plain]-> "selectedParticleType\n1" ParticleType     
+SandSim          "1" *-[#595959,plain]-> "renderer\n1" RenderManager    
+SandSim           -[#595959,dashed]->  RenderManager    : "«create»"
+SandSim          "1" *-[#595959,plain]-> "window\n1" WindowManager    
+SandSim          "1" *-[#595959,plain]-> "world\n1" World            
+SandSim           -[#595959,dashed]->  World            : "«create»"
+Smoke             -[#000082,plain]-^  Gas              
+Stone             -[#000082,plain]-^  NonMoveableSolid 
+Water             -[#000082,plain]-^  Liquid           
+World             -[#595959,dashed]->  EmptyParticle    : "«create»"
+World            "1" *-[#595959,plain]-> "grid\n1" Grid             
+World            "1" *-[#595959,plain]-> "particles\n*" Particle         
+World             -[#595959,dashed]->  Particle         : "«create»"
+World            "1" *-[#595959,plain]-> "debugTexture\n1" Texture          
+@enduml
