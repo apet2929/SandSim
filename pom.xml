@@ -42,22 +42,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-<!--            <plugin>-->
-<!--                &lt;!&ndash; Build an executable JAR &ndash;&gt;-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-jar-plugin</artifactId>-->
-<!--                <configuration>-->
-<!--                    <archive>-->
-<!--                        <manifest>-->
-<!--                            <addClasspath>true</addClasspath>-->
-<!--                            <classpathPrefix>lib/</classpathPrefix>-->
-<!--                            <mainClass>com.apet2929.game.Launcher</mainClass>-->
-<!--                        </manifest>-->
-<!--                    </archive>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
-
         </plugins>
     </build>
 
@@ -188,8 +172,6 @@
             <version>5.8.1</version>
             <scope>test</scope>
         </dependency>
-
-
     </dependencies>
 
 </project>

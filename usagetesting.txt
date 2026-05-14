@@ -11,4 +11,3 @@
 - arrows keys are inverted
 
 - People read in random blobs, not top to bottom
-- 
