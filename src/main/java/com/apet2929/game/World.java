@@ -1,5 +1,6 @@
 package com.apet2929.game;
 
+import com.apet2929.engine.EngineManager;
 import com.apet2929.engine.RenderManager;
 import com.apet2929.engine.model.Grid;
 import com.apet2929.engine.model.Model;
@@ -40,13 +41,26 @@ public class World {
 
     public Grid expand(ObjectLoader loader, ExpandDirection direction, int amount) {
         // adds `amount` new rows/columns in the specified direction
-        loader.cleanupGrid(grid);
+
         int oldWidth = this.width;
         int oldHeight = this.height;
         int newWidth = this.width;
         int newHeight = this.height;
         if(direction == ExpandDirection.UP || direction == ExpandDirection.DOWN) newHeight += amount;
         else newWidth += amount;
+
+        EngineManager.MemoryUsage currentMemoryUsage = EngineManager.getMemoryUsage();
+        final int memoryUsagePerCell = 320; // = sizeof(Particle)
+        int oldMemoryUsage = oldWidth * oldHeight * memoryUsagePerCell;
+        int expandedMemoryUsage = newWidth * newHeight * memoryUsagePerCell;
+        int memoryUsageDiff = expandedMemoryUsage - oldMemoryUsage;
+        if(memoryUsageDiff > currentMemoryUsage.freeMemory) {
+            System.err.println("Failed to allocate enough memory to expand grid!");
+            return grid;
+        }
+
+        loader.cleanupGrid(grid);
+
         Grid newGrid = loader.loadGrid(newWidth, newHeight);
         Particle[][] newParticles = initWorld(newWidth, newHeight);
         Vector2i offset = new Vector2i(0,0);
@@ -96,7 +110,6 @@ public class World {
     }
 
     public void render(RenderManager renderer, Model particleModel) {
-
         Vector2i particlePos = new Vector2i(0, 0);
         for (int i = 0; i < particles.length; i++) {
             particlePos.y = i;

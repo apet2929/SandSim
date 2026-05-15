@@ -94,4 +94,24 @@ public class EngineManager {
     public static void setFps(int fps) {
         EngineManager.fps = fps;
     }
+
+    public static class MemoryUsage {
+        public float memoryUsage;
+        public float maxMemory;
+        public float freeMemory;
+
+        public MemoryUsage(float memoryUsage, float maxMemory, float freeMemory) {
+            this.memoryUsage = memoryUsage;
+            this.maxMemory = maxMemory;
+            this.freeMemory = freeMemory;
+        }
+    }
+
+    public static MemoryUsage getMemoryUsage(){
+        Runtime runtime = Runtime.getRuntime();
+        long maxMemory = runtime.maxMemory();
+        long allocatedMemory = runtime.totalMemory();
+        long freeMemory = runtime.freeMemory();
+        return new MemoryUsage(allocatedMemory, maxMemory, freeMemory);
+    }
 }

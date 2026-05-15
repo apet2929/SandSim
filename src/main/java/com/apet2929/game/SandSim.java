@@ -16,7 +16,7 @@ import java.util.Map;
 import static java.util.Map.entry;
 
 public class SandSim implements ILogic {
-    public static final float cameraZoomSpeed = 20f;
+    public static final float cameraZoomSpeed = 30f;
 
     private final RenderManager renderer;
     private final ObjectLoader loader;
@@ -33,7 +33,7 @@ public class SandSim implements ILogic {
     public ParticleType selectedParticleType = ParticleType.SAND;
     public int brushSize = 5;
     public boolean debug = false;
-    public float cameraMoveSpeed = 20f;
+    public float baseCameraMoveSpeed = 1f;
 
     public SandSim() {
         renderer = new RenderManager();
@@ -70,15 +70,16 @@ public class SandSim implements ILogic {
     public void input(MouseInput mouseInput) {
         keyboard.update(window.getWindow());
         float delta = EngineManager.getDeltaTime();
+        float cameraMoveSpeed = baseCameraMoveSpeed * cam.getPosition().z;
 
         if(keyboard.isKeyPressed(GLFW.GLFW_KEY_LEFT)){
             cam.move(new Vector2f(-cameraMoveSpeed * delta, 0));
         }
         if(keyboard.isKeyPressed(GLFW.GLFW_KEY_RIGHT))
             cam.move(new Vector2f(cameraMoveSpeed * delta, 0));
-        if(keyboard.isKeyPressed(GLFW.GLFW_KEY_UP))
-            cam.move(new Vector2f(0, -cameraMoveSpeed * delta));
         if(keyboard.isKeyPressed(GLFW.GLFW_KEY_DOWN))
+            cam.move(new Vector2f(0, -cameraMoveSpeed * delta));
+        if(keyboard.isKeyPressed(GLFW.GLFW_KEY_UP))
             cam.move(new Vector2f(0, cameraMoveSpeed * delta));
         if(keyboard.isKeyPressed(GLFW.GLFW_KEY_R))
             world.fillRandomly();
@@ -101,17 +102,17 @@ public class SandSim implements ILogic {
         if(keyboard.isKeyJustReleased(GLFW.GLFW_KEY_R)) world.fillRandomly();
 
         if(keyboard.isKeyPressed(GLFW.GLFW_KEY_E))
-            cam.rotate(0.01f * delta);
+            cam.rotate(0.1f * delta);
         if(keyboard.isKeyPressed(GLFW.GLFW_KEY_Q))
-            cam.rotate(-0.01f * delta);
+            cam.rotate(-0.1f * delta);
 
 
         if(keyboard.isKeyPressed(GLFW.GLFW_KEY_PERIOD)) {
             System.out.println("cam.getPosition().z = " + cam.getPosition().z);
-            cam.move(new Vector3f(0,0,cameraZoomSpeed*delta));
+            cam.move(new Vector3f(0,0, SandSim.cameraZoomSpeed *delta));
         }
         else if(keyboard.isKeyPressed(GLFW.GLFW_KEY_SLASH)) {
-            cam.move(new Vector3f(0,0, -cameraZoomSpeed *delta));
+            cam.move(new Vector3f(0,0, -SandSim.cameraZoomSpeed *delta));
         }
 
         if(keyboard.isKeyPressed(GLFW.GLFW_KEY_SPACE)) {

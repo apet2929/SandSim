@@ -50,7 +50,7 @@ public class Crab extends MoveableSolid {
             }
             else if (canSwap(sideways)) this.doMove(world, directionX, 0);
             else if (canSwap(diagonalUp)) this.doMove(world, directionX, 1);
-            else if(up.getType() == ParticleType.SAND){
+            else if(up != null && up.getType() == ParticleType.SAND){
                 double roll = Math.random();
                 if(roll < BURROW_UP_CHANCE) {
                     this.doMove(world, 0, 1);

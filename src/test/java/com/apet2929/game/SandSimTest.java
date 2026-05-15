@@ -72,7 +72,7 @@ class SandSimTest {
 
         // Camera initial z is 15, x/y start at 0. Expect x moved left by cameraMoveSpeed * delta * -1
         float delta = (float) EngineManager.getDeltaTime();
-        float expectedX = originalX - (sim.cameraMoveSpeed * delta);
+        float expectedX = originalX - (sim.baseCameraMoveSpeed*cam.getPosition().z * delta);
         assertEquals(expectedX, cam.getPosition().x, 0.0001f);
     }
 
