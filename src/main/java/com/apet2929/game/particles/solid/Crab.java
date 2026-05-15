@@ -8,8 +8,8 @@ public class Crab extends MoveableSolid {
     boolean headingRight;
     int moveTimer;
     public boolean flipSprite;
-    static final int TIME_BETWEEN_MOVES = 20;
-    static final float BURROW_UP_CHANCE = 0.1f;
+    static final int TIME_BETWEEN_MOVES = 15;
+    static final float BURROW_UP_CHANCE = 0.3f;
     public Crab(int x, int y) {
         super(x, y, ParticleType.CRAB);
         headingRight = Math.random() > 0.5f;
@@ -39,7 +39,7 @@ public class Crab extends MoveableSolid {
 
         moveTimer--;
 
-        if(moveTimer == 0) {
+        if(moveTimer <= 0) {
             // there is ground beneath us
             Particle diagonalDown = world.getAt(getGridX() + directionX, getGridY() - 1);
             Particle sideways = world.getAt(getGridX() + directionX, getGridY());
@@ -52,6 +52,7 @@ public class Crab extends MoveableSolid {
             else if (canSwap(diagonalUp)) this.doMove(world, directionX, 1);
             else if(up != null && up.getType() == ParticleType.SAND){
                 double roll = Math.random();
+                System.out.println("rolling to burrow up!");
                 if(roll < BURROW_UP_CHANCE) {
                     this.doMove(world, 0, 1);
                 }

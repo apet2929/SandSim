@@ -1,0 +1,94 @@
+@startuml
+top to bottom direction
+
+package engine {
+
+class EngineManager {
+Handles update loop and synchronization
+}
+class WindowManager {
+Initializes Window and handles resizing
+}
+class ShaderManager {
+Registers OpenGL shaders and handles shader setup/teardown
+}
+
+class RenderManager
+class MouseInput
+class AssetCache {
+Singleton providing access to lazily loaded textures
+}
+
+
+package model {
+    class Camera
+    class ObjectLoader {
+    Creates and binds VAOs and VBOs based on vertices
+    }
+    class Texture
+    class Model
+
+    ObjectLoader -->"creates" Model
+
+}
+
+AssetCache --> ObjectLoader
+AssetCache --> Texture
+RenderManager --> Texture
+RenderManager --> Model
+}
+note top of engine: Handles interaction with OpenGL backend. \n Designed to be reusable across games
+
+
+package game {
+class Launcher
+class SandSim {
++render()
++update()
++handleInput(MouseInput input)
++cleanup()
+-addParticles(int brushSize, Vector3f mousePos)
+}
+class World {
+-Particle[][] particles
+-int width, height
++update()
++render(RenderManager, Model particleModel)
++expand(ObjectLoader loader, ExpandDirection direction, int amount)
++spawnParticle(ParticleType, Vector2i pos)
++swap(Vector2i pos1, Vector2i pos2)
++setAt(Vector2i pos, ParticleType type)
++getAt(Vector2i pos): Particle
++fillRandomly()
+}
+
+SandSim -u[#pink,dashed,thickness=10]-> World
+Launcher -> SandSim
+
+SandSim -d-> Camera
+Launcher -d-> EngineManager
+SandSim -d-> ShaderManager
+SandSim -d-> RenderManager
+SandSim -d-> MouseInput
+SandSim --d-> WindowManager
+World -d-> RenderManager
+
+package particles {
+abstract class Particle {
+
++update()
+
+}
+abstract class MoveableSolid extends Particle
+abstract class Liquid extends Particle
+abstract class Gas extends Particle
+class Sand extends MoveableSolid
+class Water extends Liquid
+class Smoke extends Gas
+
+Particle -> Texture
+}
+
+World -u->"*" Particle
+}
+@enduml
